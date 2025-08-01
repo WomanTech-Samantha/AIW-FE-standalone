@@ -19,7 +19,7 @@ export default function Login() {
     // 로그인 후: 최초 1회 온보딩
     const to = location.state?.from?.pathname;
     const hasOnboarded = (user?.hasOnboarded) ?? JSON.parse(localStorage.getItem("auth_user") || "{}")?.hasOnboarded;
-    if (hasOnboarded) nav(to || "/dashboard", { replace: true });
+    if (hasOnboarded) nav(to || "/studio", { replace: true });
     else nav("/onboarding", { replace: true });
   };
 

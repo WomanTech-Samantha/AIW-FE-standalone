@@ -164,4 +164,12 @@ All colors MUST be HSL.
   .gradient-warm {
     background: var(--gradient-warm);
   }
+
+  .no-transition {
+    transition: none !important;
+  }
+
+  .no-transition * {
+    transition: none !important;
+  }
 }
