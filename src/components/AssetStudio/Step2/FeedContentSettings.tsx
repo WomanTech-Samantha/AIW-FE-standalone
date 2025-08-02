@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Edit2, ArrowRight } from "lucide-react";
+import { Sparkles, Edit2, ArrowRight, Heart, Coffee, Briefcase, Smile } from "lucide-react";
 import { EditableCopy } from "@/hooks/useAssetStudioState";
 
 interface FeedContentSettingsProps {
@@ -32,6 +33,14 @@ export const FeedContentSettings = ({
   onPreviousStep,
   onNextStep
 }: FeedContentSettingsProps) => {
+  const [selectedStyle, setSelectedStyle] = useState<string>("");
+
+  const styleOptions = [
+    { id: "friendly", label: "친밀/밈 스타일", icon: <Smile className="h-4 w-4" />, description: "재미있고 친근한 톤" },
+    { id: "calm", label: "차분한 스타일", icon: <Coffee className="h-4 w-4" />, description: "차분하고 안정적인 톤" },
+    { id: "professional", label: "전문적인 스타일", icon: <Briefcase className="h-4 w-4" />, description: "신뢰감 있는 전문적인 톤" },
+    { id: "emotional", label: "감성적인 스타일", icon: <Heart className="h-4 w-4" />, description: "감정에 호소하는 톤" }
+  ];
   return (
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -46,18 +55,18 @@ export const FeedContentSettings = ({
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-foreground">제목</label>
+                <label className="text-sm font-medium text-foreground">상품 이름</label>
                 <input
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  placeholder="예: 새로운 상품을 소개합니다!"
+                  placeholder="예: 지속쿨링 냉감 이불"
                   className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
-              
+
               <div>
-                <label className="text-sm font-medium text-foreground">강조할 포인트 (최대 3개)</label>
+                <label className="text-sm font-medium text-foreground">강조 키워드 (최대 3개)</label>
                 <div className="space-y-2 mt-1">
                   {keywords.map((keyword, index) => (
                     <input
@@ -69,15 +78,17 @@ export const FeedContentSettings = ({
                         newKeywords[index] = e.target.value;
                         setKeywords(newKeywords);
                       }}
-                      placeholder={`포인트 ${index + 1} (예: ${
-                        index === 0 ? "신제품 출시" :
-                        index === 1 ? "한정 할인" :
-                          "무료배송"
-                      })`}
+                      placeholder={`키워드 ${index + 1} (예: ${index === 0 ? "프리미엄 냉감 소재" :
+                          index === 1 ? "국내산 원단" :
+                            "맞춤 제작"
+                        })`}
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   ))}
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  입력한 키워드를 바탕으로 피드 문구가 자동 생성됩니다
+                </p>
               </div>
 
               <Button
@@ -86,7 +97,7 @@ export const FeedContentSettings = ({
                 disabled={!productName.trim()}
               >
                 <Sparkles className="mr-2 h-5 w-5" />
-                피드 문구 생성하기
+                피드 본문 및 해시태그 생성하기
               </Button>
             </CardContent>
           </Card>
@@ -109,13 +120,35 @@ export const FeedContentSettings = ({
                   </Button>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* Style Selection */}
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">메인 텍스트</label>
+                  <label className="text-sm font-medium text-muted-foreground mb-3 block">문구 스타일 선택</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {styleOptions.map((style) => (
+                      <Button
+                        key={style.id}
+                        variant={selectedStyle === style.id ? "default" : "outline"}
+                        onClick={() => setSelectedStyle(style.id)}
+                        className={`h-auto p-3 ${selectedStyle === style.id ? "gradient-primary text-white" : ""
+                          }`}
+                      >
+                        <div className="flex items-center space-x-2">
+                          {style.icon}
+                          <span className="font-medium text-sm">{style.label}</span>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Feed Post Content */}
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">피드 본문</label>
                   {isEditing ? (
                     <textarea
-                      value={editableCopy?.description || "새로운 상품을 소개합니다! 놓치지 마세요 ✨"}
-                      onChange={(e) => setEditableCopy(prev => prev ? {...prev, description: e.target.value} : {
+                      value={editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다 ✨"}
+                      onChange={(e) => setEditableCopy((prev: EditableCopy | null) => prev ? { ...prev, description: e.target.value } : {
                         title: "",
                         description: e.target.value,
                         feature1: "",
@@ -125,23 +158,25 @@ export const FeedContentSettings = ({
                         hashtags: "",
                         cta: ""
                       })}
-                      rows={3}
+                      rows={4}
                       className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="인스타그램 피드에 올릴 본문을 입력하세요..."
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">
-                      <p className="text-sm leading-relaxed">{editableCopy?.description || "새로운 상품을 소개합니다! 놓치지 마세요 ✨"}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-line">{editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다 ✨"}</p>
                     </div>
                   )}
                 </div>
 
+                {/* Hashtags */}
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">해시태그</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #인스타그램 #피드`}
-                      onChange={(e) => setEditableCopy(prev => prev ? {...prev, hashtags: e.target.value} : {
+                      onChange={(e) => setEditableCopy((prev: EditableCopy | null) => prev ? { ...prev, hashtags: e.target.value } : {
                         title: "",
                         description: "",
                         feature1: "",
@@ -152,6 +187,7 @@ export const FeedContentSettings = ({
                         cta: ""
                       })}
                       className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="#해시태그를 입력하세요"
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">

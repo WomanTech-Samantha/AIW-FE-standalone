@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Upload,
   ImageIcon,
@@ -19,16 +17,9 @@ interface Step1ImageUploadProps {
   selectedImage: string | null;
   isProcessing: boolean;
   showResults: boolean;
-  selectedFeatures: string[];
-  productFeatures: Array<{
-    id: string;
-    label: string;
-    popular?: boolean;
-  }>;
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onImageRemove: () => void;
   onGenerate: () => void;
-  onFeatureToggle: (featureId: string) => void;
   onNextStep: () => void;
 }
 
@@ -37,12 +28,9 @@ export const Step1ImageUpload = ({
   selectedImage,
   isProcessing,
   showResults,
-  selectedFeatures,
-  productFeatures,
   onImageUpload,
   onImageRemove,
   onGenerate,
-  onFeatureToggle,
   onNextStep
 }: Step1ImageUploadProps) => {
   const getContentTypeInfo = () => {
@@ -87,7 +75,7 @@ export const Step1ImageUpload = ({
           buttonText: "스토리용 이미지 보정하기",
           helpText: "24시간 스토리에 최적화된 디자인을 적용합니다",
           resultTitle: "스토리 이미지",
-          resultDescription: "9:16 스토리용",
+          resultDescription: "스토리용 이미지입니다.",
           resultIcon: "스토리 최적화",
           nextStepText: "스토리 콘텐츠 설정"
         };
@@ -194,45 +182,6 @@ export const Step1ImageUpload = ({
           </Card>
         )}
 
-        {/* Product Features for Other Content Types */}
-        {selectedImage && contentType !== "detail" && (
-          <Card className="card-soft">
-            <CardHeader>
-              <CardTitle className="text-xl">강조할 특징 선택</CardTitle>
-              <CardDescription>
-                선택하신 특징을 바탕으로 마케팅 문구를 자동 생성해드려요
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-3">
-                {productFeatures.map((feature) => (
-                  <div
-                    key={feature.id}
-                    className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${
-                      selectedFeatures.includes(feature.id)
-                        ? "bg-primary/10 border-primary"
-                        : "bg-card border-border hover:border-primary/50"
-                    }`}
-                    onClick={() => onFeatureToggle(feature.id)}
-                  >
-                    <Checkbox
-                      checked={selectedFeatures.includes(feature.id)}
-                      onChange={() => {}} // Handled by parent click
-                    />
-                    <div className="flex-1">
-                      <span className="text-sm font-medium">{feature.label}</span>
-                      {feature.popular && (
-                        <Badge variant="secondary" className="ml-2 text-xs">
-                          인기
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       {/* Right Panel - Results */}

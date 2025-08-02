@@ -46,18 +46,18 @@ export const StoryContentSettings = ({
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-foreground">제목</label>
+                <label className="text-sm font-medium text-foreground">상품 이름</label>
                 <input
                   type="text"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
-                  placeholder="예: 24시간 한정 특가!"
+                  placeholder="예: 지속쿨링 냉감 이불"
                   className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               
               <div>
-                <label className="text-sm font-medium text-foreground">강조할 포인트 (최대 3개)</label>
+                <label className="text-sm font-medium text-foreground">강조 키워드 (최대 3개)</label>
                 <div className="space-y-2 mt-1">
                   {keywords.map((keyword, index) => (
                     <input
@@ -69,15 +69,18 @@ export const StoryContentSettings = ({
                         newKeywords[index] = e.target.value;
                         setKeywords(newKeywords);
                       }}
-                      placeholder={`포인트 ${index + 1} (예: ${
-                        index === 0 ? "한정 수량" :
-                        index === 1 ? "24시간만" :
-                          "특별 할인"
+                      placeholder={`키워드 ${index + 1} (예: ${
+                        index === 0 ? "프리미엄 냉감 소재" :
+                        index === 1 ? "국내산 원단" :
+                          "맞춤 제작"
                       })`}
                       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   ))}
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  입력한 키워드를 바탕으로 스토리 문구가 자동 생성됩니다
+                </p>
               </div>
 
               <Button
@@ -111,11 +114,36 @@ export const StoryContentSettings = ({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">메인 텍스트</label>
+                  <label className="text-sm font-medium text-muted-foreground">제목</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editableCopy?.title || `⏰ ${productName || "상품"} 스토리용 이미지`}
+                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, title: e.target.value } : {
+                        title: e.target.value,
+                        description: "",
+                        feature1: "",
+                        feature2: "",
+                        feature3: "",
+                        feature4: "",
+                        hashtags: "",
+                        cta: ""
+                      })}
+                      className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  ) : (
+                    <div className="mt-1 p-3 bg-muted rounded border">
+                      <p className="text-base font-medium">{editableCopy?.title || `⏰ ${productName || "상품"} 스토리용 이미지`}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">설명</label>
                   {isEditing ? (
                     <textarea
-                      value={editableCopy?.description || "⏰ 24시간만! 놓치면 후회하는 특별 기회"}
-                      onChange={(e) => setEditableCopy(prev => prev ? {...prev, description: e.target.value} : {
+                      value={editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}
+                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, description: e.target.value } : {
                         title: "",
                         description: e.target.value,
                         feature1: "",
@@ -125,23 +153,56 @@ export const StoryContentSettings = ({
                         hashtags: "",
                         cta: ""
                       })}
-                      rows={3}
+                      rows={2}
                       className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">
-                      <p className="text-sm leading-relaxed">{editableCopy?.description || "⏰ 24시간만! 놓치면 후회하는 특별 기회"}</p>
+                      <p className="text-sm leading-relaxed">{editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}</p>
                     </div>
                   )}
                 </div>
+
+                {["feature1", "feature2", "feature3", "feature4"].map((featureKey, index) => (
+                  <div key={featureKey}>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Feature {index + 1} {index === 3 ? "(선택)" : ""}
+                    </label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editableCopy?.[featureKey as keyof EditableCopy] || (index < 3 ? keywords[index] || "" : "")}
+                        onChange={(e) => setEditableCopy(prev => prev ? { ...prev, [featureKey]: e.target.value } : {
+                          title: "",
+                          description: "",
+                          feature1: "",
+                          feature2: "",
+                          feature3: "",
+                          feature4: "",
+                          hashtags: "",
+                          cta: "",
+                          [featureKey]: e.target.value
+                        })}
+                        placeholder={index === 3 ? "선택사항" : ""}
+                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    ) : (
+                      <div className="mt-1 p-3 bg-muted rounded border">
+                        <p className={`text-sm ${index === 3 && !editableCopy?.[featureKey as keyof EditableCopy] ? "text-muted-foreground" : ""}`}>
+                          {editableCopy?.[featureKey as keyof EditableCopy] || (index < 3 ? keywords[index] || `기본 특징 ${index + 1}` : "(선택사항)")}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
 
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">해시태그</label>
                   {isEditing ? (
                     <input
                       type="text"
-                      value={editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #스토리 #한정특가`}
-                      onChange={(e) => setEditableCopy(prev => prev ? {...prev, hashtags: e.target.value} : {
+                      value={editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #스토리 #인스타그램 #한정특가`}
+                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, hashtags: e.target.value } : {
                         title: "",
                         description: "",
                         feature1: "",
@@ -155,7 +216,32 @@ export const StoryContentSettings = ({
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">
-                      <p className="text-sm text-primary">{editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #스토리 #한정특가`}</p>
+                      <p className="text-sm text-primary">{editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #스토리 #인스타그램 #한정특가`}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground">CTA 문구</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}
+                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, cta: e.target.value } : {
+                        title: "",
+                        description: "",
+                        feature1: "",
+                        feature2: "",
+                        feature3: "",
+                        feature4: "",
+                        hashtags: "",
+                        cta: e.target.value
+                      })}
+                      className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  ) : (
+                    <div className="mt-1 p-3 bg-muted rounded border">
+                      <p className="text-sm font-medium">{editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}</p>
                     </div>
                   )}
                 </div>

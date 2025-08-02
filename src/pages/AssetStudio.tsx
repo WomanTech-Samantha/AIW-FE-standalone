@@ -185,8 +185,10 @@ const AssetStudioPage = () => {
                       contentType === type.id ? "gradient-primary text-white" : ""
                     }`}
                   >
-                    {type.icon}
-                    <span className="font-medium">{type.title}</span>
+                    <div className="flex flex-col items-center space-y-1">
+                      {type.icon}
+                      <span className="font-bold text-lg">{type.title}</span>
+                    </div>
                     <span className="text-xs opacity-80">{type.description}</span>
                   </Button>
                 ))}
@@ -231,12 +233,9 @@ const AssetStudioPage = () => {
             selectedImage={selectedImage}
             isProcessing={isProcessing}
             showResults={showResults}
-            selectedFeatures={selectedFeatures}
-            productFeatures={productFeatures}
             onImageUpload={handleImageUpload}
             onImageRemove={() => setSelectedImage(null)}
             onGenerate={handleGenerate}
-            onFeatureToggle={handleFeatureToggle}
             onNextStep={() => setCurrentStep(2)}
           />
         )}
