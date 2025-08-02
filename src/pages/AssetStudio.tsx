@@ -11,13 +11,14 @@ import {
   Calendar,
   Sparkles,
   CheckCircle2,
-  ArrowRight,
   ImageIcon,
   Zap,
   ShoppingBag,
   Hash,
   Video,
-  Clock
+  Clock,
+  Edit2,
+  ArrowRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +29,22 @@ const AssetStudioPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [contentType, setContentType] = useState<"detail" | "feed" | "reels" | "story" | null>(null);
+  const [productName, setProductName] = useState("");
+  const [keywords, setKeywords] = useState(["", "", ""]);
+  const [editableCopy, setEditableCopy] = useState<{
+    title: string;
+    description: string;
+    feature1: string;
+    feature2: string;
+    feature3: string;
+    feature4: string;
+    hashtags: string;
+    cta: string;
+  } | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showFinalImage, setShowFinalImage] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [showCopyGeneration, setShowCopyGeneration] = useState(false);
 
   // Sample product features for bedding/curtain business
   const productFeatures = [
@@ -41,24 +58,46 @@ const AssetStudioPage = () => {
     { id: "blackout", label: "암막 기능" }
   ];
 
+  // Mock feature expansion based on keywords
+  const expandKeyword = (keyword: string): string => {
+    const expansions: Record<string, string> = {
+      "냉감 소재": "특수 냉감 원단으로 제작되어 한여름에도 시원하고 쾌적한 수면 환경을 제공합니다",
+      "여름 특화": "통기성이 뛰어난 소재로 여름철 열대야에도 편안한 잠자리를 보장합니다",
+      "맞춤 제작": "고객님의 침대 사이즈에 완벽하게 맞춰 제작되어 흘러내림 없이 깔끔합니다",
+      "프리미엄 냉감 소재": "최고급 냉감 원단을 사용하여 체온을 효과적으로 조절하고 땀 흡수가 빠릅니다",
+      "국내산 원단": "100% 국내 생산 원단으로 품질이 우수하고 안전성이 검증되었습니다",
+      "항균 처리": "특수 항균 가공으로 세균 번식을 억제하여 위생적인 수면 환경을 만듭니다"
+    };
+    return expansions[keyword] || `${keyword} 기능으로 더욱 편안하고 만족스러운 사용감을 제공합니다`;
+  };
+
   // Mock auto-generated copy based on selected features and content type
   const generateCopy = () => {
-    let titles, descriptions, hashtags, ctas;
-    
-    switch(contentType) {
+    let titles: string[], descriptions: string[], hashtags: string[], ctas: string[];
+
+    switch (contentType) {
       case "detail":
+        // 상품 상세의 경우 입력된 정보 활용
+        const validKeywords = keywords.filter(k => k.trim() !== "");
+        const keywordString = validKeywords.length > 0 ? validKeywords.join(", ") : "프리미엄 품질";
+
         titles = [
-          "✨ 프리미엄 냉감 이불 상세 정보",
-          "📐 맞춤 제작 침구의 모든 것",
-          "🛡️ 항균 침구 제품 상세 안내"
+          productName ? `✨ ${productName} 상세 정보` : "✨ 상품 상세 정보",
+          productName ? `📐 ${productName} - ${keywordString}` : "📐 프리미엄 제품 상세",
+          productName ? `🛡️ ${productName} 특징 안내` : "🛡️ 제품 특징 안내"
         ];
-        descriptions = [
-          "▶ 소재: 프리미엄 냉감 원단 (폴리에스터 70%, 텐셀 30%)\n▶ 특징: 여름철 최적화, 항균 처리 완료\n▶ 관리법: 찬물 세탁 권장, 표백제 사용 금지\n▶ 사이즈: 싱글/퀸/킹 맞춤 가능",
-          "▶ 맞춤 제작 과정\n1. 사이즈 측정 및 상담\n2. 원단 선택 (20가지 중 택1)\n3. 제작 기간: 5-7일\n4. 무료 배송 및 설치",
-          "▶ 항균 인증 획득\n- KC 안전 인증 완료\n- 99.9% 항균 효과\n- 민감 피부에도 안전\n- 3년 품질 보증"
+
+        descriptions = validKeywords.length > 0 ? [
+          `▶ ${productName || "제품명"}\n${validKeywords.map((kw, idx) => `▶ 특징 ${idx + 1}: ${kw}`).join('\n')}\n▶ 고객 만족도: ★★★★★\n▶ 배송: 전국 무료배송`,
+          `▶ 제품 특징\n${validKeywords.map((kw, idx) => `${idx + 1}. ${kw} 기능 탑재`).join('\n')}\n▶ A/S: 1년 무상 보증\n▶ 구매 문의: 카톡/전화 상담 가능`,
+          `▶ ${productName || "프리미엄 제품"}\n- 핵심 기능: ${keywordString}\n- 품질 인증 완료\n- 안전 검증 제품\n- 고객 추천 1위`
+        ] : [
+          "▶ 프리미엄 품질의 제품\n▶ 엄선된 소재 사용\n▶ 철저한 품질 관리\n▶ 고객 만족 보장",
+          "▶ 제품 특징\n1. 최고급 소재\n2. 정성스런 제작\n3. 완벽한 마감\n4. 합리적 가격",
+          "▶ 품질 보증\n- 정품 인증\n- 안전 테스트 완료\n- 1년 무상 A/S\n- 100% 고객 만족"
         ];
         break;
-        
+
       case "feed":
         titles = [
           "시원한 여름밤을 책임지는 냉감 이불 🧊",
@@ -71,7 +110,7 @@ const AssetStudioPage = () => {
           "매일 사용하는 침구, 깨끗하고 안전해야죠. 항균 처리된 원단으로 세균 걱정 없이 편안한 잠자리를 만들어드려요."
         ];
         break;
-        
+
       case "reels":
         titles = [
           "🎬 3초만에 보는 냉감 이불 효과!",
@@ -84,7 +123,7 @@ const AssetStudioPage = () => {
           "😱 침구에 세균이?\n\n매일 8시간 함께하는 침구\n항균 처리는 선택이 아닌 필수!\n\n💪 우리 가게 모든 제품 항균 인증"
         ];
         break;
-        
+
       case "story":
         titles = [
           "🔥 오늘만 특가!",
@@ -97,32 +136,60 @@ const AssetStudioPage = () => {
           "⏰ 6시간 남았어요!\n\n항균 이불 세트\n정가 150,000원 → 99,000원\n\n지금 바로 연락주세요 📞"
         ];
         break;
-        
+
       default:
         titles = ["제품을 선택해주세요"];
         descriptions = ["콘텐츠 타입을 먼저 선택해주세요"];
     }
-    
-    hashtags = contentType === "story" 
+
+    hashtags = contentType === "story"
       ? ["#지숙커튼침구 #오늘만특가 #스토리이벤트"]
       : [
-          "#냉감이불맛집 #여름침구 #시원한이불 #지숙커튼침구",
-          "#맞춤제작 #사이즈주문제작 #침구맞춤 #커튼맞춤",
-          "#항균침구 #건강한잠자리 #프리미엄침구 #안전한침구"
-        ];
-    
+        "#냉감이불맛집 #여름침구 #시원한이불 #지숙커튼침구",
+        "#맞춤제작 #사이즈주문제작 #침구맞춤 #커튼맞춤",
+        "#항균침구 #건강한잠자리 #프리미엄침구 #안전한침구"
+      ];
+
     ctas = contentType === "story"
       ? ["👆 위로 스와이프해서 더보기"]
       : [
-          "📞 지금 주문하고 시원한 여름 보내세요!",
-          "💬 사이즈 상담 받아보세요 (무료)",
-          "🛒 건강한 잠자리, 지금 시작하세요!"
-        ];
+        "📞 지금 주문하고 시원한 여름 보내세요!",
+        "💬 사이즈 상담 받아보세요 (무료)",
+        "🛒 건강한 잠자리, 지금 시작하세요!"
+      ];
 
     const randomIndex = Math.floor(Math.random() * titles.length);
+
+    // Generate features for detail content type
+    let features: { feature1: string; feature2: string; feature3: string; feature4: string } = {
+      feature1: "",
+      feature2: "",
+      feature3: "",
+      feature4: ""
+    };
+
+    if (contentType === "detail") {
+      const expandedFeatures = keywords.map(kw => kw.trim() ? expandKeyword(kw) : "").filter(f => f);
+
+      // 기본 features가 없으면 기본값 제공
+      if (expandedFeatures.length === 0) {
+        expandedFeatures.push(
+          "최고급 냉감 원단을 사용하여 체온을 효과적으로 조절하고 땀 흡수가 빠릅니다.",
+          "100% 국내 생산 원단으로 품질이 우수하고 안전성이 검증되었습니다.",
+          "고객님의 침대 사이즈에 완벽하게 맞춰 제작되어 흘러내림 없이 깔끔합니다."
+        );
+      }
+
+      features.feature1 = expandedFeatures[0] || "";
+      features.feature2 = expandedFeatures[1] || "";
+      features.feature3 = expandedFeatures[2] || "";
+      features.feature4 = expandedFeatures[3] || "";
+    }
+
     return {
       title: titles[randomIndex],
       description: descriptions[randomIndex],
+      ...features,
       hashtags: hashtags[randomIndex],
       cta: ctas[randomIndex]
     };
@@ -159,9 +226,12 @@ const AssetStudioPage = () => {
     setTimeout(() => {
       setIsProcessing(false);
       setShowResults(true);
+      // Generate and set editable copy
+      const generatedCopy = generateCopy();
+      setEditableCopy(generatedCopy);
     }, 2000);
   };
-  
+
   const handleContentTypeSelect = (type: "detail" | "feed" | "reels" | "story") => {
     setContentType(type);
     setShowResults(false); // Reset results when changing content type
@@ -193,7 +263,7 @@ const AssetStudioPage = () => {
             상품 사진을 마케팅 자료로 자동 변환 후 업로드 예약까지 완료하세요.
           </p>
         </div>
-        
+
         {/* Content Type Selection */}
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">어떤 콘텐츠를 만드시겠어요?</h2>
@@ -205,9 +275,9 @@ const AssetStudioPage = () => {
             >
               <ShoppingBag className="h-8 w-8" />
               <span className="font-medium">상품 상세 이미지</span>
-              <span className="text-xs opacity-80">쇼핑몰용 상세페이지</span>
+              <span className="text-xs opacity-80">각종 쇼핑몰 업로드용 상세페이지</span>
             </Button>
-            
+
             <Button
               variant={contentType === "feed" ? "default" : "outline"}
               onClick={() => handleContentTypeSelect("feed")}
@@ -215,9 +285,9 @@ const AssetStudioPage = () => {
             >
               <Hash className="h-8 w-8" />
               <span className="font-medium">인스타 피드</span>
-              <span className="text-xs opacity-80">정방형 게시물</span>
+              <span className="text-xs opacity-80">인스타 피드에 올라갈 정방형 이미지</span>
             </Button>
-            
+
             <Button
               variant={contentType === "reels" ? "default" : "outline"}
               onClick={() => handleContentTypeSelect("reels")}
@@ -225,9 +295,9 @@ const AssetStudioPage = () => {
             >
               <Video className="h-8 w-8" />
               <span className="font-medium">인스타 릴스</span>
-              <span className="text-xs opacity-80">짧은 동영상</span>
+              <span className="text-xs opacity-80">인스타 업로드용 짧은 동영상</span>
             </Button>
-            
+
             <Button
               variant={contentType === "story" ? "default" : "outline"}
               onClick={() => handleContentTypeSelect("story")}
@@ -235,270 +305,645 @@ const AssetStudioPage = () => {
             >
               <Clock className="h-8 w-8" />
               <span className="font-medium">인스타 스토리</span>
-              <span className="text-xs opacity-80">24시간 한정</span>
+              <span className="text-xs opacity-80">24시간 동안만 유지되는 인스타 게시물</span>
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Panel - Upload & Settings */}
-          <div className="space-y-6">
-            {/* Image Upload */}
-            <Card className="card-soft">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center">
-                  <ImageIcon className="mr-2 h-6 w-6" />
-                  상품 사진 업로드
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!selectedImage ? (
-                  <label className="block border-2 border-dashed … text-center p-8 cursor-pointer hover:border-primary">
-                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <div className="space-y-2">
-                      <p className="text-lg font-medium">이미지를 선택해주세요</p>
-                      <p className="text-sm text-muted-foreground">
-                        JPG, PNG 파일 (최대 10MB)
-                      </p>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="sr-only"
-                    />
-                  </label>
-                ) : (
-                  <div className="space-y-4">
-                    <img
-                      src={selectedImage}
-                      alt="업로드된 상품"
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedImage(null)}
-                      className="w-full"
-                    >
-                      다른 이미지 선택
-                    </Button>
+        {/* Step Progress Indicator */}
+        {contentType && (
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-4">
+              {[1, 2, 3].map((step) => (
+                <div key={step} className="flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step === currentStep ? "bg-primary text-white" :
+                    step < currentStep ? "bg-success text-white" :
+                      "bg-muted text-muted-foreground"
+                    }`}>
+                    {step < currentStep ? "✓" : step}
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                  {step < 3 && (
+                    <div className={`w-12 h-1 mx-2 ${step < currentStep ? "bg-success" : "bg-muted"
+                      }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-2 text-sm text-muted-foreground">
+              {currentStep === 1 && "이미지 업로드 및 보정"}
+              {currentStep === 2 && "상품 정보 입력 및 문구 생성"}
+              {currentStep === 3 && "최종 상세 이미지 확인"}
+            </div>
+          </div>
+        )}
 
-            {/* Background Enhancement */}
-            {selectedImage && contentType && (
+        {/* Step 1: Image Upload and Processing */}
+        {currentStep === 1 && contentType && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left Panel - Upload & Settings */}
+            <div className="space-y-6">
+              {/* Image Upload */}
               <Card className="card-soft">
                 <CardHeader>
                   <CardTitle className="text-xl flex items-center">
-                    <Wand2 className="mr-2 h-6 w-6" />
-                    이미지 보정 - {
-                      contentType === "detail" ? "상품 상세용" :
-                      contentType === "feed" ? "인스타 피드용" :
-                      contentType === "reels" ? "릴스 썸네일용" :
-                      "스토리용"
-                    }
+                    <ImageIcon className="mr-2 h-6 w-6" />
+                    상품 사진 업로드
                   </CardTitle>
-                  <CardDescription>
-                    {contentType === "detail" && "고해상도 상세 이미지로 변환합니다"}
-                    {contentType === "feed" && "1:1 정방형 피드에 최적화합니다"}
-                    {contentType === "reels" && "9:16 세로형 릴스에 맞게 조정합니다"}
-                    {contentType === "story" && "스토리 전용 세로형으로 편집합니다"}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button
-                    className="w-full btn-large gradient-primary text-white"
-                    onClick={handleGenerate}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <>
-                        <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                        처리 중...
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="mr-2 h-5 w-5" />
-                        {contentType === "detail" ? "상세 이미지 생성" :
-                         contentType === "feed" ? "피드 이미지 생성" :
-                         contentType === "reels" ? "릴스 썸네일 생성" :
-                         "스토리 이미지 생성"}
-                      </>
-                    )}
-                  </Button>
-                  <p className="text-sm text-muted-foreground text-center">
-                    {contentType === "detail" && "상품 특징이 잘 보이도록 최적화합니다"}
-                    {contentType === "feed" && "인스타그램 피드에 눈에 띄도록 보정합니다"}
-                    {contentType === "reels" && "동영상 썸네일로 시선을 끌도록 편집합니다"}
-                    {contentType === "story" && "24시간 스토리에 최적화된 디자인을 적용합니다"}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Product Features */}
-            {selectedImage && (
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle className="text-xl">강조할 특징 선택</CardTitle>
-                  <CardDescription>
-                    선택하신 특징을 바탕으로 마케팅 문구를 자동 생성해드려요
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
-                    {productFeatures.map((feature) => (
-                      <div
-                        key={feature.id}
-                        className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedFeatures.includes(feature.id)
-                          ? "bg-primary/10 border-primary"
-                          : "bg-card border-border hover:border-primary/50"
-                          }`}
-                        onClick={() => handleFeatureToggle(feature.id)}
-                      >
-                        <Checkbox
-                          checked={selectedFeatures.includes(feature.id)}
-                          onChange={() => { }} // Handled by parent click
-                        />
-                        <div className="flex-1">
-                          <span className="text-sm font-medium">{feature.label}</span>
-                          {feature.popular && (
-                            <Badge variant="secondary" className="ml-2 text-xs">
-                              인기
-                            </Badge>
-                          )}
-                        </div>
+                  {!selectedImage ? (
+                    <label className="block border-2 border-dashed … text-center p-8 cursor-pointer hover:border-primary">
+                      <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                      <div className="space-y-2">
+                        <p className="text-lg font-medium">이미지를 선택해주세요</p>
+                        <p className="text-sm text-muted-foreground">
+                          JPG, PNG 파일 (최대 10MB)
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="sr-only"
+                      />
+                    </label>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="w-full h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                        <img
+                          src={selectedImage}
+                          alt="업로드된 상품"
+                          className="max-w-full max-h-full object-contain rounded-lg"
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() => setSelectedImage(null)}
+                        className="w-full"
+                      >
+                        다른 이미지 선택
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-            )}
-          </div>
 
-          {/* Right Panel - Results */}
-          <div className="space-y-6">
-            {showResults ? (
-              <>
-                {/* Before/After Comparison */}
+              {/* Background Enhancement */}
+              {selectedImage && contentType && (
                 <Card className="card-soft">
                   <CardHeader>
                     <CardTitle className="text-xl flex items-center">
-                      <CheckCircle2 className="mr-2 h-6 w-6 text-success" />
-                      {contentType === "detail" ? "상세 이미지" :
-                       contentType === "feed" ? "피드 이미지" :
-                       contentType === "reels" ? "릴스 썸네일" :
-                       "스토리 이미지"} 변환 완료!
+                      <Wand2 className="mr-2 h-6 w-6" />
+                      이미지 보정 - {
+                        contentType === "detail" ? "상품 상세용" :
+                          contentType === "feed" ? "인스타 피드용" :
+                            contentType === "reels" ? "릴스 썸네일용" :
+                              "스토리용"
+                      }
                     </CardTitle>
+                    <CardDescription>
+                      {contentType === "detail" && "고해상도 상세 이미지로 변환합니다"}
+                      {contentType === "feed" && "1:1 정방형 피드에 최적화합니다"}
+                      {contentType === "reels" && "9:16 세로형 릴스에 맞게 조정합니다"}
+                      {contentType === "story" && "스토리 전용 세로형으로 편집합니다"}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button
+                      className="w-full btn-large gradient-primary text-white"
+                      onClick={handleGenerate}
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? (
+                        <>
+                          <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                          처리 중...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="mr-2 h-5 w-5" />
+                          상품 사진 보정하기
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-sm text-muted-foreground text-center">
+                      {contentType === "detail" && "상품 특징이 잘 보이도록 최적화합니다"}
+                      {contentType === "feed" && "인스타그램 피드에 눈에 띄도록 보정합니다"}
+                      {contentType === "reels" && "동영상 썸네일로 시선을 끌도록 편집합니다"}
+                      {contentType === "story" && "24시간 스토리에 최적화된 디자인을 적용합니다"}
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+
+              {/* Product Features for Other Content Types */}
+              {selectedImage && contentType && contentType !== "detail" && (
+                <Card className="card-soft">
+                  <CardHeader>
+                    <CardTitle className="text-xl">강조할 특징 선택</CardTitle>
+                    <CardDescription>
+                      선택하신 특징을 바탕으로 마케팅 문구를 자동 생성해드려요
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-medium mb-2">원본</p>
-                        <img
-                          src={selectedImage!}
-                          alt="원본"
-                          className="w-full h-32 object-cover rounded border"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium mb-2">
-                          {contentType === "detail" ? "상세 페이지용" :
-                           contentType === "feed" ? "1:1 피드용" :
-                           contentType === "reels" ? "9:16 릴스용" :
-                           "9:16 스토리용"}
-                        </p>
-                        <div className={`w-full ${
-                          contentType === "detail" ? "h-48" :
-                          contentType === "feed" ? "h-32" :
-                          "h-48"
-                        } bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded border flex items-center justify-center relative overflow-hidden`}>
-                          <span className="text-sm font-medium">✨ {
-                            contentType === "detail" ? "고화질 변환" :
-                            contentType === "feed" ? "정방형 최적화" :
-                            contentType === "reels" ? "세로형 최적화" :
-                            "스토리 최적화"
-                          }</span>
-                          {contentType === "story" && (
-                            <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
-                              24시간
-                            </div>
-                          )}
+                    <div className="grid grid-cols-2 gap-3">
+                      {productFeatures.map((feature) => (
+                        <div
+                          key={feature.id}
+                          className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedFeatures.includes(feature.id)
+                            ? "bg-primary/10 border-primary"
+                            : "bg-card border-border hover:border-primary/50"
+                            }`}
+                          onClick={() => handleFeatureToggle(feature.id)}
+                        >
+                          <Checkbox
+                            checked={selectedFeatures.includes(feature.id)}
+                            onChange={() => { }} // Handled by parent click
+                          />
+                          <div className="flex-1">
+                            <span className="text-sm font-medium">{feature.label}</span>
+                            {feature.popular && (
+                              <Badge variant="secondary" className="ml-2 text-xs">
+                                인기
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
+              )}
+            </div>
 
-                {/* Auto-generated Copy */}
+            {/* Right Panel - Results */}
+            <div className="space-y-6">
+              {showResults ? (
+                <>
+                  {/* Before/After Comparison */}
+                  <Card className="card-soft">
+                    <CardHeader>
+                      <CardTitle className="text-xl flex items-center">
+                        <CheckCircle2 className="mr-2 h-6 w-6 text-success" />
+                        {contentType === "detail" ? "상세 이미지" :
+                          contentType === "feed" ? "피드 이미지" :
+                            contentType === "reels" ? "릴스 썸네일" :
+                              "스토리 이미지"} 변환 완료!
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-center">
+                        <div className="w-full max-w-sm">
+                          <p className="text-sm font-medium mb-2 text-center">
+                            {contentType === "detail" ? "상세 페이지에 들어갈 이미지입니다." :
+                              contentType === "feed" ? "1:1 피드용" :
+                                contentType === "reels" ? "9:16 릴스용" :
+                                  "9:16 스토리용"}
+                          </p>
+                          <div className={`w-full h-64 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded border flex items-center justify-center relative overflow-hidden`}>
+                            <span className="text-sm font-medium">✨ {
+                              contentType === "detail" ? "고화질 변환" :
+                                contentType === "feed" ? "정방형 최적화" :
+                                  contentType === "reels" ? "세로형 최적화" :
+                                    "스토리 최적화"
+                            }</span>
+                            {contentType === "story" && (
+                              <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
+                                24시간
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Step 1 Navigation */}
+                  {contentType === "detail" && (
+                    <div className="mt-6 text-center">
+                      <Button
+                        onClick={() => setCurrentStep(2)}
+                        className="btn-large gradient-primary text-white"
+                      >
+                        다음 단계: 상품 정보 입력
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </div>
+                  )}
+
+                </>
+              ) : (
+                <Card className="card-soft h-64 flex items-center justify-center">
+                  <div className="text-center space-y-4">
+                    <Eye className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <div>
+                      <p className="text-lg font-medium">결과 미리보기</p>
+                      <p className="text-sm text-muted-foreground">
+                        이미지를 업로드하고 보정을 실행하면<br />
+                        결과를 여기에서 확인할 수 있어요
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Product Info and Copy Generation */}
+        {currentStep === 2 && contentType === "detail" && (
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Panel - Product Info Input */}
+              <div className="space-y-6">
                 <Card className="card-soft">
                   <CardHeader>
-                    <CardTitle className="text-xl">자동 생성된 마케팅 문구</CardTitle>
+                    <CardTitle className="text-xl">상품 정보 입력</CardTitle>
+                    <CardDescription>
+                      상품명과 강조하고 싶은 키워드를 입력해주세요
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">제목</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-base font-medium">{mockGeneratedCopy.title}</p>
-                      </div>
+                      <label className="text-sm font-medium text-foreground">상품 이름</label>
+                      <input
+                        type="text"
+                        value={productName}
+                        onChange={(e) => setProductName(e.target.value)}
+                        placeholder="예: 지속쿨링 냉감 이불"
+                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-muted-foreground">설명</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm leading-relaxed">{mockGeneratedCopy.description}</p>
+                      <label className="text-sm font-medium text-foreground">강조 키워드 (최대 3개)</label>
+                      <div className="space-y-2 mt-1">
+                        {keywords.map((keyword, index) => (
+                          <input
+                            key={index}
+                            type="text"
+                            value={keyword}
+                            onChange={(e) => {
+                              const newKeywords = [...keywords];
+                              newKeywords[index] = e.target.value;
+                              setKeywords(newKeywords);
+                            }}
+                            placeholder={`키워드 ${index + 1} (예: ${index === 0 ? "프리미엄 냉감 소재" :
+                              index === 1 ? "국내산 원단" :
+                                "맞춤 제작"
+                              })`}
+                            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ))}
                       </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        입력한 키워드를 바탕으로 상세 설명이 자동 생성됩니다
+                      </p>
                     </div>
 
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">해시태그</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm text-primary">{mockGeneratedCopy.hashtags}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">행동 유도</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm font-medium">{mockGeneratedCopy.cta}</p>
-                      </div>
-                    </div>
+                    <Button
+                      onClick={() => setShowCopyGeneration(true)}
+                      className="w-full btn-large gradient-primary text-white"
+                      disabled={!productName.trim()}
+                    >
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      마케팅 문구 생성하기
+                    </Button>
                   </CardContent>
                 </Card>
+              </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-4">
-                  <Button variant="outline" className="flex-1 btn-large">
-                    <Download className="mr-2 h-5 w-5" />
-                    다운로드
-                  </Button>
-                  <Button
-                    onClick={handleSaveToCalendar}
-                    className="flex-1 btn-large gradient-primary text-white"
-                  >
-                    <Calendar className="mr-2 h-5 w-5" />
-                    캘린더에 저장
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <Card className="card-soft h-64 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <Eye className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <div>
-                    <p className="text-lg font-medium">결과 미리보기</p>
-                    <p className="text-sm text-muted-foreground">
-                      이미지를 업로드하고 보정을 실행하면<br />
-                      결과를 여기에서 확인할 수 있어요
+              {/* Right Panel - Generated Copy Section */}
+              <div className="space-y-6">
+                {showCopyGeneration && (
+                  <Card className="card-soft">
+                    <CardHeader>
+                      <CardTitle className="text-xl flex items-center justify-between">
+                        <span>자동 생성된 마케팅 문구</span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsEditing(!isEditing)}
+                        >
+                          <Edit2 className="mr-2 h-4 w-4" />
+                          {isEditing ? "저장" : "수정"}
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* Same as existing editable copy fields but generate based on productName and keywords */}
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">제목</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.title || `✨ ${productName || "상품"} 상세 정보`}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, title: e.target.value } : {
+                              title: e.target.value,
+                              description: "",
+                              feature1: "",
+                              feature2: "",
+                              feature3: "",
+                              feature4: "",
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-base font-medium">{editableCopy?.title || `✨ ${productName || "상품"} 상세 정보`}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">설명</label>
+                        {isEditing ? (
+                          <textarea
+                            value={editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, description: e.target.value } : {
+                              title: "",
+                              description: e.target.value,
+                              feature1: "",
+                              feature2: "",
+                              feature3: "",
+                              feature4: "",
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            rows={2}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm leading-relaxed">{editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Feature 1</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.feature1 || (keywords[0] || "고품질 소재 사용")}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, feature1: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: e.target.value,
+                              feature2: "",
+                              feature3: "",
+                              feature4: "",
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm">{editableCopy?.feature1 || (keywords[0] || "고품질 소재 사용")}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Feature 2</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.feature2 || (keywords[1] || "우수한 내구성")}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, feature2: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: "",
+                              feature2: e.target.value,
+                              feature3: "",
+                              feature4: "",
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm">{editableCopy?.feature2 || (keywords[1] || "우수한 내구성")}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Feature 3</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.feature3 || (keywords[2] || "완벽한 핏")}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, feature3: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: "",
+                              feature2: "",
+                              feature3: e.target.value,
+                              feature4: "",
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm">{editableCopy?.feature3 || (keywords[2] || "완벽한 핏")}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">Feature 4 (선택)</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.feature4 || ""}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, feature4: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: "",
+                              feature2: "",
+                              feature3: "",
+                              feature4: e.target.value,
+                              hashtags: "",
+                              cta: ""
+                            })}
+                            placeholder="선택사항"
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm text-muted-foreground">{editableCopy?.feature4 || "(선택사항)"}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">해시태그</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #프리미엄 #추천`}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, hashtags: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: "",
+                              feature2: "",
+                              feature3: "",
+                              feature4: "",
+                              hashtags: e.target.value,
+                              cta: ""
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm text-primary">{editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #프리미엄 #추천`}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="text-sm font-medium text-muted-foreground">CTA 문구</label>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}
+                            onChange={(e) => setEditableCopy(prev => prev ? { ...prev, cta: e.target.value } : {
+                              title: "",
+                              description: "",
+                              feature1: "",
+                              feature2: "",
+                              feature3: "",
+                              feature4: "",
+                              hashtags: "",
+                              cta: e.target.value
+                            })}
+                            className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        ) : (
+                          <div className="mt-1 p-3 bg-muted rounded border">
+                            <p className="text-sm font-medium">{editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}</p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+
+              {/* Navigation Buttons */}
+              <div className="col-span-1 lg:col-span-2 flex justify-between pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentStep(1)}
+                  className="btn-large"
+                >
+                  이전 단계
+                </Button>
+                <Button
+                  onClick={() => setCurrentStep(3)}
+                  className="btn-large gradient-primary text-white"
+                  disabled={!productName.trim()}
+                >
+                  다음 단계: 최종 이미지 생성
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Final Detail Image */}
+        {currentStep === 3 && contentType === "detail" && (
+          <div className="max-w-2xl mx-auto">
+            <Card className="card-soft">
+              <CardHeader>
+                <CardTitle className="text-xl flex items-center">
+                  <CheckCircle2 className="mr-2 h-6 w-6 text-success" />
+                  최종 상세 이미지
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg p-6 bg-white max-h-[600px] overflow-y-auto">
+                  {/* 상품 이미지 */}
+                  <div className="mb-6">
+                    <img
+                      src={selectedImage!}
+                      alt="상품"
+                      className="w-full h-64 object-contain rounded-lg"
+                    />
+                  </div>
+
+                  {/* 제목 */}
+                  <h2 className="text-2xl font-bold mb-4 text-center">
+                    {editableCopy?.title || `✨ ${productName || "상품"} 상세 정보`}
+                  </h2>
+
+                  {/* 설명 */}
+                  <p className="text-gray-600 mb-6 text-center">
+                    품질과 디자인을 모두 갖춘 프리미엄 제품입니다
+                  </p>
+
+                  {/* Features */}
+                  <div className="space-y-4 mb-6">
+                    {keywords.filter(k => k.trim()).map((keyword, index) => (
+                      <div key={index} className="flex items-start">
+                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                          <span className="text-primary font-bold">{index + 1}</span>
+                        </div>
+                        <p className="text-sm">{expandKeyword(keyword)}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <div className="bg-primary text-white p-4 rounded-lg text-center">
+                    <p className="font-bold text-lg">
+                      📞 지금 주문하고 만족스러운 경험을 해보세요!
+                    </p>
+                  </div>
+
+                  {/* 해시태그 */}
+                  <div className="mt-4 text-center">
+                    <p className="text-sm text-primary">
+                      #{productName?.replace(/\s/g, '') || "프리미엄제품"} #품질보장 #고객만족
                     </p>
                   </div>
                 </div>
-              </Card>
-            )}
+
+                <div className="flex justify-between mt-6">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentStep(2)}
+                    className="btn-large"
+                  >
+                    이전 단계
+                  </Button>
+                  <div className="flex space-x-4">
+                    <Button variant="outline" className="btn-large">
+                      <Download className="mr-2 h-5 w-5" />
+                      다운로드
+                    </Button>
+                    <Button
+                      onClick={handleSaveToCalendar}
+                      className="btn-large gradient-primary text-white"
+                    >
+                      <Calendar className="mr-2 h-5 w-5" />
+                      업로드 예약
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
