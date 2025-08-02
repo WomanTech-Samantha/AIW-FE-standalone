@@ -237,7 +237,7 @@ const CalendarPage = () => {
                   <div className="text-center py-8">
                     <Plus className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                     <p className="text-sm text-muted-foreground">
-                      에셋 스튜디오에서<br />
+                      마케팅 에셋 생성하기에서<br />
                       콘텐츠를 생성해보세요
                     </p>
                     <Button 

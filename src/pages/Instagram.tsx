@@ -34,7 +34,7 @@ function InstagramPage() {
             className="btn-large"
           >
             <ImageIcon className="mr-2 h-5 w-5" />
-            에셋 스튜디오로
+            마케팅 에셋 생성하기로
           </Button>
         </div>
 
