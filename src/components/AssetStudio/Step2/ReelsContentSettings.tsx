@@ -89,7 +89,7 @@ export const ReelsContentSettings = ({
                 disabled={!productName.trim()}
               >
                 <Sparkles className="mr-2 h-5 w-5" />
-                릴스 문구 생성하기
+                릴스 제목 및 해시태그 생성하기
               </Button>
             </CardContent>
           </Card>
@@ -101,7 +101,7 @@ export const ReelsContentSettings = ({
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center justify-between">
-                  <span>자동 생성된 릴스 문구</span>
+                  <span>자동 생성된 릴스 제목 및 해시태그</span>
                   <Button
                     variant="outline"
                     size="sm"
@@ -114,12 +114,12 @@ export const ReelsContentSettings = ({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">제목</label>
+                  <label className="text-sm font-medium text-muted-foreground">릴스 제목</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editableCopy?.title || `🔥 ${productName || "상품"} 릴스용 영상`}
-                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, title: e.target.value } : {
+                      onChange={(e) => setEditableCopy((prev: EditableCopy | null) => prev ? { ...prev, title: e.target.value } : {
                         title: e.target.value,
                         description: "",
                         feature1: "",
@@ -130,6 +130,7 @@ export const ReelsContentSettings = ({
                         cta: ""
                       })}
                       className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="릴스 제목을 입력하세요..."
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">
@@ -139,70 +140,12 @@ export const ReelsContentSettings = ({
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">설명</label>
-                  {isEditing ? (
-                    <textarea
-                      value={editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}
-                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, description: e.target.value } : {
-                        title: "",
-                        description: e.target.value,
-                        feature1: "",
-                        feature2: "",
-                        feature3: "",
-                        feature4: "",
-                        hashtags: "",
-                        cta: ""
-                      })}
-                      rows={2}
-                      className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  ) : (
-                    <div className="mt-1 p-3 bg-muted rounded border">
-                      <p className="text-sm leading-relaxed">{editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}</p>
-                    </div>
-                  )}
-                </div>
-
-                {["feature1", "feature2", "feature3", "feature4"].map((featureKey, index) => (
-                  <div key={featureKey}>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Feature {index + 1} {index === 3 ? "(선택)" : ""}
-                    </label>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        value={editableCopy?.[featureKey as keyof EditableCopy] || (index < 3 ? keywords[index] || "" : "")}
-                        onChange={(e) => setEditableCopy(prev => prev ? { ...prev, [featureKey]: e.target.value } : {
-                          title: "",
-                          description: "",
-                          feature1: "",
-                          feature2: "",
-                          feature3: "",
-                          feature4: "",
-                          hashtags: "",
-                          cta: "",
-                          [featureKey]: e.target.value
-                        })}
-                        placeholder={index === 3 ? "선택사항" : ""}
-                        className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                    ) : (
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className={`text-sm ${index === 3 && !editableCopy?.[featureKey as keyof EditableCopy] ? "text-muted-foreground" : ""}`}>
-                          {editableCopy?.[featureKey as keyof EditableCopy] || (index < 3 ? keywords[index] || `기본 특징 ${index + 1}` : "(선택사항)")}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                <div>
                   <label className="text-sm font-medium text-muted-foreground">해시태그</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #릴스 #인스타그램 #트렌드`}
-                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, hashtags: e.target.value } : {
+                      onChange={(e) => setEditableCopy((prev: EditableCopy | null) => prev ? { ...prev, hashtags: e.target.value } : {
                         title: "",
                         description: "",
                         feature1: "",
@@ -213,35 +156,11 @@ export const ReelsContentSettings = ({
                         cta: ""
                       })}
                       className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="#해시태그를 입력하세요"
                     />
                   ) : (
                     <div className="mt-1 p-3 bg-muted rounded border">
                       <p className="text-sm text-primary">{editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #릴스 #인스타그램 #트렌드`}</p>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">CTA 문구</label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}
-                      onChange={(e) => setEditableCopy(prev => prev ? { ...prev, cta: e.target.value } : {
-                        title: "",
-                        description: "",
-                        feature1: "",
-                        feature2: "",
-                        feature3: "",
-                        feature4: "",
-                        hashtags: "",
-                        cta: e.target.value
-                      })}
-                      className="w-full mt-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  ) : (
-                    <div className="mt-1 p-3 bg-muted rounded border">
-                      <p className="text-sm font-medium">{editableCopy?.cta || "지금 바로 구매하고 특별한 혜택 받아보세요!"}</p>
                     </div>
                   )}
                 </div>

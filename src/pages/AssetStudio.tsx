@@ -44,6 +44,8 @@ const AssetStudioPage = () => {
     setEditableCopy,
     selectedFeatures,
     productFeatures,
+    storyText,
+    setStoryText,
     
     // Handlers
     handleContentTypeSelect,
@@ -138,7 +140,7 @@ const AssetStudioPage = () => {
       case "reels":
         return <ReelsFinalPreview {...commonProps} />;
       case "story":
-        return <StoryFinalPreview {...commonProps} />;
+        return <StoryFinalPreview {...commonProps} storyText={storyText} />;
       default:
         return null;
     }
@@ -201,18 +203,18 @@ const AssetStudioPage = () => {
         {contentType && (
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-4">
-              {[1, 2, 3].map((step) => (
+              {(contentType === "story" ? [1, 2] : [1, 2, 3]).map((step) => (
                 <div key={step} className="flex items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step === currentStep ? "bg-primary text-white" :
-                    step < currentStep ? "bg-success text-white" :
+                    (contentType === "story" ? step === (currentStep === 3 ? 2 : currentStep) : step === currentStep) ? "bg-primary text-white" :
+                    (contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "bg-success text-white" :
                     "bg-muted text-muted-foreground"
                   }`}>
-                    {step < currentStep ? "✓" : step}
+                    {(contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "✓" : step}
                   </div>
-                  {step < 3 && (
+                  {step < (contentType === "story" ? 2 : 3) && (
                     <div className={`w-12 h-1 mx-2 ${
-                      step < currentStep ? "bg-success" : "bg-muted"
+                      (contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "bg-success" : "bg-muted"
                     }`} />
                   )}
                 </div>
@@ -220,8 +222,10 @@ const AssetStudioPage = () => {
             </div>
             <div className="text-center mt-2 text-sm text-muted-foreground">
               {currentStep === 1 && "이미지 업로드 및 보정"}
-              {currentStep === 2 && "상품 정보 입력 및 문구 생성"}
-              {currentStep === 3 && "최종 상세 이미지 확인"}
+              {currentStep === 2 && contentType !== "story" && "상품 정보 입력 및 문구 생성"}
+              {currentStep === 2 && contentType === "story" && "스토리 업로드"}
+              {currentStep === 3 && contentType !== "story" && "최종 상세 이미지 확인"}
+              {currentStep === 3 && contentType === "story" && "스토리 업로드"}
             </div>
           </div>
         )}
@@ -233,14 +237,16 @@ const AssetStudioPage = () => {
             selectedImage={selectedImage}
             isProcessing={isProcessing}
             showResults={showResults}
+            storyText={storyText}
+            setStoryText={setStoryText}
             onImageUpload={handleImageUpload}
             onImageRemove={() => setSelectedImage(null)}
             onGenerate={handleGenerate}
-            onNextStep={() => setCurrentStep(2)}
+            onNextStep={() => setCurrentStep(contentType === "story" ? 3 : 2)}
           />
         )}
 
-        {currentStep === 2 && contentType && (
+        {currentStep === 2 && contentType && contentType !== "story" && (
           renderStep2Component()
         )}
 

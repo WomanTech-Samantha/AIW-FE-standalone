@@ -17,6 +17,8 @@ interface Step1ImageUploadProps {
   selectedImage: string | null;
   isProcessing: boolean;
   showResults: boolean;
+  storyText?: string;
+  setStoryText?: (text: string) => void;
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onImageRemove: () => void;
   onGenerate: () => void;
@@ -28,6 +30,8 @@ export const Step1ImageUpload = ({
   selectedImage,
   isProcessing,
   showResults,
+  storyText,
+  setStoryText,
   onImageUpload,
   onImageRemove,
   onGenerate,
@@ -77,7 +81,7 @@ export const Step1ImageUpload = ({
           resultTitle: "스토리 이미지",
           resultDescription: "스토리용 이미지입니다.",
           resultIcon: "스토리 최적화",
-          nextStepText: "스토리 콘텐츠 설정"
+          nextStepText: "스토리 업로드"
         };
       default:
         return {
@@ -214,6 +218,27 @@ export const Step1ImageUpload = ({
                 </div>
               </CardContent>
             </Card>
+
+            {/* Story Text Input */}
+            {contentType === "story" && (
+              <Card className="card-soft">
+                <CardHeader>
+                  <CardTitle className="text-lg">스토리 문구</CardTitle>
+                  <CardDescription>
+                    스토리에 올릴 문구를 입력해주세요
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <textarea
+                    value={storyText || ""}
+                    onChange={(e) => setStoryText?.(e.target.value)}
+                    placeholder="스토리에 올릴 문구를 입력하세요..."
+                    rows={3}
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Step 1 Navigation */}
             <div className="mt-6 text-center">

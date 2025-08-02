@@ -7,6 +7,7 @@ interface StoryFinalPreviewProps {
   selectedImage: string;
   productName: string;
   editableCopy: EditableCopy | null;
+  storyText?: string;
   onSaveToCalendar: () => void;
 }
 
@@ -14,6 +15,7 @@ export const StoryFinalPreview = ({
   selectedImage,
   productName,
   editableCopy,
+  storyText,
   onSaveToCalendar
 }: StoryFinalPreviewProps) => {
   return (
@@ -44,7 +46,7 @@ export const StoryFinalPreview = ({
             {/* 메인 텍스트 */}
             <div className="text-center mb-6">
               <p className="text-lg leading-relaxed font-bold">
-                {editableCopy?.description || "⏰ 24시간만! 놓치면 후회하는 특별 기회"}
+                {storyText || "⏰ 24시간만! 놓치면 후회하는 특별 기회"}
               </p>
             </div>
             

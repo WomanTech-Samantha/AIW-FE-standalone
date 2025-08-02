@@ -33,6 +33,7 @@ export const useAssetStudioState = () => {
   const [showCopyGeneration, setShowCopyGeneration] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editableCopy, setEditableCopy] = useState<EditableCopy | null>(null);
+  const [storyText, setStoryText] = useState("");
   
   // Product features for non-detail types
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
@@ -152,6 +153,8 @@ export const useAssetStudioState = () => {
     setEditableCopy,
     selectedFeatures,
     productFeatures,
+    storyText,
+    setStoryText,
     
     // Handlers
     handleContentTypeSelect,
