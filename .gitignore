@@ -27,3 +27,7 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Anthropic Claude 로컬 설정
+.claude/
+.claude

@@ -17,7 +17,7 @@ export default function TopNavBar() {
   const [isInstagramConnected, setIsInstagramConnected] = useState(false);
   const [hasOnlineStore, setHasOnlineStore] = useState(false);
 
-  const isPlaygroundActive = pathname.startsWith("/studio") || pathname === "/instagram";
+  const isContentWorkspaceActive = pathname.startsWith("/studio") || pathname === "/instagram";
   const isStoreActive = pathname.startsWith("/store");
   
   useEffect(() => {
@@ -40,13 +40,13 @@ export default function TopNavBar() {
               <NavLink
                 to="/studio"
                 className={() =>
-                  isPlaygroundActive
+                  isContentWorkspaceActive
                     ? "px-3 sm:px-6 py-2 rounded-full bg-background font-semibold shadow-sm transition-all text-sm sm:text-base"
                     : "px-3 sm:px-6 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-background/50 transition-all text-sm sm:text-base"
                 }
               >
-                <span className="block sm:hidden">Play</span>
-                <span className="hidden sm:block">Playground</span>
+                <span className="block sm:hidden">작업</span>
+                <span className="hidden sm:block">콘텐츠 작업공간</span>
               </NavLink>
               <NavLink
                 to="/store"

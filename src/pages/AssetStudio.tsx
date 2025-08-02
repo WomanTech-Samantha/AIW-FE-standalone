@@ -1,120 +1,149 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-import {
-  Upload,
-  Wand2,
-  Download,
-  Eye,
-  Calendar,
-  Sparkles,
-  CheckCircle2,
-  ArrowRight,
-  ImageIcon,
-  Zap
+import { 
+  ImageIcon, 
+  Hash, 
+  Video, 
+  Clock,
+  ArrowLeft 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+// Custom hooks and components
+import { useAssetStudioState } from "@/hooks/useAssetStudioState";
+import { Step1ImageUpload } from "@/components/AssetStudio/Step1ImageUpload";
+import { DetailContentSettings } from "@/components/AssetStudio/Step2/DetailContentSettings";
+import { FeedContentSettings } from "@/components/AssetStudio/Step2/FeedContentSettings";
+import { ReelsContentSettings } from "@/components/AssetStudio/Step2/ReelsContentSettings";
+import { StoryContentSettings } from "@/components/AssetStudio/Step2/StoryContentSettings";
+import { DetailFinalPreview } from "@/components/AssetStudio/Step3/DetailFinalPreview";
+import { FeedFinalPreview } from "@/components/AssetStudio/Step3/FeedFinalPreview";
+import { ReelsFinalPreview } from "@/components/AssetStudio/Step3/ReelsFinalPreview";
+import { StoryFinalPreview } from "@/components/AssetStudio/Step3/StoryFinalPreview";
+
 const AssetStudioPage = () => {
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const {
+    // State
+    currentStep,
+    setCurrentStep,
+    contentType,
+    selectedImage,
+    setSelectedImage,
+    isProcessing,
+    showResults,
+    productName,
+    setProductName,
+    keywords,
+    setKeywords,
+    showCopyGeneration,
+    setShowCopyGeneration,
+    isEditing,
+    setIsEditing,
+    editableCopy,
+    setEditableCopy,
+    selectedFeatures,
+    productFeatures,
+    storyText,
+    setStoryText,
+    
+    // Handlers
+    handleContentTypeSelect,
+    handleImageUpload,
+    handleGenerate,
+    handleFeatureToggle,
+    handleSaveToCalendar,
+    expandKeyword
+  } = useAssetStudioState();
 
-  // Sample product features for bedding/curtain business
-  const productFeatures = [
-    { id: "summer_cool", label: "여름용 냉감", popular: true },
-    { id: "custom_size", label: "사이즈 맞춤 제작", popular: true },
-    { id: "antibacterial", label: "항균 처리" },
-    { id: "hypoallergenic", label: "알레르기 방지" },
-    { id: "easy_wash", label: "세탁 간편" },
-    { id: "eco_friendly", label: "친환경 소재" },
-    { id: "fire_resistant", label: "난연 처리" },
-    { id: "blackout", label: "암막 기능" }
+  // Content type configuration
+  const contentTypes = [
+    {
+      id: "detail" as const,
+      icon: <ImageIcon className="h-8 w-8" />,
+      title: "상품 상세 이미지",
+      description: "상품의 세부 정보를 담은 상세 페이지용 이미지"
+    },
+    {
+      id: "feed" as const,
+      icon: <Hash className="h-8 w-8" />,
+      title: "인스타 피드",
+      description: "인스타 피드에 올라갈 정방형 이미지"
+    },
+    {
+      id: "reels" as const,
+      icon: <Video className="h-8 w-8" />,
+      title: "인스타 릴스",
+      description: "인스타 업로드용 짧은 동영상"
+    },
+    {
+      id: "story" as const,
+      icon: <Clock className="h-8 w-8" />,
+      title: "인스타 스토리",
+      description: "24시간 동안만 유지되는 인스타 게시물"
+    }
   ];
 
-  // Mock auto-generated copy based on selected features
-  const generateCopy = () => {
-    const titles = [
-      "시원한 여름밤을 책임지는 냉감 이불 🧊",
-      "우리 집 딱 맞는 사이즈로 맞춤 제작 ✂️",
-      "건강한 잠자리, 항균 처리된 프리미엄 침구 🛡️"
-    ];
-
-    const descriptions = [
-      "더운 여름밤도 시원하게! 특수 냉감 원단으로 만든 이불로 숙면을 경험해보세요. 항균 처리까지 완료되어 위생적이고 안전해요.",
-      "일반 사이즈가 맞지 않나요? 고객님의 침대에 딱 맞는 사이즈로 맞춤 제작해드립니다. 20년 경력의 숙련된 장인이 직접 제작해요.",
-      "매일 사용하는 침구, 깨끗하고 안전해야죠. 항균 처리된 원단으로 세균 걱정 없이 편안한 잠자리를 만들어드려요."
-    ];
-
-    const hashtags = [
-      "#냉감이불맛집 #여름침구 #시원한이불 #지숙커튼침구",
-      "#맞춤제작 #사이즈주문제작 #침구맞춤 #커튼맞춤",
-      "#항균침구 #건강한잠자리 #프리미엄침구 #안전한침구"
-    ];
-
-    const ctas = [
-      "📞 지금 주문하고 시원한 여름 보내세요!",
-      "💬 사이즈 상담 받아보세요 (무료)",
-      "🛒 건강한 잠자리, 지금 시작하세요!"
-    ];
-
-    const randomIndex = Math.floor(Math.random() * titles.length);
-    return {
-      title: titles[randomIndex],
-      description: descriptions[randomIndex],
-      hashtags: hashtags[randomIndex],
-      cta: ctas[randomIndex]
+  // Step 2 component mapping
+  const renderStep2Component = () => {
+    const commonProps = {
+      productName,
+      setProductName,
+      keywords,
+      setKeywords,
+      showCopyGeneration,
+      setShowCopyGeneration,
+      isEditing,
+      setIsEditing,
+      editableCopy,
+      setEditableCopy,
+      onPreviousStep: () => setCurrentStep(1),
+      onNextStep: () => setCurrentStep(3)
     };
-  };
 
-  const mockGeneratedCopy = generateCopy();
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    switch (contentType) {
+      case "detail":
+        return <DetailContentSettings {...commonProps} />;
+      case "feed":
+        return <FeedContentSettings {...commonProps} />;
+      case "reels":
+        return <ReelsContentSettings {...commonProps} />;
+      case "story":
+        return <StoryContentSettings {...commonProps} />;
+      default:
+        return null;
     }
   };
 
-  const handleFeatureToggle = (featureId: string) => {
-    setSelectedFeatures(prev =>
-      prev.includes(featureId)
-        ? prev.filter(id => id !== featureId)
-        : [...prev, featureId]
-    );
-  };
+  // Step 3 component mapping
+  const renderStep3Component = () => {
+    if (!selectedImage) return null;
 
-  const handleGenerate = () => {
-    setIsProcessing(true);
-    // Simulate processing time
-    setTimeout(() => {
-      setIsProcessing(false);
-      setShowResults(true);
-    }, 2000);
-  };
-
-  const handleSaveToCalendar = () => {
-    // Save generated content to localStorage
-    const generatedContent = {
-      id: Date.now(),
-      image: selectedImage,
-      copy: mockGeneratedCopy,
-      features: selectedFeatures,
-      createdAt: new Date().toISOString()
+    const commonProps = {
+      selectedImage,
+      productName,
+      editableCopy,
+      onSaveToCalendar: handleSaveToCalendar
     };
 
-    const existingContent = JSON.parse(localStorage.getItem('generatedContent') || '[]');
-    localStorage.setItem('generatedContent', JSON.stringify([...existingContent, generatedContent]));
-
-    navigate('/calendar');
+    switch (contentType) {
+      case "detail":
+        return (
+          <DetailFinalPreview 
+            {...commonProps}
+            keywords={keywords}
+            expandKeyword={expandKeyword}
+          />
+        );
+      case "feed":
+        return <FeedFinalPreview {...commonProps} />;
+      case "reels":
+        return <ReelsFinalPreview {...commonProps} />;
+      case "story":
+        return <StoryFinalPreview {...commonProps} storyText={storyText} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -123,241 +152,107 @@ const AssetStudioPage = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">에셋 스튜디오</h1>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              className="mb-4 text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              뒤로 가기
+            </Button>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">마케팅 에셋 생성하기</h1>
             <p className="text-lg text-muted-foreground">
-              상품 사진을 마케팅 자료로 자동 변환 후 업로드 예약까지 완료하세요.
+              AI가 상품 사진을 마케팅 자료로 자동 변환해드려요
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/instagram')}
-            className="btn-large"
-          >
-            <Calendar className="mr-2 h-5 w-5" />
-            인스타 직접 업로드
-          </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Panel - Upload & Settings */}
-          <div className="space-y-6">
-            {/* Image Upload */}
-            <Card className="card-soft">
-              <CardHeader>
-                <CardTitle className="text-xl flex items-center">
-                  <ImageIcon className="mr-2 h-6 w-6" />
-                  상품 사진 업로드
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!selectedImage ? (
-                  <label className="block border-2 border-dashed … text-center p-8 cursor-pointer hover:border-primary">
-                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <div className="space-y-2">
-                      <p className="text-lg font-medium">이미지를 선택해주세요</p>
-                      <p className="text-sm text-muted-foreground">
-                        JPG, PNG 파일 (최대 10MB)
-                      </p>
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="sr-only"
-                    />
-                  </label>
-                ) : (
-                  <div className="space-y-4">
-                    <img
-                      src={selectedImage}
-                      alt="업로드된 상품"
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedImage(null)}
-                      className="w-full"
-                    >
-                      다른 이미지 선택
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Background Enhancement */}
-            {selectedImage && (
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle className="text-xl flex items-center">
-                    <Wand2 className="mr-2 h-6 w-6" />
-                    이미지 보정
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
+        {/* Content Type Selection */}
+        <div className="mb-8">
+          <Card className="card-soft">
+            <CardHeader>
+              <CardTitle className="text-2xl">어떤 종류의 콘텐츠를 만드시겠어요?</CardTitle>
+              <CardDescription>
+                콘텐츠 종류에 따라 최적화된 이미지와 문구를 생성해드려요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {contentTypes.map((type) => (
                   <Button
-                    className="w-full btn-large gradient-primary text-white"
-                    onClick={handleGenerate}
-                    disabled={isProcessing}
+                    key={type.id}
+                    variant={contentType === type.id ? "default" : "outline"}
+                    onClick={() => handleContentTypeSelect(type.id)}
+                    className={`h-auto flex-col p-4 space-y-2 ${
+                      contentType === type.id ? "gradient-primary text-white" : ""
+                    }`}
                   >
-                    {isProcessing ? (
-                      <>
-                        <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                        처리 중...
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="mr-2 h-5 w-5" />
-                        배경 정리 & 보정 실행
-                      </>
-                    )}
+                    <div className="flex flex-col items-center space-y-1">
+                      {type.icon}
+                      <span className="font-bold text-lg">{type.title}</span>
+                    </div>
+                    <span className="text-xs opacity-80">{type.description}</span>
                   </Button>
-                  <p className="text-sm text-muted-foreground text-center">
-                    AI가 자동으로 배경을 정리하고 이미지를 보정해드려요
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Product Features */}
-            {selectedImage && (
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle className="text-xl">강조할 특징 선택</CardTitle>
-                  <CardDescription>
-                    선택하신 특징을 바탕으로 마케팅 문구를 자동 생성해드려요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
-                    {productFeatures.map((feature) => (
-                      <div
-                        key={feature.id}
-                        className={`flex items-center space-x-3 p-3 rounded-lg border cursor-pointer transition-all ${selectedFeatures.includes(feature.id)
-                          ? "bg-primary/10 border-primary"
-                          : "bg-card border-border hover:border-primary/50"
-                          }`}
-                        onClick={() => handleFeatureToggle(feature.id)}
-                      >
-                        <Checkbox
-                          checked={selectedFeatures.includes(feature.id)}
-                          onChange={() => { }} // Handled by parent click
-                        />
-                        <div className="flex-1">
-                          <span className="text-sm font-medium">{feature.label}</span>
-                          {feature.popular && (
-                            <Badge variant="secondary" className="ml-2 text-xs">
-                              인기
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Right Panel - Results */}
-          <div className="space-y-6">
-            {showResults ? (
-              <>
-                {/* Before/After Comparison */}
-                <Card className="card-soft">
-                  <CardHeader>
-                    <CardTitle className="text-xl flex items-center">
-                      <CheckCircle2 className="mr-2 h-6 w-6 text-success" />
-                      변환 완료!
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-medium mb-2">원본</p>
-                        <img
-                          src={selectedImage!}
-                          alt="원본"
-                          className="w-full h-32 object-cover rounded border"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium mb-2">보정된 이미지</p>
-                        <div className="w-full h-32 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded border flex items-center justify-center">
-                          <span className="text-sm font-medium">✨ AI 보정 완료</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Auto-generated Copy */}
-                <Card className="card-soft">
-                  <CardHeader>
-                    <CardTitle className="text-xl">자동 생성된 마케팅 문구</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">제목</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-base font-medium">{mockGeneratedCopy.title}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">설명</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm leading-relaxed">{mockGeneratedCopy.description}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">해시태그</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm text-primary">{mockGeneratedCopy.hashtags}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="text-sm font-medium text-muted-foreground">행동 유도</label>
-                      <div className="mt-1 p-3 bg-muted rounded border">
-                        <p className="text-sm font-medium">{mockGeneratedCopy.cta}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Action Buttons */}
-                <div className="flex space-x-4">
-                  <Button variant="outline" className="flex-1 btn-large">
-                    <Download className="mr-2 h-5 w-5" />
-                    다운로드
-                  </Button>
-                  <Button
-                    onClick={handleSaveToCalendar}
-                    className="flex-1 btn-large gradient-primary text-white"
-                  >
-                    <Calendar className="mr-2 h-5 w-5" />
-                    캘린더에 저장
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <Card className="card-soft h-64 flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <Eye className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <div>
-                    <p className="text-lg font-medium">결과 미리보기</p>
-                    <p className="text-sm text-muted-foreground">
-                      이미지를 업로드하고 보정을 실행하면<br />
-                      결과를 여기에서 확인할 수 있어요
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            )}
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Step Progress Indicator */}
+        {contentType && (
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-4">
+              {(contentType === "story" ? [1, 2] : [1, 2, 3]).map((step) => (
+                <div key={step} className="flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    (contentType === "story" ? step === (currentStep === 3 ? 2 : currentStep) : step === currentStep) ? "bg-primary text-white" :
+                    (contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "bg-success text-white" :
+                    "bg-muted text-muted-foreground"
+                  }`}>
+                    {(contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "✓" : step}
+                  </div>
+                  {step < (contentType === "story" ? 2 : 3) && (
+                    <div className={`w-12 h-1 mx-2 ${
+                      (contentType === "story" ? step < (currentStep === 3 ? 2 : currentStep) : step < currentStep) ? "bg-success" : "bg-muted"
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-2 text-sm text-muted-foreground">
+              {currentStep === 1 && "이미지 업로드 및 보정"}
+              {currentStep === 2 && contentType !== "story" && "상품 정보 입력 및 문구 생성"}
+              {currentStep === 2 && contentType === "story" && "스토리 업로드"}
+              {currentStep === 3 && contentType !== "story" && "최종 상세 이미지 확인"}
+              {currentStep === 3 && contentType === "story" && "스토리 업로드"}
+            </div>
+          </div>
+        )}
+
+        {/* Step Content */}
+        {currentStep === 1 && contentType && (
+          <Step1ImageUpload
+            contentType={contentType}
+            selectedImage={selectedImage}
+            isProcessing={isProcessing}
+            showResults={showResults}
+            storyText={storyText}
+            setStoryText={setStoryText}
+            onImageUpload={handleImageUpload}
+            onImageRemove={() => setSelectedImage(null)}
+            onGenerate={handleGenerate}
+            onNextStep={() => setCurrentStep(contentType === "story" ? 3 : 2)}
+          />
+        )}
+
+        {currentStep === 2 && contentType && contentType !== "story" && (
+          renderStep2Component()
+        )}
+
+        {currentStep === 3 && contentType && (
+          renderStep3Component()
+        )}
       </div>
     </div>
   );

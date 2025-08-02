@@ -32,7 +32,7 @@ export default function OnboardingPage() {
   const [isSubdomainValid, setIsSubdomainValid] = useState(true);
 
   useEffect(() => {
-    // 이미 온보딩이 끝난 사용자라면 Playground로
+    // 이미 온보딩이 끝난 사용자라면 콘텐츠 작업공간으로
     if (user?.hasOnboarded) nav("/studio", { replace: true });
   }, [user, nav]);
 

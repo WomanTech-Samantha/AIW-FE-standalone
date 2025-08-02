@@ -23,7 +23,7 @@ const Index = () => {
   const features = [
     {
       icon: <Palette className="h-8 w-8" />,
-      title: "AI 에셋 스튜디오",
+      title: "AI 마케팅 에셋 생성",
       description: "상품 사진을 마케팅 자료로 자동 변환",
       color: "text-blue-600"
     },
