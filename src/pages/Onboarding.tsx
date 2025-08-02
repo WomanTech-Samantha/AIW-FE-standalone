@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight, Upload, Image, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-const steps = [1, 2, 3, 4, 5];
+const steps = [1, 2, 3];
 
 export default function OnboardingPage() {
   const nav = useNavigate();
@@ -15,17 +15,25 @@ export default function OnboardingPage() {
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  // 기존 스텝 유지 + 추가 항목
+  // 브랜드 기본 정보만 수집
   const [business, setBusiness] = useState(user?.business ?? "");
-  const [color, setColor] = useState(user?.color ?? "");
-  const [theme, setTheme] = useState<"warm" | "calm" | "nature" | "elegant" | "fresh" | "soft" | "">("");
   const [storeName, setStoreName] = useState(user?.storeName ?? "");
+  
+  // 사이트 생성 관련 정보
+  const [selectedTheme, setSelectedTheme] = useState("warm");
+  const [selectedColor, setSelectedColor] = useState("warm");
+  const [subdomain, setSubdomain] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("classic");
   const [brandImageUrl, setBrandImageUrl] = useState("");
+  const [brandImageFile, setBrandImageFile] = useState<File | null>(null);
+  const [brandImagePreview, setBrandImagePreview] = useState<string>("");
   const [tagline, setTagline] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isSubdomainValid, setIsSubdomainValid] = useState(true);
 
   useEffect(() => {
-    // 이미 온보딩이 끝난 사용자라면 대시보드로
-    if (user?.hasOnboarded) nav("/dashboard", { replace: true });
+    // 이미 온보딩이 끝난 사용자라면 Playground로
+    if (user?.hasOnboarded) nav("/studio", { replace: true });
   }, [user, nav]);
 
   const canProceed = () => {
@@ -35,6 +43,7 @@ export default function OnboardingPage() {
       case 3: return true;  // SNS 모의 처리
       case 4: return storeName.trim().length > 0;
       case 5: return true;  // 브랜드 이미지/슬로건은 선택사항으로
+      case 6: return true;  // 환영 메시지
       default: return false;
     }
   };
@@ -43,7 +52,7 @@ export default function OnboardingPage() {
     if (currentStep < steps.length) setCurrentStep(currentStep + 1);
     else {
       completeOnboarding({ business, color, theme, storeName, brandImageUrl, tagline });
-      nav("/dashboard", { replace: true });
+      nav("/studio", { replace: true });
     }
   };
 
@@ -149,14 +158,149 @@ export default function OnboardingPage() {
                     <CardTitle>브랜드 이미지/슬로건</CardTitle>
                     <CardDescription>선택 입력: 초기 마케팅 자산에 사용돼요</CardDescription>
                   </CardHeader>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="brandImageUrl">브랜드 대표 이미지 URL</Label>
-                      <Input id="brandImageUrl" placeholder="https://..." value={brandImageUrl} onChange={(e) => setBrandImageUrl(e.target.value)} />
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <Label>브랜드 대표 이미지</Label>
+                      {!brandImagePreview ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Card 
+                            className="cursor-pointer hover:shadow-md transition-shadow"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <CardContent className="p-6 text-center">
+                              <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                              <h4 className="font-medium text-lg mb-2">이미지 업로드</h4>
+                              <p className="text-sm text-muted-foreground">
+                                보유하신 로고나 대표 이미지를<br />
+                                업로드하세요
+                              </p>
+                            </CardContent>
+                          </Card>
+                          
+                          <Card 
+                            className="cursor-pointer hover:shadow-md transition-shadow"
+                            onClick={() => {
+                              // AI 생성 로직 - 실제로는 API 호출이 필요
+                              const mockGeneratedImage = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRkZGQkVCIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODAiIGZpbGw9IiNGRjg4NjYiLz4KPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7sspjtjbDtg508L3RleHQ+Cjwvc3ZnPg==`;
+                              setBrandImagePreview(mockGeneratedImage);
+                              setBrandImageUrl(mockGeneratedImage);
+                            }}
+                          >
+                            <CardContent className="p-6 text-center">
+                              <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
+                              <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
+                              <p className="text-sm text-muted-foreground">
+                                업종과 상호명을 바탕으로<br />
+                                이미지를 자동 생성해드려요
+                              </p>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center space-y-4">
+                          <div className="relative w-64 h-64 rounded-lg overflow-hidden border-2 border-primary">
+                            <img 
+                              src={brandImagePreview} 
+                              alt="브랜드 이미지 미리보기" 
+                              className="w-full h-full object-cover"
+                            />
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="absolute top-2 right-2"
+                              onClick={() => {
+                                setBrandImageFile(null);
+                                setBrandImagePreview("");
+                                setBrandImageUrl("");
+                              }}
+                            >
+                              다시 선택
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setBrandImageFile(file);
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setBrandImagePreview(reader.result as string);
+                              setBrandImageUrl(reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
                     </div>
+                    
                     <div className="space-y-2">
                       <Label htmlFor="tagline">슬로건(선택)</Label>
-                      <Input id="tagline" placeholder="예: 더 따뜻한 밤, 더 편안한 아침" value={tagline} onChange={(e) => setTagline(e.target.value)} />
+                      <Input 
+                        id="tagline" 
+                        placeholder="예: 더 따뜻한 밤, 더 편안한 아침" 
+                        value={tagline} 
+                        onChange={(e) => setTagline(e.target.value)} 
+                        className="text-lg"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {currentStep === 6 && (
+                <>
+                  <div className="text-center py-8">
+                    <div className="mb-8">
+                      <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle2 className="h-12 w-12 text-primary" />
+                      </div>
+                      <h2 className="text-3xl font-bold mb-4">
+                        {storeName} 사장님, 환영합니다!
+                      </h2>
+                      <p className="text-xl text-muted-foreground leading-relaxed">
+                        이제부터 ALL-IN-WOM이 사장님의 온라인 마케팅을 도와드릴게요.
+                        <br />
+                        AI가 만드는 맞춤형 콘텐츠로 더 많은 고객을 만나보세요!
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 text-center">
+                          <div className="text-2xl mb-2">🎨</div>
+                          <h4 className="font-medium">콘텐츠 제작</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            AI가 전문적인 홍보물을 자동으로 만들어드려요
+                          </p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 text-center">
+                          <div className="text-2xl mb-2">📅</div>
+                          <h4 className="font-medium">일정 관리</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            최적의 시간에 자동으로 게시물을 올려드려요
+                          </p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-muted/30">
+                        <CardContent className="p-4 text-center">
+                          <div className="text-2xl mb-2">📊</div>
+                          <h4 className="font-medium">성과 분석</h4>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            마케팅 효과를 한눈에 확인할 수 있어요
+                          </p>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </>
@@ -173,7 +317,7 @@ export default function OnboardingPage() {
                   이전
                 </Button>
                 <Button onClick={handleNext} disabled={!canProceed()} className="btn-large">
-                  {currentStep === steps.length ? "설정 완료" : "다음"}
+                  {currentStep === steps.length ? "시작하기" : "다음"}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
