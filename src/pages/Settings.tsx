@@ -66,15 +66,7 @@ const SettingsPage = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 mb-4"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            돌아가기
-          </Button>
-          <div className="text-center">
+          <div className="text-left mb-4">
             <h1 className="text-3xl md:text-4xl font-bold">설정</h1>
             <p className="text-lg text-muted-foreground">
               계정 정보와 앱 설정을 관리하세요
