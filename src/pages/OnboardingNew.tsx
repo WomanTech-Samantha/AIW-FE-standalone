@@ -42,29 +42,18 @@ export default function OnboardingPage() {
     if (user?.hasOnboarded) nav("/studio", { replace: true });
   }, [user, nav]);
 
-  // 상호명을 영어로 변환
-  const translateToEnglish = (koreanName: string) => {
-    const translationMap: { [key: string]: string } = {
-      '커튼': 'curtain', '침구': 'bedding', '가구': 'furniture',
-      '홈': 'home', '인테리어': 'interior', '패브릭': 'fabric'
-    };
-    
-    let englishName = koreanName.toLowerCase();
-    for (const [korean, english] of Object.entries(translationMap)) {
-      englishName = englishName.replace(korean, english);
-    }
-    
-    return englishName
-      .replace(/[^a-z0-9가-힣\s]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/[가-힣]/g, '')
+  // 상호명을 서브도메인으로 변환
+  const convertToSubdomain = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '') || 'mystore';
+      .replace(/^-|-$/g, '');
   };
 
   useEffect(() => {
     if (storeName && !subdomain) {
-      setSubdomain(translateToEnglish(storeName));
+      setSubdomain(convertToSubdomain(storeName));
     }
   }, [storeName, subdomain]);
 
@@ -163,7 +152,7 @@ export default function OnboardingPage() {
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">사업장 정보 입력</h1>
           <div className="flex justify-center items-center space-x-2 text-lg">
-            <span className="font-medium">{storeName || "🏠"}</span>
+            <span className="font-medium">{storeName ? `${storeName}의 온라인 스토어를 만들어보세요` : "온라인 스토어를 만들어보세요 🏠"}</span>
           </div>
         </div>
 
@@ -225,27 +214,35 @@ export default function OnboardingPage() {
               {currentStep === 2 && (
                 <>
                   <CardHeader className="p-0">
-                    <CardTitle>사이트 테마 및 주소</CardTitle>
-                    <CardDescription>온라인 스토어의 테마와 주소를 설정하세요</CardDescription>
+                    <CardTitle>사이트 테마 색상 및 주소</CardTitle>
+                    <CardDescription>온라인 스토어의 테마 색상과 주소를 설정하세요</CardDescription>
                   </CardHeader>
                   
                   <div className="space-y-6">
                     <div>
-                      <Label className="text-lg mb-4 block">브랜드 테마</Label>
+                      <Label className="text-lg mb-4 block">브랜드 테마 색상 설정</Label>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {themeOptions.map((theme) => (
                           <Button
                             key={theme.id}
                             variant={selectedTheme === theme.id ? "default" : "outline"}
                             className="h-auto p-4 flex flex-col items-center gap-3"
+                            style={selectedTheme === theme.id ? { 
+                              backgroundColor: theme.color, 
+                              borderColor: theme.color,
+                              color: 'white'
+                            } : {}}
                             onClick={() => setSelectedTheme(theme.id)}
                           >
-                            <div 
-                              className="w-8 h-8 rounded-full"
-                              style={{ backgroundColor: theme.color }}
-                            />
+                            {selectedTheme === theme.id ? (
+                              <CheckCircle2 className="h-8 w-8 text-white" />
+                            ) : (
+                              <div 
+                                className="w-8 h-8 rounded-full"
+                                style={{ backgroundColor: theme.color }}
+                              />
+                            )}
                             <span className="text-sm">{theme.name}</span>
-                            {selectedTheme === theme.id && <CheckCircle2 className="h-4 w-4" />}
                           </Button>
                         ))}
                       </div>
@@ -263,7 +260,7 @@ export default function OnboardingPage() {
                         />
                         <span className="text-muted-foreground">.allinwom.com</span>
                       </div>
-                      {!isSubdomainValid && subdomain && (
+                      {!isSubdomainValid && (
                         <p className="text-sm text-destructive mt-2">
                           영문 소문자, 숫자, 하이픈만 사용 가능하며 3자 이상이어야 합니다
                         </p>
