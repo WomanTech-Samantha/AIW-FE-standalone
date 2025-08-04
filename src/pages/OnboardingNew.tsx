@@ -6,6 +6,10 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle2, ArrowRight, Upload, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import CozyHome from "@/templates/CozyHome";
+import ChicFashion from "@/templates/ChicFashion";
+import BeautyShop from "@/templates/BeautyShop";
+import "@/styles/base.css";
 
 const steps = [1, 2, 3, 4];
 
@@ -28,8 +32,8 @@ export default function OnboardingPage() {
   const [storeName, setStoreName] = useState(user?.storeName ?? "");
 
   // 사이트 생성 정보
-  const [selectedTheme, setSelectedTheme] = useState("warm");
-  const [selectedTemplate, setSelectedTemplate] = useState("classic");
+  const [selectedTheme, setSelectedTheme] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
   const [subdomain, setSubdomain] = useState("");
   const [isSubdomainValid, setIsSubdomainValid] = useState(true);
   const [brandImageUrl, setBrandImageUrl] = useState("");
@@ -63,40 +67,109 @@ export default function OnboardingPage() {
   }, [subdomain]);
 
   const themeOptions = [
-    { id: "warm", name: "따뜻한 주황", color: "#FF8866" },
-    { id: "calm", name: "차분한 파랑", color: "#4A90E2" },
-    { id: "nature", name: "자연 녹색", color: "#27AE60" },
-    { id: "elegant", name: "우아한 보라", color: "#8E44AD" },
-    { id: "fresh", name: "상쾌한 민트", color: "#1ABC9C" },
-    { id: "soft", name: "부드러운 핑크", color: "#E91E63" },
+    { 
+      id: "warm-rose", 
+      name: "웜 로즈", 
+      color: "#D4526E",
+      palette: {
+        primary: '#D4526E',
+        secondary: '#F5B7B1',
+        accent: '#E8A49C',
+        background: '#FAF3F0',
+        surface: '#FFFFFF',
+        text: '#2C2C2C',
+        textLight: '#666666',
+        border: '#E5E5E5'
+      }
+    },
+    { 
+      id: "sage-green", 
+      name: "세이지 그린", 
+      color: "#6B8E65",
+      palette: {
+        primary: '#6B8E65',
+        secondary: '#A8C09C',
+        accent: '#8FA885',
+        background: '#F5F7F4',
+        surface: '#FFFFFF',
+        text: '#2C2C2C',
+        textLight: '#666666',
+        border: '#E5E5E5'
+      }
+    },
+    { 
+      id: "dusty-blue", 
+      name: "더스티 블루", 
+      color: "#7189A6",
+      palette: {
+        primary: '#7189A6',
+        secondary: '#A8B8CC',
+        accent: '#8DA3C0',
+        background: '#F4F6F8',
+        surface: '#FFFFFF',
+        text: '#2C2C2C',
+        textLight: '#666666',
+        border: '#E5E5E5'
+      }
+    },
+    { 
+      id: "terracotta", 
+      name: "테라코타", 
+      color: "#C67B5C",
+      palette: {
+        primary: '#C67B5C',
+        secondary: '#E5A985',
+        accent: '#D69373',
+        background: '#FAF6F3',
+        surface: '#FFFFFF',
+        text: '#2C2C2C',
+        textLight: '#666666',
+        border: '#E5E5E5'
+      }
+    },
+    { 
+      id: "lavender", 
+      name: "라벤더", 
+      color: "#9B7EBD",
+      palette: {
+        primary: '#9B7EBD',
+        secondary: '#C4A9D8',
+        accent: '#B195CC',
+        background: '#F7F5F9',
+        surface: '#FFFFFF',
+        text: '#2C2C2C',
+        textLight: '#666666',
+        border: '#E5E5E5'
+      }
+    }
   ];
 
   const templates: StoreTemplate[] = [
     {
-      id: "classic",
-      name: "클래식 스토어",
-      description: "전통적이고 신뢰감 있는 디자인",
-      mockupImage: "🏪"
+      id: "cozy",
+      name: "코지",
+      description: "포근하고 따뜻한 분위기의 템플릿",
+      mockupImage: "🏠"
     },
     {
-      id: "modern", 
-      name: "모던 부티크",
-      description: "세련되고 현대적인 감각의 디자인",
-      mockupImage: "🛍️"
+      id: "chic", 
+      name: "시크",
+      description: "세련되고 우아한 미니멀 템플릿",
+      mockupImage: "✨"
     },
     {
-      id: "minimal",
-      name: "미니멀 샵", 
-      description: "단순하고 깔끔한 미니멀 디자인",
-      mockupImage: "📱"
+      id: "beauty",
+      name: "내추럴", 
+      description: "자연스럽고 부드러운 감성의 템플릿",
+      mockupImage: "🌿"
     }
   ];
 
   const canProceed = () => {
     switch (currentStep) {
       case 1: return business !== "" && storeName.trim().length > 0;
-      case 2: return selectedTheme !== "" && subdomain && isSubdomainValid;
-      case 3: return selectedTemplate !== "";
+      case 2: return subdomain && isSubdomainValid;
+      case 3: return selectedTheme !== "" && selectedTemplate !== "";
       case 4: return true;
       default: return false;
     }
@@ -210,44 +283,15 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Step 2: 사이트 테마 및 주소 */}
+              {/* Step 2: 사이트 주소 */}
               {currentStep === 2 && (
                 <>
                   <CardHeader className="p-0">
-                    <CardTitle>사이트 테마 색상 및 주소</CardTitle>
-                    <CardDescription>온라인 스토어의 테마 색상과 주소를 설정하세요</CardDescription>
+                    <CardTitle>사이트 주소 설정</CardTitle>
+                    <CardDescription>온라인 스토어의 주소를 설정하세요</CardDescription>
                   </CardHeader>
                   
                   <div className="space-y-6">
-                    <div>
-                      <Label className="text-lg mb-4 block">브랜드 테마 색상 설정</Label>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        {themeOptions.map((theme) => (
-                          <Button
-                            key={theme.id}
-                            variant={selectedTheme === theme.id ? "default" : "outline"}
-                            className="h-auto p-4 flex flex-col items-center gap-3"
-                            style={selectedTheme === theme.id ? { 
-                              backgroundColor: theme.color, 
-                              borderColor: theme.color,
-                              color: 'white'
-                            } : {}}
-                            onClick={() => setSelectedTheme(theme.id)}
-                          >
-                            {selectedTheme === theme.id ? (
-                              <CheckCircle2 className="h-8 w-8 text-white" />
-                            ) : (
-                              <div 
-                                className="w-8 h-8 rounded-full"
-                                style={{ backgroundColor: theme.color }}
-                              />
-                            )}
-                            <span className="text-sm">{theme.name}</span>
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
                     <div>
                       <Label htmlFor="subdomain" className="text-lg mb-4 block">사이트 주소</Label>
                       <div className="flex items-center gap-2 text-lg">
@@ -270,35 +314,108 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Step 3: 사이트 템플릿 */}
+              {/* Step 3: 사이트 템플릿 및 테마 */}
               {currentStep === 3 && (
                 <>
                   <CardHeader className="p-0">
-                    <CardTitle>사이트 템플릿</CardTitle>
-                    <CardDescription>사이트 디자인 템플릿을 선택하세요</CardDescription>
+                    <CardTitle>사이트 템플릿 및 테마</CardTitle>
+                    <CardDescription>사이트 디자인과 색상을 선택하세요</CardDescription>
                   </CardHeader>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {templates.map((template) => (
-                      <Card 
-                        key={template.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
-                          selectedTemplate === template.id ? 'border-primary shadow-md' : ''
-                        }`}
-                        onClick={() => setSelectedTemplate(template.id)}
-                      >
-                        <CardContent className="p-6 text-center">
-                          <div className="text-6xl mb-4">{template.mockupImage}</div>
-                          <h3 className="font-semibold text-lg mb-2">{template.name}</h3>
-                          <p className="text-sm text-muted-foreground">{template.description}</p>
-                          {selectedTemplate === template.id && (
-                            <div className="mt-4">
-                              <CheckCircle2 className="h-6 w-6 text-primary mx-auto" />
+                  <div className="space-y-8">
+                    {/* 템플릿 선택 */}
+                    <div>
+                      <Label className="text-lg mb-4 block">템플릿 선택</Label>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {templates.map((template) => (
+                          <Card 
+                            key={template.id}
+                            className={`cursor-pointer transition-all hover:shadow-lg ${
+                              selectedTemplate === template.id ? 'border-primary shadow-md' : ''
+                            }`}
+                            onClick={() => setSelectedTemplate(template.id)}
+                          >
+                            <CardContent className="p-4 text-center">
+                              <div className="text-4xl mb-3">{template.mockupImage}</div>
+                              <h3 className="font-semibold text-lg mb-2">{template.name}</h3>
+                              <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
+                              {selectedTemplate === template.id && (
+                                <CheckCircle2 className="h-6 w-6 text-primary mx-auto" />
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 테마 색상 선택 */}
+                    {selectedTemplate && (
+                      <div>
+                        <Label className="text-lg mb-4 block">테마 색상</Label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {themeOptions.map((theme) => (
+                            <Button
+                              key={theme.id}
+                              variant={selectedTheme === theme.id ? "default" : "outline"}
+                              className="h-auto p-3 flex items-center gap-3"
+                              style={selectedTheme === theme.id ? { 
+                                backgroundColor: theme.color, 
+                                borderColor: theme.color,
+                                color: 'white'
+                              } : {}}
+                              onClick={() => setSelectedTheme(theme.id)}
+                            >
+                              {selectedTheme === theme.id ? (
+                                <CheckCircle2 className="h-5 w-5 text-white" />
+                              ) : (
+                                <div 
+                                  className="w-5 h-5 rounded-full"
+                                  style={{ backgroundColor: theme.color }}
+                                />
+                              )}
+                              <span className="text-sm">{theme.name}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 템플릿 미리보기 */}
+                    {selectedTemplate && selectedTheme && (
+                      <div>
+                        <Label className="text-lg mb-4 block">미리보기</Label>
+                        <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
+                          <div className="h-[600px] overflow-auto">
+                            <div 
+                              className="transform scale-50 origin-top-left"
+                              style={{
+                                width: '200%',
+                                minHeight: '200%',
+                                ...(() => {
+                                  const selectedPalette = themeOptions.find(t => t.id === selectedTheme)?.palette;
+                                  if (!selectedPalette) return {};
+                                  
+                                  return {
+                                    '--color-primary': selectedPalette.primary,
+                                    '--color-secondary': selectedPalette.secondary,
+                                    '--color-accent': selectedPalette.accent,
+                                    '--color-background': selectedPalette.background,
+                                    '--color-surface': selectedPalette.surface,
+                                    '--color-text': selectedPalette.text,
+                                    '--color-textLight': selectedPalette.textLight,
+                                    '--color-border': selectedPalette.border
+                                  } as React.CSSProperties;
+                                })()
+                              } as React.CSSProperties}
+                            >
+                              {selectedTemplate === 'cozy' && <CozyHome />}
+                              {selectedTemplate === 'chic' && <ChicFashion />}
+                              {selectedTemplate === 'beauty' && <BeautyShop />}
                             </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
