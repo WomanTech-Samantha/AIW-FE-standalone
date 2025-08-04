@@ -435,6 +435,7 @@ const StoreSettingsPage = () => {
                 </CardContent>
               </Card>
             </div>
+          </div>
 
           {/* 미리보기 섹션 */}
           <div className="space-y-6">
