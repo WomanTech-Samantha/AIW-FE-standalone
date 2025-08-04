@@ -55,8 +55,8 @@ const StorePage = () => {
   // 쇼핑몰이 생성되지 않은 경우의 UI
   if (!hasOnlineStore) {
     return (
-      <div className="min-h-screen bg-gradient-warm no-transition">
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="min-h-screen no-transition">
+        <div className="max-w-5xl mx-auto py-2">
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -177,8 +177,8 @@ const StorePage = () => {
 
   // 쇼핑몰이 생성된 경우의 UI (대시보드)
   return (
-    <div className="min-h-screen bg-gradient-warm no-transition">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen no-transition">
+      <div className="py-2">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
