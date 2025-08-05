@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import CozyHome from "@/templates/CozyHome";
 import ChicFashion from "@/templates/ChicFashion";
 import BeautyShop from "@/templates/BeautyShop";
-import "@/styles/base.css";
+import "@/templates/styles/base.css";
 import { 
   ArrowLeft, 
   Palette,
