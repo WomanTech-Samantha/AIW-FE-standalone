@@ -54,12 +54,12 @@ const ChicFashion = () => {
                   color: 'var(--color-primary)'
                 }}
                 onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'var(--color-primary)';
-                  e.target.style.color = 'white';
+                  (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)';
+                  (e.target as HTMLElement).style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                  e.target.style.color = 'var(--color-primary)';
+                  (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                  (e.target as HTMLElement).style.color = 'var(--color-primary)';
                 }}
               >
                 SHOP NOW

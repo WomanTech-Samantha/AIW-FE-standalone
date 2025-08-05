@@ -117,10 +117,10 @@ const CozyHome = () => {
                           color: 'var(--color-primary)',
                           backgroundColor: 'transparent'
                         }}
-                        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-primary)'}
+                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = 'transparent';
-                          e.target.style.color = 'var(--color-primary)';
+                          (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                          (e.target as HTMLElement).style.color = 'var(--color-primary)';
                         }}
                       >
                         자세히 보기

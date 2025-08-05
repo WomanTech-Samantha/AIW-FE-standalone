@@ -131,12 +131,12 @@ const BeautyShop = () => {
                           color: 'var(--color-primary)'
                         }}
                         onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = 'var(--color-primary)';
-                          e.target.style.color = 'white';
+                          (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)';
+                          (e.target as HTMLElement).style.color = 'white';
                         }}
                         onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = 'var(--color-surface)';
-                          e.target.style.color = 'var(--color-primary)';
+                          (e.target as HTMLElement).style.backgroundColor = 'var(--color-surface)';
+                          (e.target as HTMLElement).style.color = 'var(--color-primary)';
                         }}
                       >
                         자세히 보기

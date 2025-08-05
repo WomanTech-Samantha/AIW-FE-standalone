@@ -147,20 +147,20 @@ export default function OnboardingPage() {
   const templates: StoreTemplate[] = [
     {
       id: "cozy",
-      name: "코지",
+      name: "편안한",
       description: "포근하고 따뜻한 분위기의 템플릿",
       mockupImage: "🏠"
     },
     {
       id: "chic", 
-      name: "시크",
+      name: "시크한",
       description: "세련되고 우아한 미니멀 템플릿",
       mockupImage: "✨"
     },
     {
       id: "beauty",
-      name: "내추럴", 
-      description: "자연스럽고 부드러운 감성의 템플릿",
+      name: "자연스러운", 
+      description: "부드러운 감성의 템플릿",
       mockupImage: "🌿"
     }
   ];
@@ -385,12 +385,12 @@ export default function OnboardingPage() {
                       <div>
                         <Label className="text-lg mb-4 block">미리보기</Label>
                         <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
-                          <div className="h-[600px] overflow-auto">
+                          <div className="h-[400px] overflow-auto">
                             <div 
                               className="transform scale-50 origin-top-left"
                               style={{
                                 width: '200%',
-                                minHeight: '200%',
+                                height: '200%',
                                 ...(() => {
                                   const selectedPalette = themeOptions.find(t => t.id === selectedTheme)?.palette;
                                   if (!selectedPalette) return {};
