@@ -62,8 +62,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="page-container-narrow">
         {/* Header */}
         <div className="mb-8">
           <div className="text-left mb-4">
@@ -226,31 +225,6 @@ const SettingsPage = () => {
                   연동된 서비스 관리
                 </Button>
               </div>
-              
-              <Separator />
-              
-              <div className="bg-red-50 p-6 rounded-lg">
-                <h4 className="font-semibold text-red-800 mb-4 flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  계정 삭제
-                </h4>
-                <p className="text-red-700 mb-4">
-                  계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
-                </p>
-                <Button 
-                  variant={showDeleteConfirm ? "destructive" : "outline"}
-                  onClick={handleDeleteAccount}
-                  className="flex items-center gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  {showDeleteConfirm ? "정말 삭제하시겠습니까?" : "계정 삭제"}
-                </Button>
-                {showDeleteConfirm && (
-                  <p className="text-sm text-red-600 mt-2">
-                    10초 후 자동으로 취소됩니다. 계속하려면 다시 클릭하세요.
-                  </p>
-                )}
-              </div>
             </CardContent>
           </Card>
 
@@ -276,7 +250,6 @@ const SettingsPage = () => {
             </Button>
           </div>
         </div>
-      </div>
     </div>
   );
 };

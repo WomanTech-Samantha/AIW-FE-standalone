@@ -42,7 +42,7 @@ const StorePage = () => {
   useEffect(() => {
     // 쇼핑몰 생성 상태 확인
     const storeStatus = localStorage.getItem('has_online_store');
-    setHasOnlineStore(storeStatus === 'false');
+    setHasOnlineStore(storeStatus === 'true');
     
     if (storeStatus === 'true') {
       // 쇼핑몰 URL 생성
@@ -55,8 +55,7 @@ const StorePage = () => {
   // 쇼핑몰이 생성되지 않은 경우의 UI
   if (!hasOnlineStore) {
     return (
-      <div className="min-h-screen no-transition">
-        <div className="max-w-5xl mx-auto py-2">
+      <div className="page-container-wide">
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-semibold mb-4 text-gray-800">
@@ -171,14 +170,12 @@ const StorePage = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
     );
   }
 
   // 쇼핑몰이 생성된 경우의 UI (대시보드)
   return (
-    <div className="min-h-screen no-transition">
-      <div className="py-2">
+    <div className="page-container">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -661,7 +658,6 @@ const StorePage = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
     </div>
   );
 };

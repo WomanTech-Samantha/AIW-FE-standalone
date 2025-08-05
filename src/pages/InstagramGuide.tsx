@@ -65,8 +65,7 @@ const InstagramGuidePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="page-container-narrow">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
@@ -251,7 +250,6 @@ const InstagramGuidePage = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
   );
 };
 

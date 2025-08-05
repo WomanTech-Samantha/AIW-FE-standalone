@@ -172,4 +172,17 @@ All colors MUST be HSL.
   .no-transition * {
     transition: none !important;
   }
+
+  /* Page layout containers */
+  .page-container {
+    @apply pt-2 pb-2;
+  }
+
+  .page-container-narrow {
+    @apply pt-2 pb-2 max-w-4xl mx-auto;
+  }
+
+  .page-container-wide {
+    @apply pt-2 pb-2 max-w-5xl mx-auto;
+  }
 }

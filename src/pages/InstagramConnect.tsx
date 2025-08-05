@@ -68,8 +68,7 @@ const InstagramConnectPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="container mx-auto px-4 py-8">
+    <div className="page-container">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">인스타그램 계정 연동</h1>
@@ -329,7 +328,6 @@ const InstagramConnectPage = () => {
           </Card>
         </div>
       </div>
-    </div>
   );
 };
 
