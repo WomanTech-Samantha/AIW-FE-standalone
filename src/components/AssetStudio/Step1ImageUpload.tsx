@@ -48,7 +48,7 @@ export const Step1ImageUpload = ({
           resultTitle: "상세 이미지",
           resultDescription: "상세 페이지에 들어갈 이미지입니다.",
           resultIcon: "고화질 변환",
-          nextStepText: "상품 정보 입력"
+          nextStepText: "2단계 상품 정보 입력"
         };
       case "feed":
         return {
@@ -59,7 +59,7 @@ export const Step1ImageUpload = ({
           resultTitle: "피드 이미지",
           resultDescription: "1:1 피드용",
           resultIcon: "정방형 최적화",
-          nextStepText: "피드 콘텐츠 설정"
+          nextStepText: "2단계 피드 콘텐츠 설정"
         };
       case "reels":
         return {
@@ -70,7 +70,7 @@ export const Step1ImageUpload = ({
           resultTitle: "릴스 썸네일",
           resultDescription: "9:16 릴스용",
           resultIcon: "세로형 최적화",
-          nextStepText: "릴스 콘텐츠 설정"
+          nextStepText: "2단계 릴스 콘텐츠 설정"
         };
       case "story":
         return {
@@ -81,7 +81,7 @@ export const Step1ImageUpload = ({
           resultTitle: "스토리 이미지",
           resultDescription: "스토리용 이미지입니다.",
           resultIcon: "스토리 최적화",
-          nextStepText: "스토리 업로드"
+          nextStepText: "3단계 스토리 업로드"
         };
       default:
         return {
@@ -246,7 +246,7 @@ export const Step1ImageUpload = ({
                 onClick={onNextStep}
                 className="btn-large gradient-primary text-white"
               >
-                다음 단계: {info.nextStepText}
+{info.nextStepText}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>

@@ -214,7 +214,7 @@ export const FeedContentSettings = ({
             className="btn-large gradient-primary text-white"
             disabled={!productName.trim()}
           >
-            다음 단계: 최종 피드 생성
+3단계 최종 피드 생성
             <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
         </div>
