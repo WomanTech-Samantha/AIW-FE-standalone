@@ -13,7 +13,6 @@ import ComparisonPage from "./pages/Comparison";
 import NotFound from "./pages/NotFound";
 import InstagramPage from "./pages/Instagram";
 import StorePage from "./pages/Store";
-import StoreCreatePage from "./pages/StoreCreate";
 import StoreSettingsPage from "./pages/StoreSettings";
 import InstagramGuidePage from "./pages/InstagramGuide";
 import InstagramConnectPage from "./pages/InstagramConnect";  
@@ -51,7 +50,6 @@ const App = () => (
                 <Route path="/studio" element={<AssetStudioPage />} />
                 <Route path="/instagram" element={<InstagramPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/store/create" element={<StoreCreatePage />} />
                 <Route path="/store/settings" element={<StoreSettingsPage />} />
                 <Route path="/store/instagram-guide" element={<InstagramGuidePage />} />
                 <Route path="/instagram/connect" element={<InstagramConnectPage />} />
