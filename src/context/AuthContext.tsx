@@ -18,10 +18,13 @@ type User = {
   tagline?: string;
 };
 
+type SocialLoginProvider = 'google' | 'kakao' | 'naver';
+
 type AuthContextValue = {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
+  socialLogin: (provider: SocialLoginProvider, userData: any) => Promise<void>;
   signup: (payload: { email: string; password: string; name?: string }) => Promise<void>;
   logout: () => void;
   completeOnboarding: (profile: Partial<User>) => void;
@@ -66,6 +69,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     persist(temp);
   };
 
+  const socialLogin: AuthContextValue["socialLogin"] = async (provider, userData) => {
+    // TODO: 실제 API 연동 시 교체
+    const existingUser = localStorage.getItem("auth_user");
+    if (existingUser) {
+      const user = JSON.parse(existingUser) as User;
+      if (user.email === userData.email) {
+        persist(user);
+        return;
+      }
+    }
+    
+    const socialUser: User = {
+      id: crypto.randomUUID(),
+      email: userData.email,
+      name: userData.name || userData.email?.split("@")[0],
+      hasOnboarded: false,
+    };
+    persist(socialUser);
+  };
+
   const signup: AuthContextValue["signup"] = async ({ email, password: _p, name }) => {
     // TODO: 실제 API 연동 시 교체
     const fresh: User = {
@@ -88,7 +111,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const value = useMemo(
-    () => ({ user, isAuthenticated, login, signup, logout, completeOnboarding }),
+    () => ({ user, isAuthenticated, login, socialLogin, signup, logout, completeOnboarding }),
     [user, isAuthenticated]
   );
 

@@ -31,15 +31,39 @@ export default function SignUp() {
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
               <Label htmlFor="name">이름</Label>
-              <Input id="name" value={name} onChange={e => setName(e.target.value)} required />
+              <Input 
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                required 
+              />
             </div>
             <div>
               <Label htmlFor="email">이메일</Label>
-              <Input id="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              <Input 
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={email} 
+                onChange={e => setEmail(e.target.value)} 
+                required 
+              />
             </div>
             <div>
               <Label htmlFor="password">비밀번호</Label>
-              <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+              <Input 
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                value={password} 
+                onChange={e => setPassword(e.target.value)} 
+                required 
+              />
             </div>
             <Button className="w-full" type="submit">계정 만들기</Button>
           </form>
