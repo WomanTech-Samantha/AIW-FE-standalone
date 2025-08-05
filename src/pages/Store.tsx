@@ -42,7 +42,7 @@ const StorePage = () => {
   useEffect(() => {
     // 쇼핑몰 생성 상태 확인
     const storeStatus = localStorage.getItem('has_online_store');
-    setHasOnlineStore(storeStatus === 'true');
+    setHasOnlineStore(storeStatus === 'false');
     
     if (storeStatus === 'true') {
       // 쇼핑몰 URL 생성
@@ -59,12 +59,12 @@ const StorePage = () => {
         <div className="max-w-5xl mx-auto py-2">
           {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              🛍️ 나만의 쇼핑몰 만들기
+            <h1 className="text-3xl md:text-4xl font-semibold mb-4 text-gray-800">
+              온라인으로 사업을 확장해보세요
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {user?.storeName || "사업장"}의 온라인 스토어를 만들어서<br />
-              더 많은 고객을 만나보세요!
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {user?.storeName || "사업장"}만의 특별한 온라인 공간을 만들어<br />
+              새로운 가능성을 열어보세요
             </p>
           </div>
 
@@ -72,63 +72,63 @@ const StorePage = () => {
           <div className="text-center mb-16">
             <Card className="max-w-2xl mx-auto card-soft">
               <CardContent className="p-8">
-                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Store className="h-12 w-12 text-primary" />
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-50 to-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Store className="h-10 w-10 text-blue-600" />
                 </div>
-                <h2 className="text-2xl font-bold mb-4">
-                  쇼핑몰이 아직 생성되지 않았어요
+                <h2 className="text-xl font-semibold mb-4 text-gray-700">
+                  아직 온라인 쇼핑몰이 준비되지 않았네요
                 </h2>
-                <p className="text-lg text-muted-foreground mb-8">
-                  몇 분만에 전문적인 온라인 스토어를 만들 수 있어요.<br />
-                  복잡한 설정 없이 바로 시작하세요!
+                <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+                  걱정하지 마세요! 간단한 몇 단계만으로<br />
+                  멋진 온라인 스토어를 열 수 있어요
                 </p>
                 <Button 
                   size="lg" 
-                  className="text-xl px-8 py-6"
-                  onClick={() => navigate('/store/create')}
+                  className="text-lg px-6 py-5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                  onClick={() => navigate('/onboarding')}
                 >
-                  <Plus className="mr-2 h-6 w-6" />
-                  쇼핑몰 만들기
+                  <Plus className="mr-2 h-5 w-5" />
+                  시작하기
                 </Button>
               </CardContent>
             </Card>
           </div>
 
           {/* Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <Card className="text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+            <Card className="text-center border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardContent className="p-6">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="h-8 w-8 text-blue-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-7 w-7 text-blue-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">매출 증대</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-medium text-base mb-2 text-gray-700">매출 증대</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   24시간 언제나 주문받는<br />
-                  온라인 매장으로 매출 up!
+                  온라인 매장으로 매출 향상
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardContent className="p-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-8 w-8 text-green-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-7 w-7 text-green-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">고객 확대</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-medium text-base mb-2 text-gray-700">고객 확대</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   전국 어디서나 접근 가능한<br />
                   온라인으로 고객층 확장
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center border-0 shadow-sm hover:shadow-md transition-shadow duration-200">
               <CardContent className="p-6">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Palette className="h-8 w-8 text-purple-600" />
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Palette className="h-7 w-7 text-purple-600" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2">브랜드 강화</h3>
-                <p className="text-muted-foreground">
+                <h3 className="font-medium text-base mb-2 text-gray-700">브랜드 강화</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   전문적인 디자인으로<br />
                   브랜드 이미지 업그레이드
                 </p>
@@ -137,10 +137,10 @@ const StorePage = () => {
           </div>
 
           {/* Features */}
-          <Card className="mb-8">
+          <Card className="mb-8 border-0 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-2xl text-center">포함된 기능들</CardTitle>
-              <CardDescription className="text-center text-lg">
+              <CardTitle className="text-xl text-center font-medium text-gray-700">포함된 기능들</CardTitle>
+              <CardDescription className="text-center text-base">
                 복잡한 설정 없이 바로 사용할 수 있어요
               </CardDescription>
             </CardHeader>
@@ -154,13 +154,13 @@ const StorePage = () => {
                   { icon: <ExternalLink className="h-5 w-5" />, title: "모바일 최적화", desc: "스마트폰에서도 완벽하게" },
                   { icon: <Settings className="h-5 w-5" />, title: "간편 설정", desc: "복잡한 설정 없이 바로 시작" }
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div className="text-success mt-1">
-                      <CheckCircle2 className="h-5 w-5" />
+                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                    <div className="text-green-500 mt-1">
+                      <CheckCircle2 className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="font-medium mb-1 flex items-center gap-2">
-                        {feature.icon}
+                      <h4 className="font-medium mb-1 flex items-center gap-2 text-gray-700">
+                        <span className="text-gray-500">{feature.icon}</span>
                         {feature.title}
                       </h4>
                       <p className="text-sm text-muted-foreground">{feature.desc}</p>
