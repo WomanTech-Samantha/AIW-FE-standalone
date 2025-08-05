@@ -12,6 +12,8 @@ type User = {
   business?: string;
   color?: string;
   theme?: string;
+  template?: string;
+  subdomain?: string;
   brandImageUrl?: string;
   tagline?: string;
 };

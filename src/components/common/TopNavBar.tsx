@@ -61,11 +61,11 @@ export default function TopNavBar() {
             </div>
           </nav>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {user ? (
               <>
                 {/* 인스타그램 관리 메뉴 */}
-                <div className="flex items-center gap-2 mr-2">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
@@ -85,10 +85,18 @@ export default function TopNavBar() {
                       }
                     }}
                   >
-                    <Instagram className="h-4 w-4 md:mr-2" />
-                    <span className="hidden md:inline">
-                      {isInstagramConnected ? '인스타' : '인스타 연동'}
-                    </span>
+                    <Instagram className="h-4 w-4" />
+                    {isInstagramConnected ? (
+                      <>
+                        <span className="hidden lg:inline ml-2">인스타그램 관리</span>
+                        <span className="hidden md:inline lg:hidden ml-2">인스타</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden lg:inline ml-2">인스타 연동</span>
+                        <span className="hidden md:inline lg:hidden ml-2">연동</span>
+                      </>
+                    )}
                   </Button>
                 </div>
                 
@@ -107,8 +115,8 @@ export default function TopNavBar() {
                 
                 <span className="text-sm text-muted-foreground hidden lg:block">
                   {user.storeName
-                    ? `${user.storeName} 사장님`
-                    : `${user.name ?? user.email} 사장님`}
+                    ? `${user.storeName} 사장님!`
+                    : `${user.name ?? user.email} 사장님!`}
                 </span>
                 <Button variant="outline" size="sm" onClick={() => { logout(); navigate("/"); }}>
                   로그아웃
