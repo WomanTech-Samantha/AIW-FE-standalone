@@ -147,10 +147,10 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+      <Card className="w-full max-w-md card-soft">
         <CardHeader className="text-center pb-2">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold">
             로그인
           </CardTitle>
           <CardDescription className="text-gray-600">
@@ -219,7 +219,7 @@ function LoginForm() {
               />
             </div>
             <Button 
-              className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" 
+              className="w-full h-11 gradient-primary text-white hover:opacity-90" 
               type="submit"
               disabled={isLoading}
             >
@@ -232,7 +232,7 @@ function LoginForm() {
               회원이 아니신가요?{" "}
               <Link 
                 to="/signup" 
-                className="font-medium text-blue-600 hover:text-blue-500 underline underline-offset-4"
+                className="font-medium text-primary hover:text-primary/80 underline underline-offset-4"
               >
                 회원가입
               </Link>
