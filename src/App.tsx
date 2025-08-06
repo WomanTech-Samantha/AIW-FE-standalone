@@ -22,6 +22,7 @@ import SettingsPage from "./pages/Settings";
 
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import OAuthCallback from "./pages/OAuthCallback";
 
 import { AuthProvider } from "@/context/AuthContext";
 import ProtectedRoute from "@/routes/ProtectedRoute";
@@ -35,13 +36,19 @@ const App = () => (
       <AuthProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true
+          }}
+        >
           <Routes>
             {/* 공개 페이지 */}
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/comparison" element={<ComparisonPage />} />
+            <Route path="/oauth/callback" element={<OAuthCallback />} />
 
             {/* 보호 영역: 상단 내비게이션 포함 */}
             <Route element={<ProtectedRoute />}>
