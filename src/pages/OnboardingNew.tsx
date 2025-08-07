@@ -9,7 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import CozyHome from "@/templates/CozyHome";
 import ChicFashion from "@/templates/ChicFashion";
 import BeautyShop from "@/templates/BeautyShop";
-import "@/styles/base.css";
+import "@/templates/styles/base.css";
 
 const steps = [1, 2, 3, 4];
 
@@ -41,6 +41,9 @@ export default function OnboardingPage() {
   const [brandImagePreview, setBrandImagePreview] = useState<string>("");
   const [tagline, setTagline] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // AI 이미지 생성 상태
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   useEffect(() => {
     if (user?.hasOnboarded) nav("/studio", { replace: true });
@@ -65,6 +68,40 @@ export default function OnboardingPage() {
     const isValid = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(subdomain) && subdomain.length >= 3;
     setIsSubdomainValid(isValid);
   }, [subdomain]);
+
+  // AI 이미지 생성 함수
+  const generateAIImage = () => {
+    setIsGeneratingImage(true);
+    
+    // 2초 후 이미지 생성
+    setTimeout(() => {
+      // 업종에 따른 색상
+      const colors = {
+        "침구": "#9B7EBD",
+        "커튼": "#6B8E65",
+        "의류": "#D4526E",
+        "음식": "#C67B5C",
+        "뷰티": "#E8A49C",
+        "수공예": "#7189A6"
+      };
+      
+      const businessType = Object.keys(colors).find(key => business.includes(key));
+      const color = colors[businessType] || "#9B7EBD";
+      const initials = storeName.slice(0, 2).toUpperCase() || "AI";
+
+      const mockImage = `data:image/svg+xml;base64,${btoa(`
+        <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#FAFAFA"/>
+          <circle cx="100" cy="100" r="70" fill="${color}"/>
+          <text x="100" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${initials}</text>
+        </svg>
+      `)}`;
+      
+      setBrandImagePreview(mockImage);
+      setBrandImageUrl(mockImage);
+      setIsGeneratingImage(false);
+    }, 2000);
+  };
 
   const themeOptions = [
     { 
@@ -147,20 +184,20 @@ export default function OnboardingPage() {
   const templates: StoreTemplate[] = [
     {
       id: "cozy",
-      name: "코지",
+      name: "편안한",
       description: "포근하고 따뜻한 분위기의 템플릿",
       mockupImage: "🏠"
     },
     {
       id: "chic", 
-      name: "시크",
+      name: "시크한",
       description: "세련되고 우아한 미니멀 템플릿",
       mockupImage: "✨"
     },
     {
       id: "beauty",
-      name: "내추럴", 
-      description: "자연스럽고 부드러운 감성의 템플릿",
+      name: "자연스러운", 
+      description: "부드러운 감성의 템플릿",
       mockupImage: "🌿"
     }
   ];
@@ -185,13 +222,14 @@ export default function OnboardingPage() {
       setTimeout(() => {
         setIsCreating(false);
         // 온보딩 완료 및 사이트 생성 상태 저장
+        // 이미지가 있으면 일단 빈 문자열로 전달 (추후 별도 업로드 처리)
         completeOnboarding({ 
           business, 
           storeName,
           theme: selectedTheme,
           template: selectedTemplate,
           subdomain,
-          brandImageUrl,
+          brandImageUrl: brandImageFile ? '' : brandImageUrl,
           tagline
         });
         localStorage.setItem('has_online_store', 'true');
@@ -385,12 +423,12 @@ export default function OnboardingPage() {
                       <div>
                         <Label className="text-lg mb-4 block">미리보기</Label>
                         <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
-                          <div className="h-[600px] overflow-auto">
+                          <div className="h-[400px] overflow-auto">
                             <div 
                               className="transform scale-50 origin-top-left"
                               style={{
                                 width: '200%',
-                                minHeight: '200%',
+                                height: '200%',
                                 ...(() => {
                                   const selectedPalette = themeOptions.find(t => t.id === selectedTheme)?.palette;
                                   if (!selectedPalette) return {};
@@ -447,19 +485,29 @@ export default function OnboardingPage() {
                           </Card>
                           
                           <Card 
-                            className="cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => {
-                              const mockImage = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRkZGQkVCIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODAiIGZpbGw9IiNGRjg4NjYiLz4KPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7sspjtjbDtg508L3RleHQ+Cjwvc3ZnPg==`;
-                              setBrandImagePreview(mockImage);
-                              setBrandImageUrl(mockImage);
-                            }}
+                            className={`cursor-pointer hover:shadow-md transition-shadow ${
+                              isGeneratingImage ? 'opacity-50 cursor-wait' : ''
+                            }`}
+                            onClick={() => !isGeneratingImage && generateAIImage()}
                           >
                             <CardContent className="p-6 text-center">
-                              <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                              <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
-                              <p className="text-sm text-muted-foreground">
-                                업종과 상호명을 바탕으로 이미지를 자동 생성해드려요
-                              </p>
+                              {isGeneratingImage ? (
+                                <>
+                                  <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                                  <h4 className="font-medium text-lg mb-2">이미지 생성 중...</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    AI가 열심히 만들고 있어요
+                                  </p>
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
+                                  <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    업종과 상호명을 바탕으로 이미지를 자동 생성해드려요
+                                  </p>
+                                </>
+                              )}
                             </CardContent>
                           </Card>
                         </div>
@@ -467,18 +515,39 @@ export default function OnboardingPage() {
                         <div className="flex flex-col items-center space-y-4 mt-4">
                           <div className="relative w-64 h-64 rounded-lg overflow-hidden border-2 border-primary">
                             <img src={brandImagePreview} alt="브랜드 이미지" className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex gap-2">
                             <Button
-                              variant="secondary"
+                              variant="outline"
                               size="sm"
-                              className="absolute top-2 right-2"
                               onClick={() => {
                                 setBrandImageFile(null);
                                 setBrandImagePreview("");
                                 setBrandImageUrl("");
                               }}
                             >
-                              다시 선택
+                              뒤로 가기
                             </Button>
+                            {!brandImageFile && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => generateAIImage()}
+                                disabled={isGeneratingImage}
+                              >
+                                {isGeneratingImage ? (
+                                  <>
+                                    <div className="animate-spin w-3 h-3 border-2 border-primary border-t-transparent rounded-full mr-2"></div>
+                                    생성 중...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Sparkles className="w-3 h-3 mr-1" />
+                                    다시 생성
+                                  </>
+                                )}
+                              </Button>
+                            )}
                           </div>
                         </div>
                       )}
@@ -491,11 +560,24 @@ export default function OnboardingPage() {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
+                            // 파일 크기 체크 (5MB 제한)
+                            if (file.size > 5 * 1024 * 1024) {
+                              alert('이미지 파일 크기는 5MB 이하여야 합니다.');
+                              return;
+                            }
+                            
                             setBrandImageFile(file);
                             const reader = new FileReader();
+                            
+                            reader.onerror = () => {
+                              console.error('파일 읽기 오류');
+                              alert('이미지를 읽는 중 오류가 발생했습니다.');
+                            };
+                            
                             reader.onloadend = () => {
                               setBrandImagePreview(reader.result as string);
-                              setBrandImageUrl(reader.result as string);
+                              // Data URL은 미리보기용으로만 사용
+                              setBrandImageUrl('');
                             };
                             reader.readAsDataURL(file);
                           }
@@ -504,7 +586,7 @@ export default function OnboardingPage() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="tagline">슬로건 (선택)</Label>
+                      <Label htmlFor="tagline">브랜드 대표 문장 (선택)</Label>
                       <Input 
                         id="tagline" 
                         placeholder="예: 더 따뜻한 밤, 더 편안한 아침" 

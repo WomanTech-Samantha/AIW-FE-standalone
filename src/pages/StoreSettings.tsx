@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import CozyHome from "@/templates/CozyHome";
 import ChicFashion from "@/templates/ChicFashion";
 import BeautyShop from "@/templates/BeautyShop";
-import "@/styles/base.css";
+import "@/templates/styles/base.css";
 import { 
   ArrowLeft, 
   Palette,
@@ -163,18 +163,9 @@ const StoreSettingsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="page-container-narrow">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/store')}
-            className="flex items-center gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            쇼핑몰로 돌아가기
-          </Button>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">쇼핑몰 설정</h1>
             <p className="text-lg text-muted-foreground">
@@ -518,7 +509,6 @@ const StoreSettingsPage = () => {
             )}
           </Button>
         </div>
-      </div>
     </div>
   );
 };

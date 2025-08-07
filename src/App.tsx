@@ -13,11 +13,11 @@ import ComparisonPage from "./pages/Comparison";
 import NotFound from "./pages/NotFound";
 import InstagramPage from "./pages/Instagram";
 import StorePage from "./pages/Store";
-import StoreCreatePage from "./pages/StoreCreate";
 import StoreSettingsPage from "./pages/StoreSettings";
 import InstagramGuidePage from "./pages/InstagramGuide";
 import InstagramConnectPage from "./pages/InstagramConnect";  
 import InstagramManagePage from "./pages/InstagramManage";
+import InstagramCallbackPage from "./pages/InstagramCallback";
 import SettingsPage from "./pages/Settings";
 
 import Login from "./pages/Login";
@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/comparison" element={<ComparisonPage />} />
+            <Route path="/instagram/callback" element={<InstagramCallbackPage />} />
             <Route path="/oauth/callback" element={<OAuthCallback />} />
 
             {/* 보호 영역: 상단 내비게이션 포함 */}
@@ -58,7 +59,6 @@ const App = () => (
                 <Route path="/studio" element={<AssetStudioPage />} />
                 <Route path="/instagram" element={<InstagramPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/store/create" element={<StoreCreatePage />} />
                 <Route path="/store/settings" element={<StoreSettingsPage />} />
                 <Route path="/store/instagram-guide" element={<InstagramGuidePage />} />
                 <Route path="/instagram/connect" element={<InstagramConnectPage />} />

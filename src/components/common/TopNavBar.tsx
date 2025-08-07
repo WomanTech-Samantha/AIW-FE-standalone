@@ -1,7 +1,7 @@
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { Instagram, Settings } from "lucide-react";
+import { Instagram, Settings, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -45,7 +45,7 @@ export default function TopNavBar() {
                     : "px-3 sm:px-6 py-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-background/50 transition-all text-sm sm:text-base"
                 }
               >
-                <span className="block sm:hidden">작업</span>
+                <span className="block sm:hidden">콘텐츠</span>
                 <span className="hidden sm:block">콘텐츠 작업공간</span>
               </NavLink>
               <NavLink
@@ -87,15 +87,9 @@ export default function TopNavBar() {
                   >
                     <Instagram className="h-4 w-4" />
                     {isInstagramConnected ? (
-                      <>
-                        <span className="hidden lg:inline ml-2">인스타그램 관리</span>
-                        <span className="hidden md:inline lg:hidden ml-2">인스타</span>
-                      </>
+                      <span className="hidden min-[1050px]:inline ml-2">인스타그램 관리</span>
                     ) : (
-                      <>
-                        <span className="hidden lg:inline ml-2">인스타 연동</span>
-                        <span className="hidden md:inline lg:hidden ml-2">연동</span>
-                      </>
+                      <span className="hidden min-[1050px]:inline ml-2">인스타 연동</span>
                     )}
                   </Button>
                 </div>
@@ -110,16 +104,22 @@ export default function TopNavBar() {
                   title="설정"
                 >
                   <Settings className="h-4 w-4" />
-                  <span className="hidden md:inline ml-2">설정</span>
+                  <span className="hidden min-[1050px]:inline ml-2">설정</span>
                 </Button>
                 
-                <span className="text-sm text-muted-foreground hidden lg:block">
+                <span className="text-sm text-muted-foreground hidden xl:block">
                   {user.storeName
                     ? `${user.storeName} 사장님!`
                     : `${user.name ?? user.email} 사장님!`}
                 </span>
-                <Button variant="outline" size="sm" onClick={() => { logout(); navigate("/"); }}>
-                  로그아웃
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => { logout(); navigate("/"); }}
+                  title="로그아웃"
+                >
+                  <LogOut className="h-4 w-4 min-[650px]:hidden" />
+                  <span className="hidden min-[650px]:inline">로그아웃</span>
                 </Button>
               </>
             ) : (
