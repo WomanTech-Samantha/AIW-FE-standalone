@@ -163,18 +163,17 @@ const StoreSettingsPage = () => {
   };
 
   return (
-    <div className="page-container-narrow">
+    <div className="min-h-screen bg-gradient-warm">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold">쇼핑몰 설정</h1>
-            <p className="text-lg text-muted-foreground">
-              쇼핑몰의 디자인과 정보를 설정하세요
-            </p>
-          </div>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">쇼핑몰 설정</h1>
+          <p className="text-lg text-muted-foreground">
+            쇼핑몰의 디자인과 정보를 수정하세요
+          </p>
         </div>
 
-        <div className="space-y-8">
+        <div className="max-w-4xl mx-auto space-y-8">
           {/* 기본 정보 설정 */}
           <Card className="card-soft">
             <CardHeader>
@@ -251,249 +250,264 @@ const StoreSettingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* 템플릿 및 테마 설정 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-8">
-              {/* 템플릿 선택 */}
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle>템플릿 선택</CardTitle>
-                  <CardDescription>
-                    사이트 디자인 템플릿을 선택하세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {templates.map((template) => (
-                      <Card 
-                        key={template.id}
-                        className={`cursor-pointer transition-all hover:shadow-lg ${
-                          selectedTemplate === template.id ? 'border-primary shadow-md' : ''
-                        }`}
-                        onClick={() => setSelectedTemplate(template.id)}
-                      >
-                        <CardContent className="p-4 flex items-center gap-4">
-                          <div className="text-3xl">{template.mockupImage}</div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg mb-1">{template.name}</h3>
-                            <p className="text-sm text-muted-foreground">{template.description}</p>
-                          </div>
-                          {selectedTemplate === template.id && (
-                            <CheckCircle2 className="h-6 w-6 text-primary" />
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+          {/* 템플릿 선택 */}
+          <Card className="card-soft">
+            <CardHeader>
+              <CardTitle>템플릿 선택</CardTitle>
+              <CardDescription>
+                사이트 디자인 템플릿을 선택하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {templates.map((template) => (
+                  <Card 
+                    key={template.id}
+                    className={`cursor-pointer transition-all hover:shadow-lg ${
+                      selectedTemplate === template.id ? 'border-primary shadow-md' : ''
+                    }`}
+                    onClick={() => setSelectedTemplate(template.id)}
+                  >
+                    <CardContent className="p-4 text-center">
+                      <div className="text-4xl mb-3">{template.mockupImage}</div>
+                      <h3 className="font-semibold text-lg mb-2">{template.name}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
+                      {selectedTemplate === template.id && (
+                        <CheckCircle2 className="h-6 w-6 text-primary mx-auto" />
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-              {/* 테마 색상 설정 */}
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Palette className="h-6 w-6" />
-                    테마 색상
-                  </CardTitle>
-                  <CardDescription>
-                    쇼핑몰의 색상을 설정하세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-3">
-                    {themeOptions.map((theme) => (
-                      <Button
-                        key={theme.id}
-                        variant={selectedTheme === theme.id ? "default" : "outline"}
-                        className="h-auto p-3 flex items-center gap-3"
-                        style={selectedTheme === theme.id ? { 
-                          backgroundColor: theme.color, 
-                          borderColor: theme.color,
-                          color: 'white'
-                        } : {}}
-                        onClick={() => setSelectedTheme(theme.id)}
-                      >
-                        {selectedTheme === theme.id ? (
-                          <CheckCircle2 className="h-5 w-5 text-white" />
-                        ) : (
-                          <div 
-                            className="w-5 h-5 rounded-full"
-                            style={{ backgroundColor: theme.color }}
-                          />
-                        )}
-                        <span className="text-sm">{theme.name}</span>
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 브랜드 이미지 및 슬로건 */}
-              <Card className="card-soft">
-                <CardHeader>
-                  <CardTitle>브랜드 설정</CardTitle>
-                  <CardDescription>
-                    브랜드 이미지와 슬로건을 설정하세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <Label>브랜드 대표 이미지 (선택)</Label>
-                    {!brandImagePreview ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <Card 
-                          className="cursor-pointer hover:shadow-md transition-shadow"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <CardContent className="p-6 text-center">
-                            <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                            <h4 className="font-medium text-lg mb-2">이미지 업로드</h4>
-                            <p className="text-sm text-muted-foreground">
-                              보유하신 로고나 대표 이미지를 업로드하세요
-                            </p>
-                          </CardContent>
-                        </Card>
-                        
-                        <Card 
-                          className="cursor-pointer hover:shadow-md transition-shadow"
-                          onClick={() => {
-                            const mockImage = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRkZGQkVCIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODAiIGZpbGw9IiNGRjg4NjYiLz4KPHRleHQgeD0iMTAwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7sspjtjbDtg508L3RleHQ+Cjwvc3ZnPg==`;
-                            setBrandImagePreview(mockImage);
-                            setBrandImageUrl(mockImage);
-                          }}
-                        >
-                          <CardContent className="p-6 text-center">
-                            <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                            <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
-                            <p className="text-sm text-muted-foreground">
-                              업종과 상호명을 바탕으로 이미지를 자동 생성해드려요
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </div>
+          {/* 테마 색상 설정 */}
+          <Card className="card-soft">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-6 w-6" />
+                테마 색상
+              </CardTitle>
+              <CardDescription>
+                쇼핑몰의 색상을 설정하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {themeOptions.map((theme) => (
+                  <Button
+                    key={theme.id}
+                    variant={selectedTheme === theme.id ? "default" : "outline"}
+                    className="h-auto p-3 flex items-center gap-3"
+                    style={selectedTheme === theme.id ? { 
+                      backgroundColor: theme.color, 
+                      borderColor: theme.color,
+                      color: 'white'
+                    } : {}}
+                    onClick={() => setSelectedTheme(theme.id)}
+                  >
+                    {selectedTheme === theme.id ? (
+                      <CheckCircle2 className="h-5 w-5 text-white" />
                     ) : (
-                      <div className="flex flex-col items-center space-y-4 mt-4">
-                        <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-primary">
-                          <img src={brandImagePreview} alt="브랜드 이미지" className="w-full h-full object-cover" />
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="absolute top-2 right-2"
-                            onClick={() => {
-                              setBrandImageFile(null);
-                              setBrandImagePreview("");
-                              setBrandImageUrl("");
-                            }}
-                          >
-                            다시 선택
-                          </Button>
-                        </div>
-                      </div>
+                      <div 
+                        className="w-5 h-5 rounded-full"
+                        style={{ backgroundColor: theme.color }}
+                      />
                     )}
+                    <span className="text-sm">{theme.name}</span>
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 브랜드 이미지 및 슬로건 */}
+          <Card className="card-soft">
+            <CardHeader>
+              <CardTitle>브랜드 설정</CardTitle>
+              <CardDescription>
+                브랜드 이미지와 슬로건을 설정하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <Label className="text-base mb-4 block">브랜드 대표 이미지</Label>
+                {!brandImagePreview ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card 
+                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <CardContent className="p-6 text-center">
+                        <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h4 className="font-medium text-lg mb-2">이미지 업로드</h4>
+                        <p className="text-sm text-muted-foreground">
+                          보유하신 로고나 대표 이미지를 업로드하세요
+                        </p>
+                      </CardContent>
+                    </Card>
                     
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setBrandImageFile(file);
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setBrandImagePreview(reader.result as string);
-                            setBrandImageUrl(reader.result as string);
-                          };
-                          reader.readAsDataURL(file);
-                        }
+                    <Card 
+                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => {
+                        const colors = {
+                          "침구": "#9B7EBD",
+                          "커튼": "#6B8E65",
+                          "의류": "#D4526E",
+                          "음식": "#C67B5C",
+                          "뷰티": "#E8A49C",
+                          "수공예": "#7189A6"
+                        };
+                        
+                        const businessType = Object.keys(colors).find(key => business.includes(key));
+                        const color = colors[businessType] || "#9B7EBD";
+                        const initials = storeName.slice(0, 2).toUpperCase() || "AI";
+
+                        const mockImage = `data:image/svg+xml;base64,${btoa(`
+                          <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="200" height="200" fill="#FAFAFA"/>
+                            <circle cx="100" cy="100" r="70" fill="${color}"/>
+                            <text x="100" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${initials}</text>
+                          </svg>
+                        `)}`;
+                        
+                        setBrandImagePreview(mockImage);
+                        setBrandImageUrl(mockImage);
                       }}
-                    />
+                    >
+                      <CardContent className="p-6 text-center">
+                        <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
+                        <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
+                        <p className="text-sm text-muted-foreground">
+                          업종과 상호명을 바탕으로 이미지를 자동 생성해드려요
+                        </p>
+                      </CardContent>
+                    </Card>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="tagline" className="text-base mb-2 block">
-                      슬로건 (선택)
-                    </Label>
-                    <Input
-                      id="tagline"
-                      value={tagline}
-                      onChange={(e) => setTagline(e.target.value)}
-                      className="text-lg"
-                      placeholder="예: 더 따뜻한 밤, 더 편안한 아침"
-                    />
+                ) : (
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="relative w-48 h-48 rounded-lg overflow-hidden border-2 border-primary">
+                      <img src={brandImagePreview} alt="브랜드 이미지" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setBrandImageFile(null);
+                          setBrandImagePreview("");
+                          setBrandImageUrl("");
+                        }}
+                      >
+                        다시 선택
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Upload className="w-3 h-3 mr-1" />
+                        이미지 변경
+                      </Button>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                )}
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      if (file.size > 5 * 1024 * 1024) {
+                        alert('이미지 파일 크기는 5MB 이하여야 합니다.');
+                        return;
+                      }
+                      
+                      setBrandImageFile(file);
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setBrandImagePreview(reader.result as string);
+                        setBrandImageUrl(reader.result as string);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="tagline" className="text-base mb-2 block">
+                  슬로건 (선택)
+                </Label>
+                <Input
+                  id="tagline"
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                  className="text-lg"
+                  placeholder="예: 더 따뜻한 밤, 더 편안한 아침"
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 미리보기 섹션 */}
-          <div className="space-y-6">
-            <Card className="card-soft">
-              <CardHeader>
-                <CardTitle>미리보기</CardTitle>
-                <CardDescription>
-                  변경사항이 어떻게 보일지 확인하세요
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div 
-                  className="border-2 rounded-lg p-6 text-center"
-                  style={{ 
-                    borderColor: themeOptions.find(t => t.id === selectedTheme)?.color,
-                    backgroundColor: `${themeOptions.find(t => t.id === selectedTheme)?.color}10`
-                  }}
-                >
-                  <div 
-                    className="w-12 h-12 rounded-full mx-auto mb-4"
-                    style={{ backgroundColor: themeOptions.find(t => t.id === selectedTheme)?.color }}
-                  />
-                  <h3 className="font-bold text-lg mb-2">
-                    {storeName || "상호명"}
-                  </h3>
-                  {tagline && (
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {tagline}
-                    </p>
+          <Card className="card-soft">
+            <CardHeader>
+              <CardTitle>미리보기</CardTitle>
+              <CardDescription>
+                변경사항이 어떻게 보일지 확인하세요
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-white rounded-lg shadow-lg p-8">
+                {/* 헤더 미리보기 */}
+                <div className="flex items-center gap-4 mb-6 pb-4 border-b">
+                  {brandImagePreview && (
+                    <img src={brandImagePreview} alt="브랜드" className="w-12 h-12 rounded-full object-cover" />
                   )}
-                  <div className="text-xs text-muted-foreground">
-                    선택된 테마: {themeOptions.find(t => t.id === selectedTheme)?.name}
+                  <div>
+                    <h3 className="font-bold text-xl" style={{ color: themeOptions.find(t => t.id === selectedTheme)?.color }}>
+                      {storeName || "상호명"}
+                    </h3>
+                    {tagline && (
+                      <p className="text-sm text-muted-foreground">
+                        {tagline}
+                      </p>
+                    )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card className="card-soft">
-              <CardHeader>
-                <CardTitle>적용 안내</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    변경사항은 즉시 쇼핑몰에 반영됩니다
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    기존 고객들에게도 새로운 디자인이 보입니다
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    언제든지 다시 변경할 수 있어요
-                  </p>
+                
+                {/* 템플릿과 테마 적용 미리보기 */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-4 h-4 rounded"
+                      style={{ backgroundColor: themeOptions.find(t => t.id === selectedTheme)?.color }}
+                    />
+                    <span className="text-sm">선택된 테마: {themeOptions.find(t => t.id === selectedTheme)?.name || "없음"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">선택된 템플릿: {templates.find(t => t.id === selectedTemplate)?.name || "없음"}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    https://{subdomain || "your-store"}.allinwom.com
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* 저장 버튼 */}
-        <div className="flex justify-center mt-12">
+        <div className="flex justify-center mt-12 pb-8">
           <Button 
             size="lg" 
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={isSaving || !business || !storeName || !selectedTheme || !selectedTemplate || !subdomain || !isSubdomainValid}
             className="text-lg px-8 py-6"
           >
             {isSaving ? (
@@ -509,6 +523,7 @@ const StoreSettingsPage = () => {
             )}
           </Button>
         </div>
+      </div>
     </div>
   );
 };
