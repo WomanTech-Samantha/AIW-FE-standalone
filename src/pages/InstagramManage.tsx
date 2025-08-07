@@ -32,6 +32,15 @@ const InstagramManagePage = () => {
   });
 
   useEffect(() => {
+    // Instagram 연동 상태 확인
+    const instagramConnected = localStorage.getItem('instagram_connected');
+    
+    // 연동되지 않았으면 연동 페이지로 리다이렉트
+    if (instagramConnected !== 'true') {
+      navigate('/instagram/connect');
+      return;
+    }
+
     // 모의 계정 데이터 로드
     const mockData = {
       username: user?.storeName?.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || "mystore",
@@ -41,7 +50,7 @@ const InstagramManagePage = () => {
       profileImage: "https://via.placeholder.com/100x100/FF8866/FFFFFF?text=로고"
     };
     setAccountData(mockData);
-  }, [user]);
+  }, [user, navigate]);
 
   const stats = [
     {

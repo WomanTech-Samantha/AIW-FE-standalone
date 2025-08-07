@@ -17,6 +17,7 @@ import StoreSettingsPage from "./pages/StoreSettings";
 import InstagramGuidePage from "./pages/InstagramGuide";
 import InstagramConnectPage from "./pages/InstagramConnect";  
 import InstagramManagePage from "./pages/InstagramManage";
+import InstagramCallbackPage from "./pages/InstagramCallback";
 import SettingsPage from "./pages/Settings";
 
 import Login from "./pages/Login";
@@ -41,6 +42,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/comparison" element={<ComparisonPage />} />
+            <Route path="/instagram/callback" element={<InstagramCallbackPage />} />
 
             {/* 보호 영역: 상단 내비게이션 포함 */}
             <Route element={<ProtectedRoute />}>

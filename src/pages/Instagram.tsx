@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Upload, Video, ImageIcon, ArrowRight } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Upload, Video, ImageIcon, ArrowRight, Instagram, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function InstagramPage() {
   const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    // Instagram 연동 상태 확인
+    const instagramConnected = localStorage.getItem('instagram_connected');
+    setIsConnected(instagramConnected === 'true');
+  }, []);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files?.[0] ?? null);
@@ -37,13 +45,40 @@ function InstagramPage() {
           </Button>
         </div>
 
+        {!isConnected && (
+          <Alert className="mb-6 border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800">
+              <div className="flex items-center justify-between">
+                <span>Instagram 계정이 연동되지 않았습니다. 먼저 계정을 연동해주세요.</span>
+                <Button
+                  onClick={() => navigate('/instagram/connect')}
+                  size="sm"
+                  className="ml-4"
+                >
+                  <Instagram className="mr-2 h-4 w-4" />
+                  계정 연동하기
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Card className="card-soft max-w-md mx-auto mb-6">
           <CardHeader>
             <CardTitle>업로드할 미디어 선택</CardTitle>
-            <CardDescription>스토리·피드·릴스 모두 지원</CardDescription>
+            <CardDescription>
+              {isConnected ? "스토리·피드·릴스 모두 지원" : "계정 연동 후 사용 가능"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <input type="file" accept="image/*,video/*" onChange={onFileChange} />
+            <input 
+              type="file" 
+              accept="image/*,video/*" 
+              onChange={onFileChange}
+              disabled={!isConnected}
+            />
           </CardContent>
         </Card>
 
@@ -51,11 +86,11 @@ function InstagramPage() {
           <Button
             size="senior"
             onClick={onUpload}
-            disabled={!file}
+            disabled={!file || !isConnected}
             className="gradient-primary text-white shadow-lg hover:shadow-xl"
           >
             <Upload className="mr-2 h-6 w-6" />
-            {file ? `${file.name} 업로드` : "파일 선택 후 업로드"}
+            {!isConnected ? "계정 연동 필요" : file ? `${file.name} 업로드` : "파일 선택 후 업로드"}
           </Button>
         </div>
     </div>
