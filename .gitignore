@@ -31,3 +31,6 @@ dist-ssr
 # Anthropic Claude 로컬 설정
 .claude/
 .claude
+
+# 기타
+USER_ERD.md
