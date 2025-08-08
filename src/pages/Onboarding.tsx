@@ -20,8 +20,8 @@ export default function OnboardingPage() {
   const [storeName, setStoreName] = useState(user?.storeName ?? "");
   
   // 사이트 생성 관련 정보
-  const [selectedTheme, setSelectedTheme] = useState("warm");
-  const [selectedColor, setSelectedColor] = useState("warm");
+  const [color, setColor] = useState("warm");
+  const [theme, setTheme] = useState("warm");
   const [subdomain, setSubdomain] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState("classic");
   const [brandImageUrl, setBrandImageUrl] = useState("");

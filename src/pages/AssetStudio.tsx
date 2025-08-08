@@ -147,19 +147,10 @@ const AssetStudioPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="container mx-auto px-4 py-8">
+    <div className="page-container">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <Button
-              variant="ghost"
-              onClick={() => navigate(-1)}
-              className="mb-4 text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              뒤로 가기
-            </Button>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">마케팅 에셋 생성하기</h1>
             <p className="text-lg text-muted-foreground">
               AI가 상품 사진을 마케팅 자료로 자동 변환해드려요
@@ -253,7 +244,6 @@ const AssetStudioPage = () => {
         {currentStep === 3 && contentType && (
           renderStep3Component()
         )}
-      </div>
     </div>
   );
 };
