@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 import { 
   ArrowLeft, 
   Save,
@@ -33,6 +34,8 @@ const SettingsPage = () => {
   
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const businessOptions = [
     "🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", 
@@ -59,6 +62,11 @@ const SettingsPage = () => {
       setShowDeleteConfirm(true);
       setTimeout(() => setShowDeleteConfirm(false), 10000); // 10초 후 자동 취소
     }
+  };
+
+  const handleChangePasswordSuccess = () => {
+    setSuccessMessage("비밀번호가 성공적으로 변경되었습니다!");
+    setTimeout(() => setSuccessMessage(""), 5000); // 5초 후 메시지 제거
   };
 
   return (
@@ -150,7 +158,10 @@ const SettingsPage = () => {
               </div>
               
               <div>
-                <Button variant="outline">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowChangePassword(true)}
+                >
                   비밀번호 변경
                 </Button>
               </div>
@@ -250,6 +261,21 @@ const SettingsPage = () => {
             </Button>
           </div>
         </div>
+
+        {/* 성공 메시지 */}
+        {successMessage && (
+          <div className="fixed top-24 right-4 bg-white border border-gray-200 text-gray-800 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-in slide-in-from-right-4">
+            <CheckCircle2 className="h-4 w-4 text-blue-500" />
+            {successMessage}
+          </div>
+        )}
+
+        {/* 비밀번호 변경 다이얼로그 */}
+        <ChangePasswordDialog 
+          open={showChangePassword} 
+          onOpenChange={setShowChangePassword}
+          onSuccess={handleChangePasswordSuccess}
+        />
     </div>
   );
 };

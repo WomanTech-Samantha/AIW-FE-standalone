@@ -11,13 +11,24 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const nav = useNavigate();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup({ email, password, name });
-    // 회원가입 직후 → 온보딩 시작
-    nav("/onboarding", { replace: true });
+    setIsLoading(true);
+    setError("");
+    
+    try {
+      await signup({ email, password, name });
+      // 회원가입 직후 → 온보딩 시작
+      nav("/onboarding", { replace: true });
+    } catch (error: any) {
+      setError(error.message || "회원가입에 실패했습니다");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -75,11 +86,17 @@ export default function SignUp() {
                 className="h-11"
               />
             </div>
+            {error && (
+              <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
+                {error}
+              </div>
+            )}
             <Button 
               className="w-full h-11 gradient-primary text-white hover:opacity-90" 
               type="submit"
+              disabled={isLoading}
             >
-              계정 만들기
+              {isLoading ? "계정 생성 중..." : "계정 만들기"}
             </Button>
           </form>
           <div className="text-center mt-6">

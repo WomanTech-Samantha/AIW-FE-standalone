@@ -17,6 +17,7 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const nav = useNavigate();
   const location = useLocation() as any;
 
@@ -30,12 +31,14 @@ function LoginForm() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
+    
     try {
       await login(email, password);
       handleLoginSuccess();
-      toast.success("로그인되었습니다!");
-    } catch (error) {
-      toast.error("로그인에 실패했습니다.");
+    } catch (error: any) {
+      const errorMessage = error.message || "로그인에 실패했습니다";
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +47,6 @@ function LoginForm() {
   // 구글 로그인
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log('Google token response:', tokenResponse);
       
       try {
         setIsLoading(true);
@@ -218,6 +220,11 @@ function LoginForm() {
                 className="h-11"
               />
             </div>
+            {error && (
+              <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
+                {error}
+              </div>
+            )}
             <Button 
               className="w-full h-11 gradient-primary text-white hover:opacity-90" 
               type="submit"
