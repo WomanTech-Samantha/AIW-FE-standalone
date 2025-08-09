@@ -26,35 +26,43 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
   const [userInfo, setUserInfo] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Instagram OAuth URL 생성
-  const getInstagramAuthUrl = () => {
+  // Facebook Login URL 생성 (Instagram Graph API는 Facebook Login을 통해서만 접근)
+  const getFacebookAuthUrl = () => {
     const clientId = import.meta.env.VITE_FACEBOOK_APP_ID;
-    const redirectUri = `${window.location.origin}/instagram/callback`;
-    // 개발 모드: 테스트 사용자로 추가된 계정만 사용 가능
-    // 프로덕션: App Review 통과 후 모든 사용자 사용 가능
-    const scope = 'email,public_profile,instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement';
-    const responseType = 'code';
-    const state = Math.random().toString(36).substring(7); // CSRF 보호용
-
-    // State를 sessionStorage에 저장
+    // 개발 환경에서는 localhost:8080 사용
+    const redirectUri = window.location.hostname === 'localhost' 
+      ? `http://localhost:8080/instagram/callback`
+      : `${window.location.origin}/instagram/callback`;
+    
+    // Facebook Login v18.0 표준 스코프
+    // pages_show_list: 페이지 목록 조회
+    // pages_read_engagement: 페이지 인사이트
+    // instagram_basic: Instagram 기본 정보
+    // instagram_manage_comments: 댓글 관리
+    // instagram_manage_insights: 인사이트 조회
+    // instagram_content_publish: 콘텐츠 게시
+    const scope = 'email,public_profile,pages_show_list,pages_read_engagement';
+    
+    const state = Math.random().toString(36).substring(7);
     sessionStorage.setItem('instagram_oauth_state', state);
 
-    return `https://www.facebook.com/v21.0/dialog/oauth?` +
+    // Facebook OAuth Dialog v18.0
+    return `https://www.facebook.com/v18.0/dialog/oauth?` +
       `client_id=${clientId}` +
       `&redirect_uri=${encodeURIComponent(redirectUri)}` +
       `&scope=${encodeURIComponent(scope)}` +
-      `&response_type=${responseType}` +
+      `&response_type=code` +
       `&state=${state}`;
   };
 
-  // Instagram Business Login 시작
-  const handleInstagramBusinessLogin = () => {
+  // Facebook Login 시작
+  const handleFacebookLogin = () => {
     setIsLoading(true);
     setError(null);
 
-    const authUrl = getInstagramAuthUrl();
+    const authUrl = getFacebookAuthUrl();
     
-    // 팝업 창으로 열기
+    // 새 창으로 열기 (팝업 차단 방지)
     const width = 600;
     const height = 700;
     const left = (window.screen.width - width) / 2;
@@ -62,8 +70,8 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
     
     const popup = window.open(
       authUrl,
-      'Instagram Business Login',
-      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no`
+      'Facebook Login',
+      `width=${width},height=${height},left=${left},top=${top},toolbar=no,menubar=no,scrollbars=yes`
     );
 
     // 팝업 창 모니터링
@@ -127,7 +135,7 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
             Instagram 비즈니스 계정 연동
           </CardTitle>
           <CardDescription>
-            Instagram Business API를 통해 콘텐츠를 자동으로 관리하세요
+            Facebook 페이지를 통해 Instagram 비즈니스 계정을 연동합니다
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -176,26 +184,33 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
           ) : (
             // 연동 전 상태
             <div className="space-y-6">
+              <Alert className="border-amber-200 bg-amber-50">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <AlertTitle className="text-amber-800">중요 안내</AlertTitle>
+                <AlertDescription className="text-amber-700 space-y-2 mt-2">
+                  <p>✓ Facebook 계정으로 로그인합니다</p>
+                  <p>✓ Instagram 비즈니스 계정이 Facebook 페이지에 연결되어 있어야 합니다</p>
+                  <p>✓ 개발 모드에서는 테스트 사용자만 로그인 가능합니다</p>
+                </AlertDescription>
+              </Alert>
+
               <div className="bg-blue-50 p-4 rounded-lg space-y-3">
                 <h3 className="font-semibold flex items-center gap-2">
                   <Shield className="h-5 w-5 text-blue-600" />
-                  필요한 권한
+                  요청 권한
                 </h3>
                 <ul className="text-sm space-y-1 text-blue-800">
-                  <li>✓ Instagram 비즈니스 계정 접근</li>
-                  <li>✓ 콘텐츠 게시 및 관리</li>
-                  <li>✓ 페이지 인사이트 조회</li>
-                  <li className="text-amber-600 text-xs mt-2">
-                    ※ 개발 모드: 테스트 사용자만 로그인 가능
-                  </li>
+                  <li>✓ Facebook 페이지 접근</li>
+                  <li>✓ 연결된 Instagram 계정 관리</li>
+                  <li>✓ 게시물 및 인사이트 조회</li>
                 </ul>
               </div>
 
               <Button
-                onClick={handleInstagramBusinessLogin}
+                onClick={handleFacebookLogin}
                 disabled={isLoading}
                 size="lg"
-                className="w-full"
+                className="w-full bg-blue-600 hover:bg-blue-700"
               >
                 {isLoading ? (
                   <>
@@ -204,14 +219,16 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
                   </>
                 ) : (
                   <>
-                    <Instagram className="mr-2 h-5 w-5" />
-                    Instagram Business 계정으로 로그인
+                    <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    Facebook으로 계속하기
                   </>
                 )}
               </Button>
 
               <p className="text-xs text-center text-muted-foreground">
-                로그인 시 Facebook의 OAuth 2.0을 통해 안전하게 인증됩니다
+                Facebook OAuth 2.0을 통해 안전하게 인증됩니다
               </p>
             </div>
           )}
@@ -224,80 +241,89 @@ const InstagramBusinessLogin = ({ onSuccess, onError }: InstagramBusinessLoginPr
           <CardTitle className="text-lg">연동 전 준비사항</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="business" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="business">비즈니스 계정 전환</TabsTrigger>
-              <TabsTrigger value="api">API 설정</TabsTrigger>
+          <Tabs defaultValue="setup" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="setup">1. 계정 연결</TabsTrigger>
+              <TabsTrigger value="test">2. 테스트 사용자</TabsTrigger>
+              <TabsTrigger value="urls">3. URL 설정</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="business" className="space-y-4">
+            <TabsContent value="setup" className="space-y-4">
               <div className="space-y-3">
-                <h4 className="font-semibold">Instagram 비즈니스 계정 전환 방법</h4>
+                <h4 className="font-semibold">Instagram을 Facebook 페이지에 연결</h4>
                 <ol className="space-y-2 text-sm">
                   <li className="flex gap-2">
-                    <span className="font-semibold text-pink-500">1.</span>
-                    Instagram 앱에서 프로필로 이동
+                    <span className="font-semibold text-blue-600">1.</span>
+                    Facebook 페이지 설정으로 이동
                   </li>
                   <li className="flex gap-2">
-                    <span className="font-semibold text-pink-500">2.</span>
-                    설정 → 계정 → 계정 유형 전환
+                    <span className="font-semibold text-blue-600">2.</span>
+                    왼쪽 메뉴에서 "Instagram" 선택
                   </li>
                   <li className="flex gap-2">
-                    <span className="font-semibold text-pink-500">3.</span>
-                    '비즈니스'를 선택하고 카테고리 설정
+                    <span className="font-semibold text-blue-600">3.</span>
+                    "계정 연결" 클릭 후 Instagram 로그인
                   </li>
                   <li className="flex gap-2">
-                    <span className="font-semibold text-pink-500">4.</span>
-                    연락처 정보 입력 (선택사항)
+                    <span className="font-semibold text-blue-600">4.</span>
+                    비즈니스 계정이어야 연결 가능
                   </li>
                 </ol>
-                
-                <Alert>
-                  <Info className="h-4 w-4" />
-                  <AlertDescription>
-                    비즈니스 계정으로 전환해도 기존 팔로워나 게시물은 그대로 유지됩니다.
-                  </AlertDescription>
-                </Alert>
               </div>
             </TabsContent>
             
-            <TabsContent value="api" className="space-y-4">
+            <TabsContent value="test" className="space-y-4">
               <div className="space-y-3">
-                <h4 className="font-semibold">개발 모드 설정</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="p-3 bg-amber-50 rounded-lg">
-                    <p className="font-medium mb-2 text-amber-800">🔧 테스트 사용자 추가 필요</p>
-                    <ol className="text-xs space-y-1 text-amber-700">
-                      <li>1. Facebook 개발자 콘솔 → 앱 대시보드</li>
-                      <li>2. 역할(Roles) → 테스트 사용자(Test Users)</li>
-                      <li>3. 테스트할 계정 추가</li>
-                      <li>4. 해당 계정으로만 로그인 가능</li>
-                    </ol>
-                  </div>
-                  
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-medium mb-1">앱 ID</p>
-                    <code className="text-xs bg-white px-2 py-1 rounded">
-                      {import.meta.env.VITE_FACEBOOK_APP_ID || '설정 필요'}
-                    </code>
-                  </div>
-                  
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="font-medium mb-1">리디렉션 URL (등록 필수)</p>
-                    <code className="text-xs bg-white px-2 py-1 rounded">
-                      {window.location.origin}/instagram/callback
-                    </code>
-                  </div>
+                <h4 className="font-semibold">테스트 사용자 추가 (개발 모드)</h4>
+                <div className="p-3 bg-amber-50 rounded-lg">
+                  <p className="text-sm text-amber-800 mb-2">
+                    Facebook 개발자 콘솔에서:
+                  </p>
+                  <ol className="text-xs space-y-1 text-amber-700">
+                    <li>1. 앱 대시보드 → 역할 → 역할</li>
+                    <li>2. "테스터 추가" 클릭</li>
+                    <li>3. Facebook 사용자 ID 또는 이메일 입력</li>
+                    <li>4. 초대 수락 (Facebook 알림 확인)</li>
+                  </ol>
                 </div>
                 
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.open('https://developers.facebook.com/apps', '_blank')}
+                  onClick={() => window.open(`https://developers.facebook.com/apps/${import.meta.env.VITE_FACEBOOK_APP_ID}/roles/roles/`, '_blank')}
                   className="w-full"
                 >
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Facebook 개발자 콘솔 열기
+                  테스터 추가 페이지 열기
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="urls" className="space-y-4">
+              <div className="space-y-3">
+                <h4 className="font-semibold">OAuth 리디렉션 URL 설정</h4>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="font-medium mb-1 text-sm">Facebook 로그인 설정에 추가:</p>
+                  <code className="text-xs bg-white px-2 py-1 rounded block mt-2">
+                    http://localhost:8080/instagram/callback
+                  </code>
+                </div>
+
+                <div className="p-3 bg-blue-50 rounded-lg">
+                  <p className="text-xs text-blue-700">
+                    <strong>경로:</strong> Facebook 로그인 → 설정 → 유효한 OAuth 리디렉션 URI
+                  </p>
+                </div>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(`https://developers.facebook.com/apps/${import.meta.env.VITE_FACEBOOK_APP_ID}/fb-login/settings/`, '_blank')}
+                  className="w-full"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Facebook 로그인 설정 열기
                 </Button>
               </div>
             </TabsContent>
