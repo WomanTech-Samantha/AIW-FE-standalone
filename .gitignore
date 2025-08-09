@@ -32,6 +32,6 @@ dist-ssr
 .claude/
 .claude
 
-# 기타
+# 문서
 USER_ERD.md
 API_SPECIFICATION.md
