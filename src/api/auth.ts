@@ -8,6 +8,13 @@ export interface User {
   profileImage?: string;
   hasOnboarded: boolean;
   storeName?: string;
+  business?: string;
+  color?: string;
+  theme?: string;
+  template?: string;
+  subdomain?: string;
+  brandImageUrl?: string;
+  tagline?: string;
   loginType: 'email' | 'google' | 'kakao' | 'naver';
   socialId?: string;
   isEmailVerified: boolean;
