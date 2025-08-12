@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
-import CozyHome from "@/templates/CozyHome";
-import ChicFashion from "@/templates/ChicFashion";
-import BeautyShop from "@/templates/BeautyShop";
-import "@/templates/styles/base.css";
+import CozyHome from "@/templates/Cozy/CozyHome";
+import ChicFashion from "@/templates/Chic/ChicHome";
+import BeautyShop from "@/templates/Beauty/BeautyHome";
+import "@/templates/base.css";
 import { 
   ArrowLeft, 
   Palette,

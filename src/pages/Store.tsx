@@ -36,24 +36,88 @@ import {
 const StorePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [hasOnlineStore, setHasOnlineStore] = useState(false);
+  const [hasOnlineStore, setHasOnlineStore] = useState<boolean | null>(null); // null = 로딩중, true/false = 결과
   const [storeUrl, setStoreUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 쇼핑몰 생성 상태 확인
-    const storeStatus = localStorage.getItem('has_online_store');
-    setHasOnlineStore(storeStatus === 'true');
-    
-    if (storeStatus === 'true') {
-      // 쇼핑몰 URL 생성
-      const storeName = user?.storeName || "mystore";
-      const subdomain = storeName.toLowerCase().replace(/[^a-z0-9]/g, '');
-      setStoreUrl(`https://${subdomain}.allinwom.com`);
+    if (user) {
+      // localStorage 대신 실제 DB에서 스토어 존재 여부 확인
+      fetchUserStore();
+    } else {
+      setIsLoading(false);
     }
   }, [user]);
 
+  const fetchUserStore = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('auth_token'); // 수정: auth_token 사용
+      console.log('Store.tsx - Fetching user store URL with token:', token);
+      
+      // 새로운 엔드포인트 사용: 사용자의 스토어 URL 직접 조회
+      const response = await fetch('http://localhost:3001/api/v1/users/me/store-url', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      console.log('Store.tsx - API response status:', response.status);
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Store.tsx - Store URL data received:', result);
+        
+        if (result.success && result.data.hasStore) {
+          // 사용자의 실제 서브도메인으로 URL 생성
+          const storeUrl = result.data.storeUrl;
+          console.log('Store.tsx - Setting user store URL:', storeUrl);
+          setStoreUrl(storeUrl);
+          setHasOnlineStore(true);
+          
+          // localStorage도 동기화
+          localStorage.setItem('has_online_store', 'true');
+          
+          // 스토어가 공개되지 않은 경우 경고
+          if (!result.data.isPublished) {
+            console.warn('Store.tsx - Store exists but not published yet');
+          }
+        } else {
+          console.log('Store.tsx - User has no store yet');
+          // 스토어가 없는 경우 온보딩으로 유도
+          setHasOnlineStore(false);
+          
+          // localStorage도 동기화
+          localStorage.setItem('has_online_store', 'false');
+        }
+      } else {
+        console.error('Store.tsx - API failed:', await response.text());
+        // API 실패시 스토어가 없다고 표시 (fallback 제거)
+        setHasOnlineStore(false);
+      }
+    } catch (error) {
+      console.error('스토어 URL 조회 실패:', error);
+      // 네트워크 오류시에도 스토어가 없다고 표시
+      setHasOnlineStore(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 로딩 중인 경우
+  if (isLoading) {
+    return (
+      <div className="page-container-wide">
+        <div className="text-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">스토어 정보를 확인하는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
   // 쇼핑몰이 생성되지 않은 경우의 UI
-  if (!hasOnlineStore) {
+  if (hasOnlineStore === false) {
     return (
       <div className="page-container-wide">
           {/* Header */}
