@@ -2,16 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Plus, Minus, Star, Truck, Shield, RotateCcw, Leaf, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import '../base.css';
 import { useState } from "react";
-import beautySkincareImage from "@/assets/beauty-skincare-1.jpg";
-import beautyMakeupImage from "@/assets/beauty-makeup-1.jpg";
+// placeholder 이미지 사용
+const beautySkincareImage = "https://via.placeholder.com/600x400/fdf2f8/ec4899?text=Skincare";
+const beautyMakeupImage = "https://via.placeholder.com/600x400/fef7ff/d946ef?text=Makeup";
 
 const BeautyProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("30ml");
 
   const sizes = ["15ml", "30ml", "50ml"];
-
+    const storeParam = new URLSearchParams(window.location.search).get('store');
   const relatedProducts = [
     {
       id: 1,
@@ -30,25 +32,25 @@ const BeautyProduct = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-beauty-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-beauty-card border-b border-beauty-border sticky top-0 z-50">
+      <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/beauty" className="text-2xl font-bold text-beauty-primary flex items-center">
+              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold flex items-center">
                 <Leaf className="h-6 w-6 mr-2" />
-                내추럴뷰티
+                <span style={{ color: 'var(--color-primary)' }}>내추럴뷰티</span>
               </Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/beauty" className="text-base font-medium hover:text-beauty-primary transition-smooth">홈</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">스킨케어</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">메이크업</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">헤어케어</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">바디케어</Link>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/skincare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">스킨케어</Link>
+              <Link to={`/category/makeup?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
+              <Link to={`/category/haircare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">헤어케어</Link>
+              <Link to={`/category/bodycare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">바디케어</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -65,9 +67,9 @@ const BeautyProduct = () => {
       <div className="bg-beauty-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/beauty" className="hover:text-beauty-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:text-beauty-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to="/beauty/category" className="hover:text-beauty-primary transition-smooth">스킨케어</Link>
+            <Link to={`/category/skincare?store=${storeParam}`} className="hover:text-beauty-primary transition-smooth">스킨케어</Link>
             <span className="mx-2">/</span>
             <span className="text-beauty-primary font-medium">오가닉 비타민C 세럼</span>
           </div>

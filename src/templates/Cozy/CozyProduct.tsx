@@ -2,15 +2,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Plus, Minus, Star, Truck, Shield, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
+import '../base.css';
 import { useState } from "react";
-import cozyBeddingImage from "@/assets/cozy-bedding-1.jpg";
-import cozyCurtainsImage from "@/assets/cozy-curtains-1.jpg";
+// placeholder 이미지 사용
+const cozyBeddingImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Bedding";
+const cozyCurtainsImage = "https://via.placeholder.com/600x400/e5e7eb/6b7280?text=Curtains";
 
 const CozyProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("베이지");
   const [selectedSize, setSelectedSize] = useState("킹");
-
+  const storeParam = new URLSearchParams(window.location.search).get('store');
   const colors = ["베이지", "화이트", "그레이", "네이비"];
   const sizes = ["싱글", "슈퍼싱글", "퀸", "킹"];
 
@@ -32,21 +34,21 @@ const CozyProduct = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-cozy-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-cozy-card border-b border-cozy-border sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/cozy" className="text-2xl font-bold text-cozy-primary">코지홈</Link>
+              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>코지홈</Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/cozy" className="text-base font-medium hover:text-cozy-primary transition-smooth">홈</Link>
-              <Link to="/cozy/category" className="text-base font-medium hover:text-cozy-primary transition-smooth">침구류</Link>
-              <Link to="/cozy/category" className="text-base font-medium hover:text-cozy-primary transition-smooth">커튼/블라인드</Link>
-              <Link to="/cozy/category" className="text-base font-medium hover:text-cozy-primary transition-smooth">홈데코</Link>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/bedding?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">침구류</Link>
+              <Link to={`/category/curtains?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">커튼/블라인드</Link>
+              <Link to={`/category/homedeco?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈데코</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -63,9 +65,9 @@ const CozyProduct = () => {
       <div className="bg-cozy-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/cozy" className="hover:text-cozy-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:text-cozy-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to="/cozy/category" className="hover:text-cozy-primary transition-smooth">침구류</Link>
+            <Link to={`/category/bedding?store=${storeParam}`} className="hover:text-cozy-primary transition-smooth">침구류</Link>
             <span className="mx-2">/</span>
             <span className="text-cozy-primary font-medium">프리미엄 코튼 침구 세트</span>
           </div>

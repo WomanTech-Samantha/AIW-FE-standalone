@@ -1,20 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const ChicFashion = () => {
+  const [storeData, setStoreData] = useState<any>(null);
+  const [brandData, setBrandData] = useState<any>(null);
+  
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    // 전역 스토어 데이터 가져오기
+    const globalData = (window as any).STORE_DATA;
+    console.log('ChicHome - window.STORE_DATA:', globalData);
+    if (globalData) {
+      console.log('ChicHome - Setting store data:', globalData.store);
+      console.log('ChicHome - Setting brand data:', globalData.brand);
+      setStoreData(globalData.store);
+      setBrandData(globalData.brand);
+    } else {
+      console.log('ChicHome - No STORE_DATA found, trying again...');
+      // 데이터가 없으면 잠시 후 다시 시도
+      setTimeout(() => {
+        const retryData = (window as any).STORE_DATA;
+        if (retryData) {
+          console.log('ChicHome - Retry success:', retryData);
+          setStoreData(retryData.store);
+          setBrandData(retryData.brand);
+        }
+      }, 100);
+    }
+  }, []);
+
+  const storeName = storeData?.storeName || 'CHIC';
+  const brandName = brandData?.brandName || 'CHIC';
+  const slogan = brandData?.slogan || 'MINIMAL & ELEGANT';
+  const description = storeData?.description || '세련된 감성의 프리미엄 패션';
   return (
     <div className="min-h-screen bg-white">
       {/* 헤더 - 미니멀하고 세련된 디자인 */}
       <header className="border-b border-gray-100">
         <div className="container">
           <div className="flex items-center justify-between h-20">
-            <h1 className="text-3xl font-light tracking-wider" style={{ color: 'var(--color-primary)' }}>CHIC</h1>
+            <h1 className="text-3xl font-light tracking-wider" style={{ color: 'var(--color-primary)' }}>{storeName.toUpperCase()}</h1>
             
             <nav className="hidden lg:flex space-x-12">
-              <Link to="/chic" className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">HOME</Link>
-              <Link to="/chic/category" className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">DRESSES</Link>
-              <Link to="/chic/category" className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">BLOUSES</Link>
-              <Link to="/chic/category" className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">ACCESSORIES</Link>
+              <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">HOME</Link>
+              <Link to={`/category/dresses?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">DRESSES</Link>
+              <Link to={`/category/tops?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">TOPS</Link>
+              <Link to={`/category/accessories?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">ACCESSORIES</Link>
             </nav>
 
             <div className="flex items-center space-x-6">
@@ -94,7 +127,7 @@ const ChicFashion = () => {
               { name: '핀턱 쇼츠', desc: '클래식 핏', price: '89,000', originalPrice: '119,000', badge: 'SALE' }
             ].map((item, idx) => (
               <div key={idx} className="group">
-                <Link to="/chic/product">
+                <Link to={`/product/1?store=${storeParam}`}>
                   <div className="relative overflow-hidden">
                     <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center relative">
                       <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +168,7 @@ const ChicFashion = () => {
               { name: 'ACCESSORIES', count: '28' },
               { name: 'OUTERWEAR', count: '18' }
             ].map((cat, idx) => (
-              <Link key={idx} to="/chic/category">
+              <Link key={idx} to={`/category/all?store=${storeParam}`}>
                 <div className="group cursor-pointer">
                   <div className="aspect-square bg-gray-100 mb-4 relative overflow-hidden flex items-center justify-center">
                     <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
