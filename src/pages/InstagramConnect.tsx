@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { checkInstagramConnection, disconnectInstagram } from "@/utils/instagramAuth";
 import InstagramDirectLogin from "@/components/InstagramDirectLogin";
 
 const InstagramConnectPage = () => {
@@ -9,19 +10,31 @@ const InstagramConnectPage = () => {
   const { user } = useAuth();
   const [isInstagramLoginComplete, setIsInstagramLoginComplete] = useState(false);
 
-  // 컴포넌트 마운트 시 연동 상태 확인
+  // 컴포넌트 마운트 시 연동 상태 확인 및 실시간 체크
   useEffect(() => {
-    const connected = localStorage.getItem('instagram_connected');
-    if (connected === 'true') {
-      setIsInstagramLoginComplete(true);
+    // 초기 체크
+    const connection = checkInstagramConnection();
+    if (connection.isConnected) {
+      navigate('/instagram/manage');
+      return;
     }
-  }, []);
+
+    // 실시간 연동 상태 체크 (1초마다)
+    const interval = setInterval(() => {
+      const currentConnection = checkInstagramConnection();
+      if (currentConnection.isConnected) {
+        setIsInstagramLoginComplete(true);
+        navigate('/instagram/manage');
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   // 개발용: 연동 상태 초기화 함수
   const clearConnection = () => {
+    disconnectInstagram();
     localStorage.removeItem('instagram_connected');
-    localStorage.removeItem('instagram_user');
-    localStorage.removeItem('instagram_access_token');
     localStorage.removeItem('instagram_recent_media');
     setIsInstagramLoginComplete(false);
     window.location.reload();
