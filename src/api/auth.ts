@@ -229,6 +229,34 @@ class AuthAPI {
       body: JSON.stringify(preferences),
     });
   }
+
+  // 온보딩 완료
+  async completeOnboarding(
+    token: string,
+    data: {
+      business: string;
+      storeName: string;
+      theme: string;
+      template: string;
+      subdomain: string;
+      brandImageUrl?: string;
+      tagline?: string;
+    }
+  ): Promise<{
+    success: boolean;
+    data: {
+      user: User;
+      brand: any;
+      store: any;
+    };
+    message: string;
+  }> {
+    return this.request('/users/complete-onboarding', {
+      method: 'POST',
+      headers: this.getHeaders(token),
+      body: JSON.stringify(data),
+    });
+  }
 }
 
 export const authAPI = new AuthAPI();
