@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,13 +7,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function SignUp() {
-  const { signup } = useAuth();
+  const { signup, isAuthenticated, user } = useAuth();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const nav = useNavigate();
+  const location = useLocation() as any;
+
+  // 이미 로그인된 사용자가 회원가입 페이지에 접근하면 리다이렉트
+  useEffect(() => {
+    if (isAuthenticated) {
+      const to = location.state?.from?.pathname;
+      const hasOnboarded = user?.hasOnboarded ?? JSON.parse(localStorage.getItem("auth_user") || "{}")?.hasOnboarded;
+      
+      if (hasOnboarded) {
+        nav(to || "/studio", { replace: true });
+      } else {
+        nav("/onboarding", { replace: true });
+      }
+    }
+  }, [isAuthenticated, user, nav, location]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
