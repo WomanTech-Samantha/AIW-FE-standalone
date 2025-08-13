@@ -19,15 +19,15 @@ export default function OnboardingPage() {
   const [business, setBusiness] = useState(user?.business ?? "");
   const [storeName, setStoreName] = useState(user?.storeName ?? "");
   
-  // 사이트 생성 관련 정보
-  const [color, setColor] = useState("warm");
-  const [theme, setTheme] = useState("warm");
-  const [subdomain, setSubdomain] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState("classic");
-  const [brandImageUrl, setBrandImageUrl] = useState("");
+  // 사이트 생성 관련 정보 (기존 값 있으면 표시)
+  const [color, setColor] = useState(user?.color || "warm");
+  const [theme, setTheme] = useState(user?.theme || "warm");
+  const [subdomain, setSubdomain] = useState(user?.subdomain || "");
+  const [selectedTemplate, setSelectedTemplate] = useState(user?.template || "classic");
+  const [brandImageUrl, setBrandImageUrl] = useState(user?.brandImageUrl || "");
   const [brandImageFile, setBrandImageFile] = useState<File | null>(null);
-  const [brandImagePreview, setBrandImagePreview] = useState<string>("");
-  const [tagline, setTagline] = useState("");
+  const [brandImagePreview, setBrandImagePreview] = useState<string>(user?.brandImageUrl || "");
+  const [tagline, setTagline] = useState(user?.tagline || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubdomainValid, setIsSubdomainValid] = useState(true);
 
@@ -87,7 +87,14 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>업종 선택</CardTitle>
-                    <CardDescription>맞춤형 템플릿과 자동화를 구성합니다</CardDescription>
+                    <CardDescription>
+                      맞춤형 템플릿과 자동화를 구성합니다
+                      {user?.business && (
+                        <span className="block text-blue-600 text-sm mt-1">
+                          ℹ️ 이전에 선택하신 업종: {user.business}
+                        </span>
+                      )}
+                    </CardDescription>
                   </CardHeader>
                   <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
                     {["🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", "🍽️ 음식·요리", "💄 뷰티·화장품", "🧵 수공예"].map((label) => (
@@ -107,7 +114,14 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>브랜드 컬러 & 테마</CardTitle>
-                    <CardDescription>모든 마케팅 자산에 일관되게 반영돼요</CardDescription>
+                    <CardDescription>
+                      모든 마케팅 자산에 일관되게 반영돼요
+                      {(user?.color || user?.theme) && (
+                        <span className="block text-blue-600 text-sm mt-1">
+                          ℹ️ 이전 설정: {user.color || user.theme} 테마
+                        </span>
+                      )}
+                    </CardDescription>
                   </CardHeader>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {[
@@ -143,7 +157,14 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>상호명 입력</CardTitle>
-                    <CardDescription>문서/이미지에 자동 반영됩니다</CardDescription>
+                    <CardDescription>
+                      문서/이미지에 자동 반영됩니다
+                      {user?.storeName && (
+                        <span className="block text-blue-600 text-sm mt-1">
+                          ℹ️ 현재 등록된 상호명: {user.storeName}
+                        </span>
+                      )}
+                    </CardDescription>
                   </CardHeader>
                   <div className="space-y-2">
                     <Label htmlFor="storeName">상호명</Label>
@@ -156,7 +177,14 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>브랜드 이미지/슬로건</CardTitle>
-                    <CardDescription>선택 입력: 초기 마케팅 자산에 사용돼요</CardDescription>
+                    <CardDescription>
+                      선택 입력: 초기 마케팅 자산에 사용돼요
+                      {(user?.brandImageUrl || user?.tagline) && (
+                        <span className="block text-blue-600 text-sm mt-1">
+                          ℹ️ 저장된 정보: {user.brandImageUrl ? '브랜드 이미지' : ''} {user.brandImageUrl && user.tagline ? ', ' : ''} {user.tagline ? `슬로건("${user.tagline}")` : ''}
+                        </span>
+                      )}
+                    </CardDescription>
                   </CardHeader>
                   <div className="space-y-6">
                     <div className="space-y-4">

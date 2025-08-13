@@ -143,8 +143,13 @@ All colors MUST be HSL.
     @apply text-base md:text-lg leading-relaxed;
   }
 
-  /* Smooth transitions */
-  * {
+  /* Smooth transitions for specific elements */
+  button,
+  input,
+  select,
+  textarea,
+  .card,
+  .transition-element {
     transition: all 0.2s ease-in-out;
   }
 

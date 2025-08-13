@@ -2,14 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Plus, Minus, Star, Truck, Shield, RotateCcw, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
+import '../base.css';
 import { useState } from "react";
-import chicDressImage from "@/assets/chic-dress-1.jpg";
-import chicAccessoriesImage from "@/assets/chic-accessories-1.jpg";
+// placeholder 이미지 사용
+const chicDressImage = "https://via.placeholder.com/600x400/1f2937/f9fafb?text=Dress";
+const chicAccessoriesImage = "https://via.placeholder.com/600x400/374151/e5e7eb?text=Accessories";
 
 const ChicProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState("블랙");
   const [selectedSize, setSelectedSize] = useState("M");
+
+  const storeParam = new URLSearchParams(window.location.search).get('store');
 
   const colors = ["블랙", "네이비", "베이지", "화이트"];
   const sizes = ["XS", "S", "M", "L", "XL"];
@@ -32,25 +36,25 @@ const ChicProduct = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-chic-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-chic-card border-b border-chic-border sticky top-0 z-50">
+      <header className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/chic" className="text-2xl font-bold text-chic-primary flex items-center">
+              <Link to={`/?store=${storeParam}`} className="text-3xl font-light tracking-wider" style={{ color: 'var(--color-primary)' }}>
                 <Crown className="h-6 w-6 mr-2" />
                 시크패션
               </Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/chic" className="text-base font-medium hover:text-chic-primary transition-smooth">홈</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">원피스</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">블라우스</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">액세서리</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">아우터</Link>
+              <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">홈</Link>
+              <Link to={`/category/dresses?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">원피스</Link>
+              <Link to={`/category/tops?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">블라우스</Link>
+              <Link to={`/category/accessories?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">액세서리</Link>
+              <Link to={`/category/outerwear?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">아우터</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -67,9 +71,9 @@ const ChicProduct = () => {
       <div className="bg-chic-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/chic" className="hover:text-chic-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to="/chic/category" className="hover:text-chic-primary transition-smooth">원피스</Link>
+            <Link to={`/category/dresses?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">원피스</Link>
             <span className="mx-2">/</span>
             <span className="text-chic-primary font-medium">시그니처 블랙 드레스</span>
           </div>

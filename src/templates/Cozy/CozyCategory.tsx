@@ -1,12 +1,85 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Filter, Grid, List } from "lucide-react";
-import { Link } from "react-router-dom";
-import cozyBeddingImage from "@/assets/cozy-bedding-1.jpg";
-import cozyCurtainsImage from "@/assets/cozy-curtains-1.jpg";
+import { Link, useParams } from "react-router-dom";
+import '../base.css';
+// placeholder 이미지 사용
+const cozyBeddingImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Bedding";
+const cozyCurtainsImage = "https://via.placeholder.com/600x400/e5e7eb/6b7280?text=Curtains";
 
 const CozyCategory = () => {
-  const products = [
+  const { categoryName } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    fetchCategoryProducts();
+  }, [categoryName]);
+
+  const fetchCategoryProducts = async () => {
+    try {
+      setLoading(true);
+      const storeParam = new URLSearchParams(window.location.search).get('store');
+      if (!storeParam) {
+        setError('스토어 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 카테고리 매핑
+      const categoryMap = {
+        'bedding': '침구류',
+        'curtains': '커튼',
+        'homedeco': '홈데코',
+        'sale': '세일',
+        'new-collection': '신상품',
+        'all': ''
+      };
+
+      const categoryNameKr = categoryMap[categoryName] || '';
+      
+      // 카테고리별 상품 조회
+      let apiUrl = `http://localhost:3001/api/v1/products/current?store=${storeParam}`;
+      if (categoryNameKr) {
+        // TODO: 실제로는 category ID로 조회해야 함
+        apiUrl += `&category=${categoryNameKr}`;
+      }
+
+      const response = await fetch(apiUrl);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          const formattedProducts = result.data.products.map(product => ({
+            id: product.id,
+            image: product.images?.[0]?.url || cozyBeddingImage,
+            title: product.name,
+            price: `${product.price.toLocaleString()}원`,
+            originalPrice: product.comparePrice ? `${product.comparePrice.toLocaleString()}원` : null,
+            discount: product.comparePrice ? 
+              `${Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%` : null,
+            rating: 4.5 + Math.random() * 0.5, // 임시 평점
+            reviews: Math.floor(Math.random() * 200) + 50 // 임시 리뷰 수
+          }));
+          setProducts(formattedProducts);
+        }
+      } else {
+        setError('상품 정보를 불러올 수 없습니다.');
+      }
+    } catch (err) {
+      console.error('상품 조회 오류:', err);
+      setError('상품 정보를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 기본 더미 데이터 (API 실패 시 사용)
+  const defaultProducts = [
     {
       id: 1,
       image: cozyBeddingImage,
@@ -70,28 +143,28 @@ const CozyCategory = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-cozy-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-cozy-card border-b border-cozy-border sticky top-0 z-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/cozy" className="text-2xl font-bold text-cozy-primary">코지홈</Link>
+              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>코지홈</Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/cozy" className="text-base font-medium hover:text-cozy-primary transition-smooth">홈</Link>
-              <Link to="/cozy/category" className="text-base font-medium text-cozy-primary">침구류</Link>
-              <Link to="/cozy/category" className="text-base font-medium hover:text-cozy-primary transition-smooth">커튼/블라인드</Link>
-              <Link to="/cozy/category" className="text-base font-medium hover:text-cozy-primary transition-smooth">홈데코</Link>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/bedding?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium" style={{ color: 'var(--color-primary)' }}>침구류</Link>
+              <Link to={`/category/curtains?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">커튼/블라인드</Link>
+              <Link to={`/category/homedeco?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈데코</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Search className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <Heart className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <ShoppingCart className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <User className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
+              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Search className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-full relative transition-colors"><Heart className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-full relative transition-colors"><ShoppingCart className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><User className="h-5 w-5 text-gray-600" /></button>
             </div>
           </div>
         </div>
@@ -101,7 +174,7 @@ const CozyCategory = () => {
       <div className="bg-cozy-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/cozy" className="hover:text-cozy-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:text-cozy-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
             <span className="text-cozy-primary font-medium">침구류</span>
           </div>
@@ -146,18 +219,36 @@ const CozyCategory = () => {
       {/* 상품 목록 */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Card key={product.id} className="group cursor-pointer hover:shadow-cozy transition-smooth bg-cozy-card border-cozy-border">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">상품을 불러오는 중...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-600 mb-4">{error}</p>
+              <Button onClick={() => fetchCategoryProducts()}>다시 시도</Button>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-gray-600">등록된 상품이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+              <Link key={product.id} to={`/product/${product.id}?store=${storeParam}`}>
+                <Card className="group cursor-pointer hover:shadow-cozy transition-smooth bg-cozy-card border-cozy-border">
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img 
                     src={product.image} 
                     alt={product.title}
                     className="w-full h-64 object-cover group-hover:scale-105 transition-smooth"
                   />
-                  <div className="absolute top-2 left-2 bg-cozy-primary text-cozy-primary-foreground px-2 py-1 rounded text-sm font-semibold">
-                    {product.discount} OFF
-                  </div>
+                  {product.discount && (
+                    <div className="absolute top-2 left-2 bg-cozy-primary text-cozy-primary-foreground px-2 py-1 rounded text-sm font-semibold">
+                      {product.discount} OFF
+                    </div>
+                  )}
                   <Heart className="absolute top-2 right-2 h-6 w-6 text-white hover:text-cozy-accent cursor-pointer transition-smooth" />
                 </div>
                 <CardContent className="p-4">
@@ -174,20 +265,23 @@ const CozyCategory = () => {
                   </div>
                   <div className="flex items-center space-x-2 mb-4">
                     <span className="text-xl font-bold text-cozy-primary">{product.price}</span>
-                    <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
+                    {product.originalPrice && (
+                      <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
+                    )}
                   </div>
-                  <Link to="/cozy/product">
-                    <Button className="w-full bg-cozy-secondary hover:bg-cozy-secondary/80 text-gray-800 border border-cozy-border transition-smooth">
-                      상품 보기
-                    </Button>
-                  </Link>
+                  <div className="w-full bg-cozy-secondary hover:bg-cozy-secondary/80 text-gray-800 border border-cozy-border transition-smooth py-2 px-4 text-center rounded">
+                    상품 보기
+                  </div>
                 </CardContent>
               </Card>
+              </Link>
             ))}
-          </div>
+            </div>
+          )}
 
           {/* 페이지네이션 */}
-          <div className="flex justify-center mt-12">
+          {!loading && !error && products.length > 0 && (
+            <div className="flex justify-center mt-12">
             <div className="flex space-x-2">
               <Button variant="outline" className="border-cozy-border hover:bg-cozy-muted">이전</Button>
               <Button className="bg-cozy-primary text-cozy-primary-foreground">1</Button>
@@ -195,7 +289,8 @@ const CozyCategory = () => {
               <Button variant="outline" className="border-cozy-border hover:bg-cozy-muted">3</Button>
               <Button variant="outline" className="border-cozy-border hover:bg-cozy-muted">다음</Button>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </section>
 

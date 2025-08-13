@@ -1,7 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const BeautyShop = () => {
+  const [storeData, setStoreData] = useState<any>(null);
+  const [brandData, setBrandData] = useState<any>(null);
+  
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    // 전역 스토어 데이터 가져오기
+    const globalData = (window as any).STORE_DATA;
+    if (globalData) {
+      setStoreData(globalData.store);
+      setBrandData(globalData.brand);
+    }
+  }, []);
+
+  const storeName = storeData?.storeName || '내추럴코스뷰';
+  const brandName = brandData?.brandName || '내추럴코스뷰';
+  const slogan = brandData?.slogan || 'Natural Beauty';
+  const description = storeData?.description || '자연에서 온 순수한 아름다움';
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 - 자연스럽고 부드러운 디자인 */}
@@ -10,16 +29,16 @@ const BeautyShop = () => {
           <div className="flex items-center justify-between h-16">
             <h1 className="text-2xl font-medium flex items-center" style={{ color: 'var(--color-primary)' }}>
               <span className="text-3xl mr-2">🌿</span>
-              <span className="hidden sm:block">내추럴코스뷰</span>
-              <span className="sm:hidden">코스뷰</span>
+              <span className="hidden sm:block">{storeName}</span>
+              <span className="sm:hidden">{storeName.length > 6 ? storeName.slice(0, 6) : storeName}</span>
             </h1>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/beauty" className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
-              <Link to="/beauty/category" className="text-gray-700 hover:text-gray-900 font-medium">스킨케어</Link>
-              <Link to="/beauty/category" className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
-              <Link to="/beauty/category" className="text-gray-700 hover:text-gray-900 font-medium">헤어/바디</Link>
-              <Link to="/beauty/category" className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/skincare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">스킨케어</Link>
+              <Link to={`/category/makeup?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
+              <Link to={`/category/fragrance?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">향수</Link>
+              <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -162,7 +181,7 @@ const BeautyShop = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link to="/beauty/product" className="flex-1">
+                      <Link to={`/product/1?store=${storeParam}`} className="flex-1">
                         <button className="btn btn-primary w-full py-3 rounded-lg font-medium">
                           장바구니
                         </button>

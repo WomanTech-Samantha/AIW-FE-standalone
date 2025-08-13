@@ -1,12 +1,85 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Filter, Grid, List, Crown } from "lucide-react";
-import { Link } from "react-router-dom";
-import chicDressImage from "@/assets/chic-dress-1.jpg";
-import chicAccessoriesImage from "@/assets/chic-accessories-1.jpg";
+import { Link, useParams } from "react-router-dom";
+import '../base.css';
+
+const chicDressImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Dresses";
+const chicAccessoriesImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Accessories";
 
 const ChicCategory = () => {
-  const products = [
+  const { categoryName } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    fetchCategoryProducts();
+  }, [categoryName]);
+
+  const fetchCategoryProducts = async () => {
+    try {
+      setLoading(true);
+      const storeParam = new URLSearchParams(window.location.search).get('store');
+      if (!storeParam) {
+        setError('스토어 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 카테고리 매핑
+      const categoryMap = {
+        'dresses': '드레스',
+        'tops': '상의',
+        'bottoms': '하의',
+        'accessories': '액세서리',
+        'sale': '세일',
+        'new-collection': '신상품',
+        'all': ''
+      };
+
+      const categoryNameKr = categoryMap[categoryName] || '';
+      
+      let apiUrl = `http://localhost:3001/api/v1/products/current?store=${storeParam}`;
+      if (categoryNameKr) {
+        apiUrl += `&category=${categoryNameKr}`;
+      }
+
+      const response = await fetch(apiUrl);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          const formattedProducts = result.data.products.map(product => ({
+            id: product.id,
+            image: product.images?.[0]?.url || chicDressImage,
+            title: product.name,
+            price: `${product.price.toLocaleString()}원`,
+            originalPrice: product.comparePrice ? `${product.comparePrice.toLocaleString()}원` : null,
+            discount: product.comparePrice ? 
+              `${Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%` : null,
+            rating: 4.5 + Math.random() * 0.5,
+            reviews: Math.floor(Math.random() * 200) + 30,
+            badge: ['BEST', 'NEW', 'LIMITED', 'EXCLUSIVE'][Math.floor(Math.random() * 4)]
+          }));
+          setProducts(formattedProducts);
+        }
+      } else {
+        setError('상품 정보를 불러올 수 없습니다.');
+      }
+    } catch (err) {
+      console.error('상품 조회 오류:', err);
+      setError('상품 정보를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 기본 더미 데이터 (API 실패 시 사용)
+  const defaultProducts = [
     {
       id: 1,
       image: chicDressImage,
@@ -76,32 +149,32 @@ const ChicCategory = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-chic-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-chic-card border-b border-chic-border sticky top-0 z-50">
+      <header className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/chic" className="text-2xl font-bold text-chic-primary flex items-center">
+              <Link to={`/?store=${storeParam}`} className="text-3xl font-light tracking-wider" style={{ color: 'var(--color-primary)' }}>
                 <Crown className="h-6 w-6 mr-2" />
                 시크패션
               </Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/chic" className="text-base font-medium hover:text-chic-primary transition-smooth">홈</Link>
-              <Link to="/chic/category" className="text-base font-medium text-chic-primary">원피스</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">블라우스</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">액세서리</Link>
-              <Link to="/chic/category" className="text-base font-medium hover:text-chic-primary transition-smooth">아우터</Link>
+              <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">홈</Link>
+              <Link to={`/category/dresses?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide" style={{ color: 'var(--color-primary)' }}>원피스</Link>
+              <Link to={`/category/tops?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">블라우스</Link>
+              <Link to={`/category/accessories?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">액세서리</Link>
+              <Link to={`/category/outerwear?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">아우터</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Search className="h-6 w-6 cursor-pointer hover:text-chic-primary transition-smooth" />
-              <Heart className="h-6 w-6 cursor-pointer hover:text-chic-primary transition-smooth" />
-              <ShoppingCart className="h-6 w-6 cursor-pointer hover:text-chic-primary transition-smooth" />
-              <User className="h-6 w-6 cursor-pointer hover:text-chic-primary transition-smooth" />
+              <button className="text-gray-700 hover:text-gray-900"><Search className="h-5 w-5" /></button>
+              <button className="text-gray-700 hover:text-gray-900"><Heart className="h-5 w-5" /></button>
+              <button className="text-gray-700 hover:text-gray-900"><ShoppingCart className="h-5 w-5" /></button>
+              <button className="text-gray-700 hover:text-gray-900"><User className="h-5 w-5" /></button>
             </div>
           </div>
         </div>
@@ -111,7 +184,7 @@ const ChicCategory = () => {
       <div className="bg-chic-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/chic" className="hover:text-chic-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
             <span className="text-chic-primary font-medium">원피스 컬렉션</span>
           </div>
@@ -165,9 +238,25 @@ const ChicCategory = () => {
       {/* 상품 목록 */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Card key={product.id} className="group cursor-pointer hover:shadow-chic transition-smooth bg-chic-card border-chic-border overflow-hidden">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto"></div>
+              <p className="mt-4 text-gray-600">상품을 불러오는 중...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-600 mb-4">{error}</p>
+              <Button onClick={() => fetchCategoryProducts()}>다시 시도</Button>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-gray-600">등록된 상품이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+              <Link key={product.id} to={`/product/${product.id}?store=${storeParam}`}>
+                <Card className="group cursor-pointer hover:shadow-chic transition-smooth bg-chic-card border-chic-border overflow-hidden">
                 <div className="relative overflow-hidden">
                   <img 
                     src={product.image} 
@@ -179,9 +268,11 @@ const ChicCategory = () => {
                       {product.badge}
                     </div>
                   )}
-                  <div className="absolute top-4 right-4 bg-chic-primary text-chic-primary-foreground px-2 py-1 rounded text-sm font-semibold">
-                    {product.discount} OFF
-                  </div>
+                  {product.discount && (
+                    <div className="absolute top-4 right-4 bg-chic-primary text-chic-primary-foreground px-2 py-1 rounded text-sm font-semibold">
+                      {product.discount} OFF
+                    </div>
+                  )}
                   <Heart className="absolute bottom-4 right-4 h-7 w-7 text-white hover:text-chic-accent cursor-pointer transition-smooth bg-black/30 rounded-full p-1" />
                 </div>
                 <CardContent className="p-6">
@@ -198,19 +289,22 @@ const ChicCategory = () => {
                   </div>
                   <div className="flex items-center space-x-3 mb-4">
                     <span className="text-2xl font-bold text-chic-primary">{product.price}</span>
-                    <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
+                    {product.originalPrice && (
+                      <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
+                    )}
                   </div>
-                  <Link to="/chic/product">
-                    <Button className="w-full bg-chic-primary hover:bg-chic-primary/90 text-chic-primary-foreground text-base font-medium py-3 transition-smooth">
-                      자세히 보기
-                    </Button>
-                  </Link>
+                  <div className="w-full bg-chic-primary hover:bg-chic-primary/90 text-chic-primary-foreground text-base font-medium py-3 transition-smooth text-center rounded">
+                    자세히 보기
+                  </div>
                 </CardContent>
               </Card>
+              </Link>
             ))}
-          </div>
+            </div>
+          )}
 
           {/* 페이지네이션 */}
+          {!loading && !error && products.length > 0 && (
           <div className="flex justify-center mt-16">
             <div className="flex space-x-2">
               <Button variant="outline" className="border-chic-border hover:bg-chic-muted px-4 py-2">이전</Button>
@@ -220,6 +314,7 @@ const ChicCategory = () => {
               <Button variant="outline" className="border-chic-border hover:bg-chic-muted px-4 py-2">다음</Button>
             </div>
           </div>
+          )}
         </div>
       </section>
 

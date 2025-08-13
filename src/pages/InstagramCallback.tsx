@@ -110,39 +110,44 @@ const InstagramCallbackPage = () => {
     handleCallback();
   }, [searchParams, navigate]);
 
-  // Instagram Platform API 토큰 교환 함수
+  // Instagram API 토큰 교환 함수
   const exchangeCodeForToken = async (code: string): Promise<TokenResponse> => {
     try {
       // Step 1: Authorization Code를 Access Token으로 교환
-      const tokenResponse = await fetch('https://graph.facebook.com/v21.0/oauth/access_token', {
+      const tokenResponse = await fetch('https://api.instagram.com/oauth/access_token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
-          client_id: import.meta.env.VITE_FACEBOOK_APP_ID,
-          client_secret: import.meta.env.VITE_FACEBOOK_APP_SECRET || '', // 프로덕션에서는 백엔드 필요
-          redirect_uri: `${window.location.origin}/instagram/callback`,
+          client_id: import.meta.env.VITE_INSTAGRAM_APP_ID,
+          client_secret: import.meta.env.VITE_INSTAGRAM_APP_SECRET,
+          grant_type: 'authorization_code',
+          redirect_uri: window.location.hostname === 'localhost' 
+            ? `http://localhost:${import.meta.env.VITE_FRONTEND_PORT || '5173'}/instagram/callback`
+            : `${window.location.origin}/instagram/callback`,
           code: code
         })
       });
 
       const tokenData = await tokenResponse.json();
       
-      if (tokenData.error) {
-        throw new Error(tokenData.error.message);
+      if (tokenData.error_message) {
+        throw new Error(tokenData.error_message);
       }
 
-      // Step 2: 사용자 정보 가져오기
-      const userResponse = await fetch(`https://graph.facebook.com/v21.0/me?access_token=${tokenData.access_token}&fields=id,name`);
+      // Step 2: Instagram 사용자 정보 가져오기
+      const userResponse = await fetch(`https://graph.instagram.com/me?fields=id,username,account_type,media_count&access_token=${tokenData.access_token}`);
       const userData = await userResponse.json();
+
+      console.log('Instagram user data:', userData);
 
       return {
         access_token: tokenData.access_token,
         user: {
           id: userData.id,
-          username: userData.name,
-          name: userData.name,
-          account_type: 'BUSINESS',
-          media_count: 0
+          username: userData.username,
+          name: userData.username,
+          account_type: userData.account_type || 'BUSINESS',
+          media_count: userData.media_count || 0
         }
       };
     } catch (error) {
@@ -152,10 +157,10 @@ const InstagramCallbackPage = () => {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve({
-            access_token: 'dev_instagram_token_' + Date.now(),
+            access_token: import.meta.env.VITE_INSTAGRAM_ACCESS_TOKEN || 'dev_instagram_token_' + Date.now(),
             user: {
-              id: '12345678',
-              username: 'test_business',
+              id: import.meta.env.VITE_INSTAGRAM_BUSINESS_ACCOUNT_ID || '12345678',
+              username: import.meta.env.VITE_INSTAGRAM_BUSINESS_ACCOUNT_ID || 'test_business',
               name: 'Test Business Account',
               account_type: 'BUSINESS',
               media_count: 42

@@ -22,6 +22,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // localStorage 완전 정리 헬퍼 함수
+  const clearAllLocalStorage = () => {
+    const keysToRemove = [
+      "auth_token",
+      "refresh_token", 
+      "auth_user",
+      "has_online_store",
+      "token"
+    ];
+    
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+    console.log('🧹 localStorage 정리 완료:', keysToRemove);
+  };
+
   // 앱 시작 시 토큰에서 사용자 정보 복원
   useEffect(() => {
     const initAuth = async () => {
@@ -32,15 +46,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (response.success) {
             setUser(response.data.user);
           } else {
-            // 토큰이 유효하지 않으면 제거
-            localStorage.removeItem("auth_token");
-            localStorage.removeItem("refresh_token");
+            // 토큰이 유효하지 않으면 모든 관련 데이터 제거
+            clearAllLocalStorage();
           }
         }
       } catch (error) {
         console.error('Token validation failed:', error);
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("refresh_token");
+        // 토큰 검증 실패 시 모든 관련 데이터 제거
+        clearAllLocalStorage();
       } finally {
         setIsLoading(false);
       }
@@ -116,8 +129,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Logout API failed:', error);
     } finally {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("refresh_token");
+      // 모든 관련 localStorage 데이터 정리
+      clearAllLocalStorage();
       setUser(null);
     }
   };
@@ -132,10 +145,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const completeOnboarding: AuthContextValue["completeOnboarding"] = (profile) => {
+  const completeOnboarding: AuthContextValue["completeOnboarding"] = async (profile) => {
     if (!user) return;
-    const updated: User = { ...user, ...profile, hasOnboarded: true };
-    setUser(updated);
+    
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        throw new Error("로그인이 필요합니다");
+      }
+
+      const response = await authAPI.completeOnboarding(token, profile as any);
+      
+      if (response.success) {
+        // 서버에서 업데이트된 사용자 정보로 갱신
+        setUser(response.data.user);
+      }
+    } catch (error: any) {
+      console.error('Complete onboarding failed:', error);
+      throw new Error(error.error?.message || '온보딩 완료에 실패했습니다');
+    }
   };
 
   const changePassword = async (currentPassword: string, newPassword: string, confirmPassword: string): Promise<void> => {

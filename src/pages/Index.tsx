@@ -15,10 +15,17 @@ import {
   Users,
   Palette
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import PublicStore from "./PublicStore";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // store 파라미터가 있으면 PublicStore 컴포넌트 렌더링
+  if (searchParams.get('store')) {
+    return <PublicStore />;
+  }
 
   const features = [
     {

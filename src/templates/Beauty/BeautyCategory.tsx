@@ -1,12 +1,87 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Filter, Grid, List, Leaf } from "lucide-react";
-import { Link } from "react-router-dom";
-import beautySkincareImage from "@/assets/beauty-skincare-1.jpg";
-import beautyMakeupImage from "@/assets/beauty-makeup-1.jpg";
+import { Link, useParams } from "react-router-dom";
+import '../base.css';
+
+// placeholder 이미지 사용
+const beautySkincareImage = "https://via.placeholder.com/600x400/fdf2f8/ec4899?text=Skincare";
+const beautyMakeupImage = "https://via.placeholder.com/600x400/fef7ff/d946ef?text=Makeup";
 
 const BeautyCategory = () => {
-  const products = [
+  const { categoryName } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    fetchCategoryProducts();
+  }, [categoryName]);
+
+  const fetchCategoryProducts = async () => {
+    try {
+      setLoading(true);
+      const storeParam = new URLSearchParams(window.location.search).get('store');
+      if (!storeParam) {
+        setError('스토어 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      // 카테고리 매핑
+      const categoryMap = {
+        'skincare': '스킨케어',
+        'makeup': '메이크업',
+        'fragrance': '향수',
+        'beauty-tools': '뷰티툴',
+        'sale': '세일',
+        'new-collection': '신상품',
+        'all': ''
+      };
+
+      const categoryNameKr = categoryMap[categoryName] || '';
+      
+      let apiUrl = `http://localhost:3001/api/v1/products/current?store=${storeParam}`;
+      if (categoryNameKr) {
+        apiUrl += `&category=${categoryNameKr}`;
+      }
+
+      const response = await fetch(apiUrl);
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          const formattedProducts = result.data.products.map(product => ({
+            id: product.id,
+            image: product.images?.[0]?.url || beautySkincareImage,
+            title: product.name,
+            price: `${product.price.toLocaleString()}원`,
+            originalPrice: product.comparePrice ? `${product.comparePrice.toLocaleString()}원` : null,
+            discount: product.comparePrice ? 
+              `${Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%` : null,
+            rating: 4.5 + Math.random() * 0.5,
+            reviews: Math.floor(Math.random() * 300) + 50,
+            badge: ['ORGANIC', 'VEGAN', 'SENSITIVE', 'NATURAL'][Math.floor(Math.random() * 4)],
+            benefits: ['브라이트닝 & 안티에이징', '촉촉함 & 자연스러운 컬러', '진정 & 보습'][Math.floor(Math.random() * 3)]
+          }));
+          setProducts(formattedProducts);
+        }
+      } else {
+        setError('상품 정보를 불러올 수 없습니다.');
+      }
+    } catch (err) {
+      console.error('상품 조회 오류:', err);
+      setError('상품 정보를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 기본 더미 데이터 (API 실패 시 사용)
+  const defaultProducts = [
     {
       id: 1,
       image: beautySkincareImage,
@@ -82,53 +157,53 @@ const BeautyCategory = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-beauty-background">
+    <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
-      <header className="bg-beauty-card border-b border-beauty-border sticky top-0 z-50">
+      <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to="/beauty" className="text-2xl font-bold text-beauty-primary flex items-center">
+              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold flex items-center">
                 <Leaf className="h-6 w-6 mr-2" />
-                내추럴뷰티
+                <span style={{ color: 'var(--color-primary)' }}>내추럴뷰티</span>
               </Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
-              <Link to="/beauty" className="text-base font-medium hover:text-beauty-primary transition-smooth">홈</Link>
-              <Link to="/beauty/category" className="text-base font-medium text-beauty-primary">스킨케어</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">메이크업</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">헤어케어</Link>
-              <Link to="/beauty/category" className="text-base font-medium hover:text-beauty-primary transition-smooth">바디케어</Link>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/skincare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium" style={{ color: 'var(--color-primary)' }}>스킨케어</Link>
+              <Link to={`/category/makeup?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
+              <Link to={`/category/fragrance?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">향수</Link>
+              <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Search className="h-6 w-6 cursor-pointer hover:text-beauty-primary transition-smooth" />
-              <Heart className="h-6 w-6 cursor-pointer hover:text-beauty-primary transition-smooth" />
-              <ShoppingCart className="h-6 w-6 cursor-pointer hover:text-beauty-primary transition-smooth" />
-              <User className="h-6 w-6 cursor-pointer hover:text-beauty-primary transition-smooth" />
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Search className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><Heart className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-lg relative transition-colors"><ShoppingCart className="h-5 w-5 text-gray-600" /></button>
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors"><User className="h-5 w-5 text-gray-600" /></button>
             </div>
           </div>
         </div>
       </header>
 
       {/* 브레드크럼 */}
-      <div className="bg-beauty-muted py-4">
+      <div className="bg-white py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to="/beauty" className="hover:text-beauty-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="text-gray-600 hover:text-gray-900">홈</Link>
             <span className="mx-2">/</span>
-            <span className="text-beauty-primary font-medium">스킨케어</span>
+            <span className="font-medium" style={{ color: 'var(--color-primary)' }}>스킨케어</span>
           </div>
         </div>
       </div>
 
       {/* 카테고리 헤더 */}
-      <section className="py-12 bg-beauty-card">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-beauty-primary mb-4 flex items-center justify-center">
+            <h1 className="text-4xl font-bold mb-4 flex items-center justify-center" style={{ color: 'var(--color-primary)' }}>
               🌿 Skincare Collection
             </h1>
             <p className="text-xl text-gray-600">자연 성분으로 건강한 피부를 만드는 기초 화장품</p>
@@ -137,20 +212,20 @@ const BeautyCategory = () => {
       </section>
 
       {/* 필터 및 정렬 */}
-      <div className="bg-beauty-card border-b border-beauty-border py-6">
+      <div className="bg-white border-b border-gray-200 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted">
+              <button className="btn btn-secondary">
                 <Filter className="h-4 w-4 mr-2" />
                 필터
-              </Button>
+              </button>
               <div className="flex space-x-4 text-base">
-                <button className="text-beauty-primary font-medium border-b-2 border-beauty-primary pb-1">전체</button>
-                <button className="text-gray-600 hover:text-beauty-primary transition-smooth">세럼</button>
-                <button className="text-gray-600 hover:text-beauty-primary transition-smooth">크림</button>
-                <button className="text-gray-600 hover:text-beauty-primary transition-smooth">토너</button>
-                <button className="text-gray-600 hover:text-beauty-primary transition-smooth">클렌징</button>
+                <button className="font-medium border-b-2 pb-1" style={{ color: 'var(--color-primary)', borderColor: 'var(--color-primary)' }}>전체</button>
+                <button className="text-gray-600 hover:opacity-80">세럼</button>
+                <button className="text-gray-600 hover:opacity-80">크림</button>
+                <button className="text-gray-600 hover:opacity-80">토너</button>
+                <button className="text-gray-600 hover:opacity-80">클렌징</button>
               </div>
               <span className="text-base text-gray-600">총 {products.length}개 제품</span>
             </div>
@@ -174,9 +249,25 @@ const BeautyCategory = () => {
       {/* 상품 목록 */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Card key={product.id} className="group cursor-pointer hover:shadow-beauty transition-smooth bg-beauty-card border-beauty-border overflow-hidden">
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">상품을 불러오는 중...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <p className="text-red-600 mb-4">{error}</p>
+              <Button onClick={() => fetchCategoryProducts()}>다시 시도</Button>
+            </div>
+          ) : products.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-gray-600">등록된 상품이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.map((product) => (
+              <Link key={product.id} to={`/product/${product.id}?store=${storeParam}`}>
+                <Card className="group cursor-pointer hover:shadow-beauty transition-smooth bg-beauty-card border-beauty-border overflow-hidden">
                 <div className="relative overflow-hidden">
                   <img 
                     src={product.image} 
@@ -186,9 +277,11 @@ const BeautyCategory = () => {
                   <div className="absolute top-4 left-4 bg-beauty-accent text-black px-3 py-1 rounded-full text-sm font-bold">
                     {product.badge}
                   </div>
-                  <div className="absolute top-4 right-4 bg-beauty-primary text-beauty-primary-foreground px-2 py-1 rounded text-sm font-semibold">
-                    {product.discount} OFF
-                  </div>
+                  {product.discount && (
+                    <div className="absolute top-4 right-4 bg-beauty-primary text-beauty-primary-foreground px-2 py-1 rounded text-sm font-semibold">
+                      {product.discount} OFF
+                    </div>
+                  )}
                   <Heart className="absolute bottom-4 right-4 h-7 w-7 text-white hover:text-beauty-accent cursor-pointer transition-smooth bg-black/30 rounded-full p-1" />
                 </div>
                 <CardContent className="p-6">
@@ -206,19 +299,22 @@ const BeautyCategory = () => {
                   </div>
                   <div className="flex items-center space-x-3 mb-4">
                     <span className="text-2xl font-bold text-beauty-primary">{product.price}</span>
-                    <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
+                    {product.originalPrice && (
+                      <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
+                    )}
                   </div>
-                  <Link to="/beauty/product">
-                    <Button className="w-full bg-beauty-primary hover:bg-beauty-primary/90 text-beauty-primary-foreground text-base font-medium py-3 transition-smooth">
-                      자세히 보기
-                    </Button>
-                  </Link>
+                  <div className="w-full bg-beauty-primary hover:bg-beauty-primary/90 text-beauty-primary-foreground text-base font-medium py-3 transition-smooth text-center rounded">
+                    자세히 보기
+                  </div>
                 </CardContent>
               </Card>
+              </Link>
             ))}
-          </div>
+            </div>
+          )}
 
           {/* 페이지네이션 */}
+          {!loading && !error && products.length > 0 && (
           <div className="flex justify-center mt-16">
             <div className="flex space-x-2">
               <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">이전</Button>
@@ -228,6 +324,7 @@ const BeautyCategory = () => {
               <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">다음</Button>
             </div>
           </div>
+          )}
         </div>
       </section>
 

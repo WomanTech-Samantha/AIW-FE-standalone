@@ -1,20 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const CozyHome = () => {
+  const [storeData, setStoreData] = useState<any>(null);
+  const [brandData, setBrandData] = useState<any>(null);
+
+  // 현재 store 파라미터 가져오기
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  useEffect(() => {
+    // 전역 스토어 데이터 가져오기
+    const globalData = (window as any).STORE_DATA;
+    if (globalData) {
+      setStoreData(globalData.store);
+      setBrandData(globalData.brand);
+    }
+  }, []);
+
+  const storeName = storeData?.storeName || '코지홈';
+  const brandName = brandData?.brandName || '브랜드명';
+  const slogan = brandData?.slogan || '포근하고 따뜻한 우리집';
+  const description = storeData?.description || '편안한 휴식을 위한 프리미엄 침구';
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container">
           <div className="flex items-center justify-between h-16">
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>코지홈</h1>
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{storeName}</h1>
             
             <nav className="hidden lg:flex space-x-8">
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">홈</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">침구류</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">커튼</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">홈데코</a>
-              <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">세일</a>
+              <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
+              <Link to={`/category/bedding?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">침구류</Link>
+              <Link to={`/category/curtains?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">커튼</Link>
+              <Link to={`/category/homedeco?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈데코</Link>
+              <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -47,20 +67,20 @@ const CozyHome = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h2 className="heading-xl-responsive font-bold mb-6 text-gray-800 leading-tight">
-                포근한 일상을<br />
-                <span style={{ color: 'var(--color-primary)' }}>만들어가세요</span>
+                {slogan.split(' ').slice(0, 2).join(' ')}<br />
+                <span style={{ color: 'var(--color-primary)' }}>{slogan.split(' ').slice(2).join(' ')}</span>
               </h2>
               <p className="text-responsive text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                편안함과 따뜻함이 가득한 공간을 위한<br />
+                {description}<br />
                 프리미엄 홈 텍스타일과 라이프스타일 제품
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="btn btn-primary px-8 py-4 text-white font-medium rounded-full shadow-lg hover:shadow-xl">
+                <Link to={`/category/new-collection?store=${storeParam}`} className="btn btn-primary px-8 py-4 text-white font-medium rounded-full shadow-lg hover:shadow-xl text-center">
                   2025 S/S 컬렉션 확인하기
-                </button>
-                <button className="btn btn-secondary px-8 py-4 font-medium rounded-full">
+                </Link>
+                <Link to={`/category/all?store=${storeParam}`} className="btn btn-secondary px-8 py-4 font-medium rounded-full text-center">
                   전체 상품 보기
-                </button>
+                </Link>
               </div>
             </div>
             <div className="relative mt-8 lg:mt-0">
@@ -83,7 +103,7 @@ const CozyHome = () => {
         <div className="container relative">
 
           <h2 className="heading-xl-responsive font-bold mb-6 text-gray-800 leading-tight text-center">
-              다가오는 겨울, <span style={{ color: 'var(--color-primary)' }}>코지홈</span>과 함께 따뜻하게 보내세요
+              다가오는 겨울, <span style={{ color: 'var(--color-primary)' }}>{storeName}</span>과 함께 따뜻하게 보내세요
           </h2>
 
           <div className="max-w-4xl mx-auto">
@@ -123,9 +143,9 @@ const CozyHome = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button className="btn btn-primary px-8 py-3 text-white font-medium rounded-full">
+                <Link to={`/category/sale?store=${storeParam}`} className="btn btn-primary px-8 py-3 text-white font-medium rounded-full text-center">
                   세일 상품 보기
-                </button>
+                </Link>
                 <button className="btn btn-secondary px-6 py-3 font-medium rounded-full">
                   내 장바구니 보기
                 </button>
@@ -207,9 +227,9 @@ const CozyHome = () => {
           </div>
           
           <div className="text-center mt-12">
-            <button className="btn btn-secondary px-8 py-3 rounded-full font-medium">
+            <Link to={`/category/all?store=${storeParam}`} className="btn btn-secondary px-8 py-3 rounded-full font-medium text-center">
               더 많은 상품 보기
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -220,11 +240,11 @@ const CozyHome = () => {
           <h3 className="heading-responsive font-bold text-center text-gray-800 mb-12">관심있는 카테고리부터 보세요</h3>
           <div className="responsive-grid responsive-grid-3 gap-12">
             {[
-              { name: '침구류', desc: '편안한 잠자리를 위한', count: '120+ 개의 상품', icon: '🛏️' },
-              { name: '커튼/블라인드', desc: '완벽한 공간 연출을 위한', count: '85+ 개의 상품', icon: '🪟' },
-              { name: '홈데코', desc: '따뜻한 분위기 연출을 위한', count: '200+ 개의 상품', icon: '🏠' }
+              { name: '침구류', desc: '편안한 잠자리를 위한', count: '120+ 개의 상품', icon: '🛏️', link: `/category/bedding?store=${storeParam}` },
+              { name: '커튼/블라인드', desc: '완벽한 공간 연출을 위한', count: '85+ 개의 상품', icon: '🪟', link: `/category/curtains?store=${storeParam}` },
+              { name: '홈데코', desc: '따뜻한 분위기 연출을 위한', count: '200+ 개의 상품', icon: '🏠', link: `/category/homedeco?store=${storeParam}` }
             ].map((cat, idx) => (
-              <div key={idx} className="group cursor-pointer">
+              <Link key={idx} to={cat.link} className="group cursor-pointer block">
                 <div className="text-center bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all hover:scale-105">
                   <div 
                     className="w-32 h-32 rounded-full mx-auto mb-6 flex items-center justify-center text-5xl group-hover:scale-110 transition-all shadow-md"
@@ -236,11 +256,11 @@ const CozyHome = () => {
                   <h4 className="text-xl font-semibold text-gray-800 mb-2">{cat.name}</h4>
                   <div>&nbsp;</div>
                   <p className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>{cat.count}</p>
-                  <button className="mt-4 btn btn-secondary px-6 py-2 rounded-full text-sm font-medium">
+                  <div className="mt-4 btn btn-secondary px-6 py-2 rounded-full text-sm font-medium">
                     둘러보기
-                  </button>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -251,8 +271,8 @@ const CozyHome = () => {
         <div className="container">
           <div className="responsive-grid responsive-grid-4 gap-8 mb-8">
             <div>
-              <h4 className="text-xl font-bold mb-4">코지홈</h4>
-              <p className="text-sm opacity-90 mb-4">포근하고 따뜻한 일상을<br />만들어가는 홈 텍스타일</p>
+              <h4 className="text-xl font-bold mb-4">{storeName}</h4>
+              <p className="text-sm opacity-90 mb-4">{description}<br />만들어가는 홈 텍스타일</p>
               <div className="flex space-x-4">
                 <a href="#" className="text-white hover:opacity-80 transition-opacity">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -299,7 +319,7 @@ const CozyHome = () => {
           
           <div className="border-t border-white border-opacity-20 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center text-sm opacity-80">
-              <p>© 2025 코지홈. All rights reserved.</p>
+              <p>© 2025 {storeName}. All rights reserved.</p>
               <p className="mt-2 md:mt-0">Made with ❤️ in Korea</p>
             </div>
           </div>

@@ -6,10 +6,10 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle2, ArrowRight, Upload, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
-import CozyHome from "@/templates/CozyHome";
-import ChicFashion from "@/templates/ChicFashion";
-import BeautyShop from "@/templates/BeautyShop";
-import "@/templates/styles/base.css";
+import CozyHome from "@/templates/Cozy/CozyHome";
+import ChicFashion from "@/templates/Chic/ChicHome";
+import BeautyShop from "@/templates/Beauty/BeautyHome";
+import "@/templates/base.css";
 
 const steps = [1, 2, 3, 4];
 
@@ -218,12 +218,9 @@ export default function OnboardingPage() {
     } else {
       setIsCreating(true);
       
-      // 사이트 생성 프로세스 시뮬레이션
-      setTimeout(() => {
-        setIsCreating(false);
-        // 온보딩 완료 및 사이트 생성 상태 저장
-        // 이미지가 있으면 일단 빈 문자열로 전달 (추후 별도 업로드 처리)
-        completeOnboarding({ 
+      try {
+        // 온보딩 완료 API 호출
+        await completeOnboarding({ 
           business, 
           storeName,
           theme: selectedTheme,
@@ -232,9 +229,15 @@ export default function OnboardingPage() {
           brandImageUrl: brandImageFile ? '' : brandImageUrl,
           tagline
         });
+        
         localStorage.setItem('has_online_store', 'true');
         nav("/studio", { replace: true });
-      }, 3000);
+      } catch (error) {
+        console.error('온보딩 완료 실패:', error);
+        setIsCreating(false);
+        // 에러 처리 - 실제로는 토스트나 알림 표시
+        alert('온보딩 완료 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
     }
   };
 

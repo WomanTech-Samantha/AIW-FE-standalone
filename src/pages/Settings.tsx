@@ -16,19 +16,21 @@ import {
   Shield,
   Trash2,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  FileText,
+  ExternalLink
 } from "lucide-react";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   
-  // 브랜드 기본 정보 (사용자 정보와 직결)
-  const [storeName, setStoreName] = useState(user?.storeName || "");
-  const [business, setBusiness] = useState(user?.business || "");
-  const [email, setEmail] = useState(user?.email || "");
+  // 브랜드 기본 정보 (useEffect에서 로드됨)
+  const [storeName, setStoreName] = useState("");
+  const [business, setBusiness] = useState("");
+  const [email, setEmail] = useState("");
   
-  // 알림 설정
+  // 알림 설정 (useEffect에서 로드됨)
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [marketingEmails, setMarketingEmails] = useState(false);
   
@@ -36,6 +38,17 @@ const SettingsPage = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+
+  // user가 로드되면 폼 필드들을 업데이트
+  useEffect(() => {
+    if (user) {
+      console.log('Settings - User data loaded:', user); // 디버깅용
+      setStoreName(user.storeName || "");
+      setBusiness(user.business || "");
+      setEmail(user.email || "");
+      setEmailNotifications(user.preferences?.notifications?.email ?? true);
+    }
+  }, [user]);
 
   const businessOptions = [
     "🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", 
@@ -82,6 +95,7 @@ const SettingsPage = () => {
         </div>
 
         <div className="space-y-8">
+
           {/* 브랜드 기본 정보 */}
           <Card className="card-soft">
             <CardHeader>
@@ -120,6 +134,7 @@ const SettingsPage = () => {
                         className="justify-start text-sm"
                       >
                         {option}
+                        {business === option && <CheckCircle2 className="ml-2 h-4 w-4" />}
                       </Button>
                     ))}
                   </div>
@@ -157,13 +172,52 @@ const SettingsPage = () => {
                 </p>
               </div>
               
-              <div>
-                <Button 
-                  variant="outline"
-                  onClick={() => setShowChangePassword(true)}
-                >
-                  비밀번호 변경
-                </Button>
+              <div className="space-y-4">
+                <div>
+                  <Button 
+                    variant="outline"
+                    onClick={() => setShowChangePassword(true)}
+                  >
+                    비밀번호 변경
+                  </Button>
+                </div>
+                
+                {/* 계정 추가 정보 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground border-t pt-4">
+                  {user?.createdAt && (
+                    <div>
+                      <span className="font-medium">가입일:</span>
+                      <span className="ml-2">{new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
+                    </div>
+                  )}
+                  {user?.lastLoginAt && (
+                    <div>
+                      <span className="font-medium">마지막 로그인:</span>
+                      <span className="ml-2">{new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</span>
+                    </div>
+                  )}
+                  {user?.loginType && (
+                    <div>
+                      <span className="font-medium">로그인 방식:</span>
+                      <span className="ml-2">
+                        {user.loginType === 'email' ? '이메일' : 
+                         user.loginType === 'google' ? '구글' :
+                         user.loginType === 'kakao' ? '카카오' :
+                         user.loginType === 'naver' ? '네이버' : user.loginType}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="font-medium">계정 상태:</span>
+                    <span className="ml-2">
+                      {user?.status === 'active' ? (
+                        <span className="text-green-600">✓ 활성</span>
+                      ) : (
+                        <span className="text-red-600">⚠ {user?.status}</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -191,8 +245,16 @@ const SettingsPage = () => {
                   variant={emailNotifications ? "default" : "outline"}
                   size="sm"
                   onClick={() => setEmailNotifications(!emailNotifications)}
+                  className="min-w-[80px]"
                 >
-                  {emailNotifications ? "켜짐" : "꺼짐"}
+                  {emailNotifications ? (
+                    <>
+                      <CheckCircle2 className="mr-1 h-4 w-4" />
+                      켜짐
+                    </>
+                  ) : (
+                    "꺼짐"
+                  )}
                 </Button>
               </div>
               
@@ -209,8 +271,16 @@ const SettingsPage = () => {
                   variant={marketingEmails ? "default" : "outline"}
                   size="sm"
                   onClick={() => setMarketingEmails(!marketingEmails)}
+                  className="min-w-[80px]"
                 >
-                  {marketingEmails ? "켜짐" : "꺼짐"}
+                  {marketingEmails ? (
+                    <>
+                      <CheckCircle2 className="mr-1 h-4 w-4" />
+                      켜짐
+                    </>
+                  ) : (
+                    "꺼짐"
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -235,6 +305,51 @@ const SettingsPage = () => {
                 <Button variant="outline" className="justify-start">
                   연동된 서비스 관리
                 </Button>
+                <Button 
+                  variant="outline" 
+                  className="justify-start"
+                  onClick={() => navigate('/data-deletion')}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  데이터 삭제 안내
+                </Button>
+              </div>
+              
+              <Separator />
+              
+              <div>
+                <h4 className="font-medium mb-3">정책 및 약관</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="justify-start h-auto p-3"
+                    onClick={() => window.open('/privacy', '_blank')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      <div className="text-left">
+                        <div className="text-sm font-medium">개인정보처리방침</div>
+                        <div className="text-xs text-muted-foreground">개인정보 수집 및 이용</div>
+                      </div>
+                      <ExternalLink className="h-3 w-3 ml-auto" />
+                    </div>
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="justify-start h-auto p-3"
+                    onClick={() => window.open('/terms', '_blank')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      <div className="text-left">
+                        <div className="text-sm font-medium">서비스 이용약관</div>
+                        <div className="text-xs text-muted-foreground">서비스 이용 규정</div>
+                      </div>
+                      <ExternalLink className="h-3 w-3 ml-auto" />
+                    </div>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
