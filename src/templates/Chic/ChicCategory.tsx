@@ -5,8 +5,18 @@ import { ShoppingCart, Heart, Search, Menu, User, Filter, Grid, List, Crown } fr
 import { Link, useParams } from "react-router-dom";
 import '../base.css';
 
-const chicDressImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Dresses";
-const chicAccessoriesImage = "https://via.placeholder.com/600x400/f3f4f6/9ca3af?text=Accessories";
+// 간단한 이미지 플레이스홀더 생성 함수
+const createSimpleImage = (bgColor: string, text: string) => {
+  return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(`
+    <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="300" height="300" fill="${bgColor}"/>
+      <text x="150" y="150" font-family="Arial" font-size="16" fill="#666" text-anchor="middle" dominant-baseline="middle">${text}</text>
+    </svg>
+  `)));
+};
+
+const chicDressImage = createSimpleImage("#f3f4f6", "이미지");
+const chicAccessoriesImage = createSimpleImage("#f3f4f6", "이미지");
 
 const ChicCategory = () => {
   const { categoryName } = useParams();
@@ -24,55 +34,59 @@ const ChicCategory = () => {
   const fetchCategoryProducts = async () => {
     try {
       setLoading(true);
-      const storeParam = new URLSearchParams(window.location.search).get('store');
-      if (!storeParam) {
-        setError('스토어 정보를 찾을 수 없습니다.');
-        return;
-      }
-
-      // 카테고리 매핑
-      const categoryMap = {
-        'dresses': '드레스',
-        'tops': '상의',
-        'bottoms': '하의',
-        'accessories': '액세서리',
-        'sale': '세일',
-        'new-collection': '신상품',
-        'all': ''
-      };
-
-      const categoryNameKr = categoryMap[categoryName] || '';
       
-      let apiUrl = `http://localhost:3001/api/v1/products/current?store=${storeParam}`;
-      if (categoryNameKr) {
-        apiUrl += `&category=${categoryNameKr}`;
-      }
-
-      const response = await fetch(apiUrl);
+      // 배포용: 전역 상품 데이터 사용
+      const storeData = (window as any).STORE_DATA;
       
-      if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          const formattedProducts = result.data.products.map(product => ({
-            id: product.id,
-            image: product.images?.[0]?.url || chicDressImage,
-            title: product.name,
-            price: `${product.price.toLocaleString()}원`,
-            originalPrice: product.comparePrice ? `${product.comparePrice.toLocaleString()}원` : null,
-            discount: product.comparePrice ? 
-              `${Math.round(((product.comparePrice - product.price) / product.comparePrice) * 100)}%` : null,
-            rating: 4.5 + Math.random() * 0.5,
-            reviews: Math.floor(Math.random() * 200) + 30,
-            badge: ['BEST', 'NEW', 'LIMITED', 'EXCLUSIVE'][Math.floor(Math.random() * 4)]
-          }));
-          setProducts(formattedProducts);
+      if (storeData && storeData.products) {
+        console.log('전역 상품 데이터 발견:', storeData.products);
+        
+        // 카테고리 매핑
+        const categoryMap = {
+          'dresses': '드레스',
+          'tops': '상의',
+          'bottoms': '하의',
+          'accessories': '액세서리',
+          'sale': '세일',
+          'new-collection': '신상품',
+          'all': ''
+        };
+
+        const categoryNameKr = categoryMap[categoryName] || '';
+        
+        // 카테고리별 필터링
+        let filteredProducts = storeData.products;
+        if (categoryNameKr) {
+          filteredProducts = storeData.products.filter(product => 
+            product.category === categoryNameKr
+          );
         }
+        
+        // 템플릿에 맞는 형식으로 변환
+        const formattedProducts = filteredProducts.map(product => ({
+          id: product.id,
+          image: product.imageUrl || chicDressImage,
+          title: product.name,
+          price: `${product.price.toLocaleString()}원`,
+          originalPrice: product.originalPrice ? `${product.originalPrice.toLocaleString()}원` : null,
+          discount: product.originalPrice ? 
+            `${Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%` : null,
+          rating: product.rating || (4.5 + Math.random() * 0.5),
+          reviews: product.reviewCount || Math.floor(Math.random() * 200) + 30,
+          badge: ['BEST', 'NEW', 'LIMITED', 'EXCLUSIVE'][Math.floor(Math.random() * 4)]
+        }));
+        
+        setProducts(formattedProducts);
+        console.log('카테고리 상품 로드 완료:', formattedProducts.length, '개');
       } else {
-        setError('상품 정보를 불러올 수 없습니다.');
+        console.log('전역 상품 데이터 없음, 기본 데이터 사용');
+        // 기본 데이터 사용
+        setProducts(defaultProducts);
       }
     } catch (err) {
       console.error('상품 조회 오류:', err);
-      setError('상품 정보를 불러오는 중 오류가 발생했습니다.');
+      // 에러 시에도 기본 데이터 사용
+      setProducts(defaultProducts);
     } finally {
       setLoading(false);
     }

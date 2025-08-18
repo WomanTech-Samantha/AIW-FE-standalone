@@ -3,17 +3,51 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Plus, Minus, Star, Truck, Shield, RotateCcw, Leaf, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import '../base.css';
-import { useState } from "react";
-// placeholder 이미지 사용
-const beautySkincareImage = "https://via.placeholder.com/600x400/fdf2f8/ec4899?text=Skincare";
-const beautyMakeupImage = "https://via.placeholder.com/600x400/fef7ff/d946ef?text=Makeup";
+import { useState, useEffect } from "react";
+// 간단한 이미지 플레이스홀더 생성 함수
+const createSimpleImage = (bgColor: string, text: string) => {
+  return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(`
+    <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+      <rect width="300" height="300" fill="${bgColor}"/>
+      <text x="150" y="150" font-family="Arial" font-size="16" fill="#666" text-anchor="middle" dominant-baseline="middle">${text}</text>
+    </svg>
+  `)));
+};
+
+const beautySkincareImage = createSimpleImage("#fdf2f8", "이미지");
+const beautyMakeupImage = createSimpleImage("#fef7ff", "이미지");
 
 const BeautyProduct = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("30ml");
 
   const sizes = ["15ml", "30ml", "50ml"];
-    const storeParam = new URLSearchParams(window.location.search).get('store');
+  const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  // 테마 적용 함수
+  const applyTheme = (templateColor: string) => {
+    const themes = {
+      'warm-rose': { primary: '#D4526E', secondary: '#F5B7B1', accent: '#E8A49C', background: '#FAF3F0' },
+      'sage-green': { primary: '#6B8E65', secondary: '#A8C09C', accent: '#8FA885', background: '#F5F9F3' },
+      'dusty-blue': { primary: '#6B8CAE', secondary: '#A8BFD6', accent: '#8DA4C7', background: '#F3F6F9' },
+      'lavender': { primary: '#9B6BB0', secondary: '#C5A3D1', accent: '#B085C2', background: '#F8F5FA' },
+      'terracotta': { primary: '#C17A74', secondary: '#E0B8B3', accent: '#D19B95', background: '#FAF7F6' }
+    };
+    const theme = themes[templateColor as keyof typeof themes] || themes['warm-rose'];
+    const root = document.documentElement;
+    root.style.setProperty('--color-primary', theme.primary);
+    root.style.setProperty('--color-secondary', theme.secondary);
+    root.style.setProperty('--color-accent', theme.accent);
+    root.style.setProperty('--color-background', theme.background);
+  };
+
+  // 스토어 데이터에서 테마 적용
+  useEffect(() => {
+    const storeData = (window as any).STORE_DATA;
+    if (storeData?.store?.templateColor) {
+      applyTheme(storeData.store.templateColor);
+    }
+  }, []);
   const relatedProducts = [
     {
       id: 1,
@@ -201,7 +235,7 @@ const BeautyProduct = () => {
                     <ShoppingCart className="h-5 w-5 mr-2" />
                     장바구니 담기
                   </Button>
-                  <Button className="w-full bg-gradient-beauty text-white py-4 text-lg font-semibold shadow-beauty transition-bounce hover:scale-105">
+                  <Button className="w-full bg-beauty-accent hover:bg-beauty-accent/90 text-black py-4 text-lg font-semibold transition-smooth">
                     바로 구매하기
                   </Button>
                   <Button variant="outline" className="w-full border-beauty-border hover:bg-beauty-muted py-4 text-lg">
