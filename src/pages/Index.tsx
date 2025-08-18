@@ -73,16 +73,16 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center max-w-4xl mx-auto mb-16">
-          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20">
+          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/10">
             <Sparkles className="mr-2 h-4 w-4" />
             여성 1인 소상공인 전용 마케팅 솔루션
           </Badge>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-primary">
             오프라인 매장,<br />온라인으로 날개를 달다
           </h1>
 

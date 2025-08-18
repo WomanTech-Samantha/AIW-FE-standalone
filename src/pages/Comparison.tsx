@@ -195,7 +195,7 @@ const ComparisonPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -437,7 +437,7 @@ const ComparisonPage = () => {
                 <Button 
                   size="lg" 
                   onClick={() => navigate('/studio')}
-                  className="btn-large gradient-primary text-white"
+                  className="btn-large bg-primary text-primary-foreground"
                 >
                   <Zap className="mr-2 h-5 w-5" />
                   무료로 체험하기

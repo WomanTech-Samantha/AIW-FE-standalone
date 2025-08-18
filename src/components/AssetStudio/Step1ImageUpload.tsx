@@ -163,7 +163,7 @@ export const Step1ImageUpload = ({
             </CardHeader>
             <CardContent className="space-y-4">
               <Button
-                className="w-full btn-large gradient-primary text-white"
+                className="w-full btn-large bg-primary text-primary-foreground"
                 onClick={onGenerate}
                 disabled={isProcessing}
               >
@@ -206,7 +206,7 @@ export const Step1ImageUpload = ({
                     <p className="text-sm font-medium mb-2 text-center">
                       {info.resultDescription}
                     </p>
-                    <div className="w-full h-64 bg-gradient-to-br from-primary/20 to-primary-glow/20 rounded border flex items-center justify-center relative overflow-hidden">
+                    <div className="w-full h-64 bg-primary/10 rounded border flex items-center justify-center relative overflow-hidden">
                       <span className="text-sm font-medium">✨ {info.resultIcon}</span>
                       {contentType === "story" && (
                         <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded">
@@ -244,7 +244,7 @@ export const Step1ImageUpload = ({
             <div className="mt-6 text-center">
               <Button
                 onClick={onNextStep}
-                className="btn-large gradient-primary text-white"
+                className="btn-large bg-primary text-primary-foreground"
               >
 {info.nextStepText}
                 <ArrowRight className="ml-2 h-5 w-5" />

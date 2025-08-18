@@ -4,7 +4,7 @@ import Footer from "@/components/common/Footer";
 
 export function AppLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-warm">
+    <div className="min-h-screen flex flex-col bg-background">
       <TopNavBar />
       <main className="container mx-auto px-4 py-6 flex-1">
         <Outlet />

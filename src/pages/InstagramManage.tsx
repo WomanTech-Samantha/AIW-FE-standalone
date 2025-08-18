@@ -133,7 +133,7 @@ const InstagramManagePage = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
                   <Instagram className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold">@{instagramData.user.username}</h3>

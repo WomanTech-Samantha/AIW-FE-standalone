@@ -177,7 +177,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
               <Button 
                 onClick={handleInstagramLogin}
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                 size="lg"
               >
                 {isLoading ? (

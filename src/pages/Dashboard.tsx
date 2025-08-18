@@ -246,7 +246,7 @@ const DashboardPage = () => {
               </CardHeader>
               <CardContent>
                 {/* Mock Chart - In real app, use recharts */}
-                <div className="h-64 bg-gradient-to-r from-primary/10 to-primary-glow/10 rounded-lg flex items-center justify-center">
+                <div className="h-64 bg-muted/20 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <LineChart className="mx-auto h-16 w-16 text-primary mb-4" />
                     <p className="text-lg font-medium">노출 수 꾸준히 상승 중!</p>

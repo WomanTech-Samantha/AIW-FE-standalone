@@ -308,7 +308,7 @@ const InstagramPostPage = () => {
                   </h4>
                   <div className="bg-white rounded-lg border p-3 max-w-sm">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                      <div className="w-6 h-6 bg-primary rounded-full"></div>
                       <span className="text-sm font-medium">
                         {JSON.parse(localStorage.getItem('instagram_user') || '{}').username || 'username'}
                       </span>

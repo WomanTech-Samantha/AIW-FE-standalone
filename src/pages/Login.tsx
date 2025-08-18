@@ -163,7 +163,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md card-soft">
         <CardHeader className="text-center pb-2">
           <CardTitle className="text-2xl font-bold">
@@ -240,7 +240,7 @@ function LoginForm() {
               </div>
             )}
             <Button 
-              className="w-full h-11 gradient-primary text-white hover:opacity-90" 
+              className="w-full h-11 bg-primary text-primary-foreground hover:opacity-90" 
               type="submit"
               disabled={isLoading}
             >

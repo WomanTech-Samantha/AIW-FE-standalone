@@ -305,7 +305,7 @@ const InstagramCommentsPage = () => {
                 {/* 댓글 헤더 */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
                       {comment.username.charAt(0).toUpperCase()}
                     </div>
                     <div>

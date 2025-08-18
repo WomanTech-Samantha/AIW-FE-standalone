@@ -30,11 +30,11 @@ export default function TopNavBar() {
 
   return (
     <TooltipProvider>
-      <header className="bg-gradient-warm border-b border-border/40 backdrop-blur-sm sticky top-0 z-50">
+      <header className="bg-background border-b border-border/40 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">A</span>
               </div>
               <span className="font-bold text-xl text-foreground">ALL IN WOM</span>
