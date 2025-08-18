@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, ArrowRight, Upload, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/MockAuthContext";
 import CozyHome from "@/templates/Cozy/CozyHome";
 import ChicFashion from "@/templates/Chic/ChicHome";
 import BeautyShop from "@/templates/Beauty/BeautyHome";
@@ -51,18 +51,34 @@ export default function OnboardingPage() {
 
   // 상호명을 서브도메인으로 변환
   const convertToSubdomain = (name: string) => {
-    return name
+    if (!name.trim()) return '';
+    
+    const converted = name
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
+    
+    
+    // 변환 결과가 너무 짧으면 빈 문자열 반환 (자동 설정하지 않음)
+    if (converted.length < 3) {
+      return '';
+    }
+    
+    return converted;
   };
 
   useEffect(() => {
-    if (storeName && !subdomain) {
-      setSubdomain(convertToSubdomain(storeName));
+    if (storeName) {
+      const converted = convertToSubdomain(storeName);
+      if (converted !== subdomain) {
+        setSubdomain(converted);
+      }
+    } else {
+      // 상호명이 비어있으면 서브도메인도 비우기
+      setSubdomain('');
     }
-  }, [storeName, subdomain]);
+  }, [storeName]);
 
   useEffect(() => {
     const isValid = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(subdomain) && subdomain.length >= 3;
@@ -226,7 +242,7 @@ export default function OnboardingPage() {
           theme: selectedTheme,
           template: selectedTemplate,
           subdomain,
-          brandImageUrl: brandImageFile ? '' : brandImageUrl,
+          brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
           tagline
         });
         
@@ -342,6 +358,8 @@ export default function OnboardingPage() {
                           value={subdomain}
                           onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
                           className={`font-mono ${!isSubdomainValid ? 'border-destructive' : ''}`}
+                          autoComplete="off"
+                          placeholder="mystore"
                         />
                         <span className="text-muted-foreground">.allinwom.com</span>
                       </div>

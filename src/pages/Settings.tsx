@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/MockAuthContext";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 import { 
   ArrowLeft, 
@@ -23,7 +23,7 @@ import {
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, updateUserProfile } = useAuth();
   
   // 브랜드 기본 정보 (useEffect에서 로드됨)
   const [storeName, setStoreName] = useState("");
@@ -39,14 +39,13 @@ const SettingsPage = () => {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
-  // user가 로드되면 폼 필드들을 업데이트
+  // user가 로드되면 모든 필드들을 업데이트
   useEffect(() => {
     if (user) {
       console.log('Settings - User data loaded:', user); // 디버깅용
       setStoreName(user.storeName || "");
       setBusiness(user.business || "");
       setEmail(user.email || "");
-      setEmailNotifications(user.preferences?.notifications?.email ?? true);
     }
   }, [user]);
 
@@ -58,6 +57,13 @@ const SettingsPage = () => {
   const handleSave = async () => {
     setIsSaving(true);
     
+    // user 정보 업데이트
+    updateUserProfile({
+      storeName,
+      business,
+      email
+    });
+    
     // 모의 저장 프로세스
     setTimeout(() => {
       setIsSaving(false);
@@ -68,7 +74,7 @@ const SettingsPage = () => {
   const handleDeleteAccount = () => {
     if (showDeleteConfirm) {
       // 실제 계정 삭제 로직
-      alert("계정이 삭제되었습니다.");
+      alert("계정이 삭제되었습니다");
       logout();
       navigate("/");
     } else {
@@ -104,7 +110,7 @@ const SettingsPage = () => {
                 브랜드 기본 정보
               </CardTitle>
               <CardDescription>
-                사업장의 기본 정보입니다. 이 정보는 모든 서비스에서 공통으로 사용됩니다.
+                사업체의 기본 정보입니다. 이 정보는 모든 서비스에서 공통으로 사용됩니다.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -118,7 +124,7 @@ const SettingsPage = () => {
                     value={storeName}
                     onChange={(e) => setStoreName(e.target.value)}
                     className="text-lg"
-                    placeholder="예: 지숙커튼&침구"
+                    placeholder="예: 지수커튼침구"
                   />
                 </div>
                 
@@ -168,7 +174,7 @@ const SettingsPage = () => {
                   placeholder="example@email.com"
                 />
                 <p className="text-sm text-muted-foreground mt-2">
-                  로그인 ID로 사용됩니다.
+                  로그인 ID로 사용됩니다
                 </p>
               </div>
               
@@ -184,37 +190,22 @@ const SettingsPage = () => {
                 
                 {/* 계정 추가 정보 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground border-t pt-4">
-                  {user?.createdAt && (
-                    <div>
-                      <span className="font-medium">가입일:</span>
-                      <span className="ml-2">{new Date(user.createdAt).toLocaleDateString('ko-KR')}</span>
-                    </div>
-                  )}
-                  {user?.lastLoginAt && (
-                    <div>
-                      <span className="font-medium">마지막 로그인:</span>
-                      <span className="ml-2">{new Date(user.lastLoginAt).toLocaleDateString('ko-KR')}</span>
-                    </div>
-                  )}
-                  {user?.loginType && (
-                    <div>
-                      <span className="font-medium">로그인 방식:</span>
-                      <span className="ml-2">
-                        {user.loginType === 'email' ? '이메일' : 
-                         user.loginType === 'google' ? '구글' :
-                         user.loginType === 'kakao' ? '카카오' :
-                         user.loginType === 'naver' ? '네이버' : user.loginType}
-                      </span>
-                    </div>
-                  )}
+                  <div>
+                    <span className="font-medium">가입일:</span>
+                    <span className="ml-2">2024년 1월 15일</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">마지막 로그인:</span>
+                    <span className="ml-2">오늘</span>
+                  </div>
+                  <div>
+                    <span className="font-medium">로그인 방식:</span>
+                    <span className="ml-2">이메일</span>
+                  </div>
                   <div>
                     <span className="font-medium">계정 상태:</span>
                     <span className="ml-2">
-                      {user?.status === 'active' ? (
-                        <span className="text-green-600">✓ 활성</span>
-                      ) : (
-                        <span className="text-red-600">⚠ {user?.status}</span>
-                      )}
+                      <span className="text-green-600">활성</span>
                     </span>
                   </div>
                 </div>
@@ -230,7 +221,7 @@ const SettingsPage = () => {
                 알림 설정
               </CardTitle>
               <CardDescription>
-                받고 싶은 알림을 설정하세요.
+                받고 싶은 알림을 설정하세요
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -264,7 +255,7 @@ const SettingsPage = () => {
                 <div>
                   <h4 className="font-medium">마케팅 정보 수신</h4>
                   <p className="text-sm text-muted-foreground">
-                    새로운 기능, 팁, 프로모션 정보를 받습니다
+                    새로운 기능, 팁 및 프로모션 정보를 받습니다
                   </p>
                 </div>
                 <Button
@@ -303,7 +294,7 @@ const SettingsPage = () => {
                   내 데이터 다운로드
                 </Button>
                 <Button variant="outline" className="justify-start">
-                  연동된 서비스 관리
+                  자동화 서비스 관리
                 </Button>
                 <Button 
                   variant="outline" 
@@ -329,7 +320,7 @@ const SettingsPage = () => {
                       <FileText className="h-4 w-4" />
                       <div className="text-left">
                         <div className="text-sm font-medium">개인정보처리방침</div>
-                        <div className="text-xs text-muted-foreground">개인정보 수집 및 이용</div>
+                        <div className="text-xs text-muted-foreground">개인정보 수집 및 사용</div>
                       </div>
                       <ExternalLink className="h-3 w-3 ml-auto" />
                     </div>

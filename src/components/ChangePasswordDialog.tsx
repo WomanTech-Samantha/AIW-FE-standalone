@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/MockAuthContext";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
 interface ChangePasswordDialogProps {
@@ -107,7 +107,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
             비밀번호 변경
           </DialogTitle>
           <DialogDescription>
-            보안을 위해 현재 비밀번호를 확인한 후 새 비밀번호를 설정하세요.
+            보안을 위해 현재 비밀번호를 확인한 후 새 비밀번호를 설정하세요
           </DialogDescription>
         </DialogHeader>
         

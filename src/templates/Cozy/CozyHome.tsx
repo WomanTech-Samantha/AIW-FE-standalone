@@ -22,7 +22,7 @@ const CozyHome = () => {
   const slogan = brandData?.slogan || '포근하고 따뜻한 우리집';
   const description = storeData?.description || '편안한 휴식을 위한 프리미엄 침구';
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container">

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/MockAuthContext";
 import { checkInstagramConnection, disconnectInstagram } from "@/utils/instagramAuth";
 import InstagramDirectLogin from "@/components/InstagramDirectLogin";
 
@@ -10,7 +10,7 @@ const InstagramConnectPage = () => {
   const { user } = useAuth();
   const [isInstagramLoginComplete, setIsInstagramLoginComplete] = useState(false);
 
-  // 컴포넌트 마운트 시 연동 상태 확인 및 실시간 체크
+  // 컴포?�트 마운?????�동 ?�태 ?�인 �??�시�?체크
   useEffect(() => {
     // 초기 체크
     const connection = checkInstagramConnection();
@@ -19,7 +19,7 @@ const InstagramConnectPage = () => {
       return;
     }
 
-    // 실시간 연동 상태 체크 (1초마다)
+    // ?�시�??�동 ?�태 체크 (1초마??
     const interval = setInterval(() => {
       const currentConnection = checkInstagramConnection();
       if (currentConnection.isConnected) {
@@ -31,7 +31,7 @@ const InstagramConnectPage = () => {
     return () => clearInterval(interval);
   }, [navigate]);
 
-  // 개발용: 연동 상태 초기화 함수
+  // 개발?? ?�동 ?�태 초기???�수
   const clearConnection = () => {
     disconnectInstagram();
     localStorage.removeItem('instagram_connected');
@@ -43,7 +43,7 @@ const InstagramConnectPage = () => {
   const handleInstagramLoginSuccess = (response: any) => {
     console.log('Instagram login successful:', response);
     setIsInstagramLoginComplete(true);
-    // 로그인 성공 후 관리 페이지로 이동
+    // 로그???�공 ??관�??�이지�??�동
     setTimeout(() => {
       navigate('/instagram/manage');
     }, 2000);
@@ -58,11 +58,10 @@ const InstagramConnectPage = () => {
     <div className="page-container">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Instagram 비즈니스 계정 연동</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Instagram 비즈?�스 계정 ?�동</h1>
         <p className="text-lg text-muted-foreground">
-          콘텐츠를 자동으로 게시하고 관리하기 위해 계정을 연결하세요
-        </p>
-        {/* 개발용 디버그 버튼 */}
+          콘텐츠�? ?�동?�로 게시?�고 관리하�??�해 계정???�결?�세??        </p>
+        {/* 개발???�버�?버튼 */}
         {isInstagramLoginComplete && (
           <Button
             onClick={clearConnection}
@@ -70,7 +69,7 @@ const InstagramConnectPage = () => {
             size="sm"
             className="mt-4"
           >
-            연동 초기화 (개발용)
+            ?�동 초기??(개발??
           </Button>
         )}
       </div>

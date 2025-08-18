@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useLocation, Navigate } from "react-router-dom";
+import { useAuth } from "@/context/MockAuthContext";
 import CozyHome from "@/templates/Cozy/CozyHome";
 import ChicHome from "@/templates/Chic/ChicHome";
 import BeautyHome from "@/templates/Beauty/BeautyHome";
@@ -36,6 +37,7 @@ interface BrandData {
 export default function PublicStore() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
+  const { user } = useAuth();
   const [storeData, setStoreData] = useState<StoreData | null>(null);
   const [brandData, setBrandData] = useState<BrandData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -56,31 +58,44 @@ export default function PublicStore() {
 
   const loadStoreData = async (subdomain: string) => {
     try {
-      console.log('Loading store data for:', subdomain);
-      const response = await fetch(`http://localhost:${import.meta.env.VITE_BACKEND_PORT || '3001'}/api/v1/store/current?store=${subdomain}`);
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Store API response:', result);
-        
-        if (result.success && result.data) {
-          console.log('Store data loaded:', result.data);
-          setStoreData(result.data.store);
-          setBrandData(result.data.brand);
-          
-          // 템플릿에서 사용할 수 있도록 전역 변수 설정
-          (window as any).STORE_DATA = {
-            store: result.data.store,
-            brand: result.data.brand
-          };
-          console.log('Global STORE_DATA set:', (window as any).STORE_DATA);
-        } else {
-          console.error('API response success but no data:', result);
-          setError('스토어 데이터를 찾을 수 없습니다.');
-        }
-      } else {
-        console.error('Store not found:', response.status);
-        setError('스토어를 찾을 수 없습니다.');
-      }
+      console.log('Loading mock store data for:', subdomain);
+      console.log('Current user data:', user);
+      
+      // Mock 스토어 데이터 (사용자 설정 반영)
+      const mockStoreData: StoreData = {
+        id: "demo-store-001",
+        storeName: user?.storeName || "데모 스토어",
+        subdomain: subdomain,
+        description: user?.tagline || "데모용 온라인 스토어입니다",
+        bannerImageUrl: user?.brandImageUrl || "",
+        templateType: user?.template || "cozy", // 사용자가 선택한 템플릿
+        templateColor: user?.theme || "warm-rose", // 사용자가 선택한 색상
+        visitorCount: 1254
+      };
+      
+      console.log('Generated store data:', mockStoreData);
+
+      const mockBrandData: BrandData = {
+        id: "demo-brand-001",
+        brandName: user?.storeName || "데모 브랜드",
+        slogan: user?.tagline || "당신의 편안한 일상을 위한 프리미엄 제품",
+        logoUrl: user?.brandImageUrl || "",
+        category: user?.business || "침구·이불",
+        description: "고품질 제품으로 고객의 만족을 추구합니다",
+        brandColor: user?.theme || "warm-rose",
+        targetAudience: "20-40대 여성"
+      };
+
+      setStoreData(mockStoreData);
+      setBrandData(mockBrandData);
+      
+      // 템플릿에서 사용할 수 있도록 전역 변수 설정
+      (window as any).STORE_DATA = {
+        store: mockStoreData,
+        brand: mockBrandData
+      };
+      console.log('Global STORE_DATA set:', (window as any).STORE_DATA);
+      
     } catch (err) {
       console.error('Store loading error:', err);
       setError('스토어 정보를 불러오는 중 오류가 발생했습니다.');
@@ -187,6 +202,13 @@ export default function PublicStore() {
   const getComponent = () => {
     const templateType = storeData?.templateType?.toLowerCase() || 'cozy';
     const pathname = location.pathname;
+    
+    console.log('PublicStore getComponent:', { 
+      templateType, 
+      pathname, 
+      storeData: storeData?.templateType,
+      userTemplate: user?.template 
+    });
     
     // 경로별 컴포넌트 매핑
     const componentMap = {

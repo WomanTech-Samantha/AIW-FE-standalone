@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { AuthProvider } from "@/context/MockAuthContext";
 import Index from "./pages/Index";
 import OnboardingPage from "./pages/OnboardingNew";
 import AssetStudioPage from "./pages/AssetStudio";
@@ -26,12 +27,6 @@ import TermsOfService from "./pages/TermsOfService";
 import PublicStore from "./pages/PublicStore";
 import DataDeletionPage from "./pages/DataDeletion";
 
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import OAuthCallback from "./pages/OAuthCallback";
-
-import { AuthProvider } from "@/context/AuthContext";
-import ProtectedRoute from "@/routes/ProtectedRoute";
 import AppLayout from "@/components/layout/AppLayout";
 
 const queryClient = new QueryClient();
@@ -49,39 +44,31 @@ const App = () => (
           }}
         >
           <Routes>
-            {/* 공개 페이지 */}
+            {/* 메인 랜딩 페이지 */}
             <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/comparison" element={<ComparisonPage />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/instagram/callback" element={<InstagramCallbackPage />} />
-            <Route path="/oauth/callback" element={<OAuthCallback />} />
 
-            {/* 보호 영역: 상단 내비게이션 포함 */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<AppLayout />}>
-                <Route path="/store" element={<StorePage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/studio" element={<AssetStudioPage />} />
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/store/settings" element={<StoreSettingsPage />} />
-                <Route path="/instagram/connect" element={<InstagramConnectPage />} />
-                <Route path="/instagram/manage" element={<InstagramManagePage />} />
-                <Route path="/instagram/insights" element={<InstagramInsightsPage />} />
-                <Route path="/instagram/post" element={<InstagramPostPage />} />
-                <Route path="/instagram/comments" element={<InstagramCommentsPage />} />
-                <Route path="/instagram/media" element={<InstagramMediaPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="/data-deletion" element={<DataDeletionPage />} />
-              </Route>
+            {/* 모든 페이지를 공개로 변경 */}
+            <Route element={<AppLayout />}>
+              <Route path="/store" element={<StorePage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/studio" element={<AssetStudioPage />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="/store/settings" element={<StoreSettingsPage />} />
+              <Route path="/instagram/connect" element={<InstagramConnectPage />} />
+              <Route path="/instagram/manage" element={<InstagramManagePage />} />
+              <Route path="/instagram/insights" element={<InstagramInsightsPage />} />
+              <Route path="/instagram/post" element={<InstagramPostPage />} />
+              <Route path="/instagram/comments" element={<InstagramCommentsPage />} />
+              <Route path="/instagram/media" element={<InstagramMediaPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/data-deletion" element={<DataDeletionPage />} />
             </Route>
 
-            {/* 온보딩: 로그인 필요, 내비게이션 없이 단독 화면 */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/onboarding" element={<OnboardingPage />} />
-            </Route>
 
             {/* PublicStore 라우팅 - store 쿼리 파라미터가 있을 때만 */}
             <Route path="/category/*" element={<PublicStore />} />

@@ -16,11 +16,22 @@ import {
   Palette
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth } from "@/context/MockAuthContext";
 import PublicStore from "./PublicStore";
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { resetDemo } = useAuth();
+
+  // 랜딩페이지 접근 시 사용자 데이터 초기화 (데모 리셋)
+  useEffect(() => {
+    // store 파라미터가 없는 경우에만 초기화 (랜딩페이지일 때만)
+    if (!searchParams.get('store')) {
+      resetDemo();
+    }
+  }, [searchParams, resetDemo]);
 
   // store 파라미터가 있으면 PublicStore 컴포넌트 렌더링
   if (searchParams.get('store')) {
@@ -83,7 +94,7 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button
               size="senior"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/onboarding')}
               className="gradient-primary text-white shadow-lg hover:shadow-xl"
             >
               <Store className="mr-3 h-6 w-6" />
