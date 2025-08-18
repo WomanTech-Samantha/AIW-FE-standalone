@@ -132,22 +132,30 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
     }
   };
 
-  // 연동 상태 확인
+  // 연동 상태 확인 (배포용 하드코딩)
   useEffect(() => {
-    const savedToken = localStorage.getItem('instagram_access_token');
-    const savedUser = localStorage.getItem('instagram_user');
+    // 하드코딩된 연결 상태 설정
+    const hardcodedToken = "demo_access_token_for_deployment";
+    const hardcodedUser = {
+      id: "demo_instagram_user",
+      username: "demo_store_official",
+      name: "데모 스토어", 
+      account_type: "BUSINESS",
+      media_count: 42
+    };
     
-    if (savedToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setAccessToken(savedToken);
-        setUserInfo(userData);
-        console.log('기존 Instagram 연동 정보 로드:', userData.username);
-      } catch (e) {
-        console.error('저장된 Instagram 정보 파싱 실패:', e);
-      }
+    setAccessToken(hardcodedToken);
+    setUserInfo(hardcodedUser);
+    console.log('하드코딩된 Instagram 연동 정보 로드:', hardcodedUser.username);
+    
+    // 성공 콜백 호출
+    if (onSuccess) {
+      onSuccess({
+        access_token: hardcodedToken,
+        user: hardcodedUser
+      });
     }
-  }, []);
+  }, [onSuccess]);
 
   return (
     <div className="space-y-6">

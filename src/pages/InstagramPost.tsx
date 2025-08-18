@@ -117,69 +117,24 @@ const InstagramPostPage = () => {
     setIsUploading(true);
     setUploadStatus({ type: null, message: "" });
 
+    // 배포용 모의 게시 프로세스
     try {
-      const instagramData = {
-        token: localStorage.getItem('instagram_access_token'),
-        user: JSON.parse(localStorage.getItem('instagram_user') || '{}')
-      };
-
-      if (!instagramData.token || !instagramData.user.id) {
-        throw new Error('Instagram 연동 정보가 없습니다.');
-      }
-
-      console.log('Instagram 게시 시작:', {
-        userId: instagramData.user.id,
+      console.log('배포용 모의 Instagram 게시 시작:', {
         caption: caption,
         imageSize: selectedImage.size,
         imageType: selectedImage.type
       });
 
-      // 백엔드 API 호출
-      const formData = new FormData();
-      formData.append('image', selectedImage);
-      formData.append('caption', caption);
-      formData.append('access_token', instagramData.token);
+      // 모의 게시 처리 (2-4초 지연)
+      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 2000));
 
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
-      const authToken = localStorage.getItem('token');
-
-      const response = await fetch(`${apiBaseUrl}/instagram/media`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: formData
-      });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        // 백엔드에서 온 상세 에러 정보 활용
-        if (result.error_type) {
-          console.log('에러 타입:', result.error_type);
-          
-          if (result.error_type === 'INVALID_TOKEN') {
-            localStorage.removeItem('instagram_access_token');
-            localStorage.removeItem('instagram_user');
-            throw new Error('Instagram 로그인이 만료되었습니다. 다시 로그인해주세요.');
-          } else if (result.error_type === 'INSUFFICIENT_PERMISSIONS') {
-            throw new Error('Instagram 콘텐츠 게시 권한이 부족합니다. 앱 설정에서 instagram_business_content_publish 권한을 확인하세요.');
-          } else if (result.error_type === 'ACCOUNT_TYPE_ERROR') {
-            throw new Error(`Instagram 비즈니스 또는 크리에이터 계정이 필요합니다. 현재: ${result.current_account_type || 'PERSONAL'}`);
-          } else if (result.error_type === 'IMAGE_URL_ERROR') {
-            throw new Error('이미지 URL 접근 오류. HTTPS 환경이 필요할 수 있습니다.');
-          }
-        }
-        
-        throw new Error(result.message || '게시에 실패했습니다.');
-      }
-
-      console.log('게시 완료:', result.data);
-
+      // 성공적으로 "게시"됨
       setUploadStatus({
         type: 'success',
-        message: '콘텐츠가 성공적으로 게시되었습니다!'
+        message: 'Instagram에 성공적으로 게시되었습니다! 🎉'
       });
+
+      console.log('배포용 모의 게시 완료');
 
       // 입력 필드 초기화
       setSelectedImage(null);
@@ -196,30 +151,11 @@ const InstagramPostPage = () => {
       }, 3000);
 
     } catch (error: any) {
-      console.error('게시 실패:', error);
-      
-      // 에러 메시지 상세 처리
-      let errorMessage = error.message || '게시 중 오류가 발생했습니다.';
-      
-      if (error.message.includes('401') || error.message.includes('토큰')) {
-        errorMessage = 'Instagram 로그인이 만료되었습니다. 다시 로그인해주세요.';
-        // 토큰 제거하고 로그인 페이지로 이동
-        localStorage.removeItem('instagram_access_token');
-        localStorage.removeItem('instagram_user');
-        setTimeout(() => {
-          navigate('/instagram/connect');
-        }, 2000);
-      } else if (error.message.includes('권한') || error.message.includes('permission')) {
-        errorMessage = 'Instagram 콘텐츠 게시 권한이 부족합니다. 앱 권한을 확인하거나 비즈니스 계정으로 전환해주세요.';
-      } else if (error.message.includes('비즈니스') || error.message.includes('크리에이터')) {
-        errorMessage = 'Instagram 비즈니스 또는 크리에이터 계정이 필요합니다. 설정 → 계정 → 계정 유형 전환에서 변경하세요.';
-      } else if (error.message.includes('image_url') || error.message.includes('HTTPS')) {
-        errorMessage = '이미지 업로드에 문제가 있습니다. HTTPS 환경에서 시도하거나 다른 이미지를 사용해주세요.';
-      }
+      console.error('모의 게시 실패:', error);
       
       setUploadStatus({
         type: 'error',
-        message: errorMessage
+        message: '게시 중 오류가 발생했습니다. 다시 시도해주세요.'
       });
     } finally {
       setIsUploading(false);

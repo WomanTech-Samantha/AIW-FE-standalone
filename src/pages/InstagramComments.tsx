@@ -58,35 +58,13 @@ const InstagramCommentsPage = () => {
     setIsLoading(true);
     
     try {
-      const instagramData = {
-        token: localStorage.getItem('instagram_access_token'),
-        user: JSON.parse(localStorage.getItem('instagram_user') || '{}')
-      };
-
-      if (!instagramData.token || !instagramData.user.id) {
-        throw new Error('Instagram 연동 정보가 없습니다.');
-      }
-
-      console.log('댓글 데이터 로드 시작...');
-
-      // 백엔드 API 호출
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
-      const authToken = localStorage.getItem('token');
+      console.log('배포용 모의 댓글 데이터 로드 시작...');
       
-      const response = await fetch(`${apiBaseUrl}/instagram/comments?access_token=${instagramData.token}&user_id=${instagramData.user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
+      // 배포용: 모의 로딩 시간
+      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 800));
       
-      const result = await response.json();
-      
-      if (result.success && result.data.length > 0) {
-        setComments(result.data);
-      } else {
-        // 백엔드에서 데이터가 없거나 에러 시 모의 데이터 사용
-        console.log('백엔드에서 댓글 데이터가 없어 모의 데이터 사용');
-        const mockComments: Comment[] = [
+      // 배포용 모의 댓글 데이터
+      const mockComments: Comment[] = [
         {
           id: "comment_1",
           text: "정말 예쁜 상품이네요! 어디서 구매할 수 있나요?",
@@ -130,11 +108,10 @@ const InstagramCommentsPage = () => {
         ];
 
         setComments(mockComments);
-      }
+        console.log('배포용 모의 댓글 데이터 로드 완료:', mockComments.length, '개 댓글');
       
     } catch (error: any) {
-      console.error('댓글 로드 실패:', error);
-      // 에러 시에도 샘플 데이터 표시
+      console.error('모의 댓글 로드 실패:', error);
       setComments([]);
     } finally {
       setIsLoading(false);
@@ -148,42 +125,18 @@ const InstagramCommentsPage = () => {
     setIsReplying(prev => ({ ...prev, [commentId]: true }));
 
     try {
-      const instagramData = {
-        token: localStorage.getItem('instagram_access_token')
-      };
-
-      // 백엔드 API 호출
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
-      const authToken = localStorage.getItem('token');
+      console.log('배포용 모의 댓글 답변:', { commentId, text });
       
-      const response = await fetch(`${apiBaseUrl}/instagram/comments/${commentId}/reply`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: text,
-          access_token: instagramData.token
-        })
-      });
+      // 배포용: 모의 답변 처리 시간
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
       
-      const result = await response.json();
-      
-      if (!result.success) {
-        throw new Error(result.message || '답글 작성에 실패했습니다.');
-      }
-      
-      alert('답글이 성공적으로 작성되었습니다!');
+      alert('답글이 성공적으로 작성되었습니다! 📝');
       
       // 답글 입력창 초기화
       setReplyText(prev => ({ ...prev, [commentId]: '' }));
       
-      // 댓글 목록 새로고침
-      await loadComments();
-      
     } catch (error: any) {
-      console.error('답글 작성 실패:', error);
+      console.error('모의 답글 작성 실패:', error);
       alert('답글 작성에 실패했습니다: ' + error.message);
     } finally {
       setIsReplying(prev => ({ ...prev, [commentId]: false }));

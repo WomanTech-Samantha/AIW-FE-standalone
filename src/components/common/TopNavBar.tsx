@@ -21,10 +21,10 @@ export default function TopNavBar() {
   const isStoreActive = pathname.startsWith("/store");
   
   useEffect(() => {
-    // Mock data - 실제로는 서버나 로컬 스토리지에서 가져와야 함
-    const savedInstagram = localStorage.getItem('instagram_connected');
+    // 배포용 하드코딩: 무조건 Instagram 연결됨
+    setIsInstagramConnected(true);
+    
     const savedStore = localStorage.getItem('has_online_store');
-    setIsInstagramConnected(savedInstagram === 'true');
     setHasOnlineStore(savedStore === 'true');
   }, []);
 

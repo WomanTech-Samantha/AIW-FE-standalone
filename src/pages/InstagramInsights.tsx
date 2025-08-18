@@ -62,34 +62,12 @@ const InstagramInsightsPage = () => {
 
   const fetchMediaData = async (token: string, userId: string) => {
     try {
-      // 최근 미디어 목록 조회
-      const mediaUrl = `https://graph.instagram.com/${userId}/media?fields=id,media_type,media_url,permalink,caption,timestamp&limit=10&access_token=${token}`;
+      console.log('배포용 모의 인사이트 데이터 로드 시작...');
       
-      const response = await fetch(mediaUrl);
-      const data = await response.json();
+      // 배포용: 모의 로딩 시간
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
       
-      if (data.error) {
-        throw new Error(`Instagram API 오류: ${data.error.message}`);
-      }
-
-      console.log('Media data:', data);
-      
-      // 각 미디어에 대해 인사이트 조회 (모의 데이터로 대체)
-      const mediaWithInsights = data.data?.map((media: any) => ({
-        ...media,
-        insights: {
-          impressions: Math.floor(Math.random() * 1000) + 100,
-          reach: Math.floor(Math.random() * 800) + 80,
-          likes: Math.floor(Math.random() * 50) + 5,
-          comments: Math.floor(Math.random() * 10) + 1,
-          shares: Math.floor(Math.random() * 5) + 1
-        }
-      })) || [];
-
-      setMediaList(mediaWithInsights);
-    } catch (error: any) {
-      console.error('미디어 데이터 로드 실패:', error);
-      // 에러 시 모의 데이터 사용
+      // 배포용 모의 데이터
       setMediaList([
         {
           id: "sample1",

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/MockAuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
 import { 
   ArrowLeft, 
@@ -24,6 +25,7 @@ import {
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { user, logout, updateUserProfile } = useAuth();
+  const { toast } = useToast();
   
   // 브랜드 기본 정보 (useEffect에서 로드됨)
   const [storeName, setStoreName] = useState("");
@@ -37,7 +39,6 @@ const SettingsPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
   // user가 로드되면 모든 필드들을 업데이트
   useEffect(() => {
@@ -64,11 +65,14 @@ const SettingsPage = () => {
       email
     });
     
-    // 모의 저장 프로세스
+    // 토스트 메시지로 알림
     setTimeout(() => {
       setIsSaving(false);
-      alert("설정이 저장되었습니다!");
-    }, 1500);
+      toast({
+        title: "저장 완료",
+        description: "설정이 성공적으로 저장되었습니다.",
+      });
+    }, 1200);
   };
 
   const handleDeleteAccount = () => {
@@ -84,8 +88,10 @@ const SettingsPage = () => {
   };
 
   const handleChangePasswordSuccess = () => {
-    setSuccessMessage("비밀번호가 성공적으로 변경되었습니다!");
-    setTimeout(() => setSuccessMessage(""), 5000); // 5초 후 메시지 제거
+    toast({
+      title: "비밀번호 변경 완료",
+      description: "비밀번호가 성공적으로 변경되었습니다.",
+    });
   };
 
   return (
@@ -367,14 +373,6 @@ const SettingsPage = () => {
             </Button>
           </div>
         </div>
-
-        {/* 성공 메시지 */}
-        {successMessage && (
-          <div className="fixed top-24 right-4 bg-white border border-gray-200 text-gray-800 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-in slide-in-from-right-4">
-            <CheckCircle2 className="h-4 w-4 text-blue-500" />
-            {successMessage}
-          </div>
-        )}
 
         {/* 비밀번호 변경 다이얼로그 */}
         <ChangePasswordDialog 

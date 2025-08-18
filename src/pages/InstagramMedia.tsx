@@ -68,54 +68,12 @@ const InstagramMediaPage = () => {
     setIsLoading(true);
     
     try {
-      const instagramData = {
-        token: localStorage.getItem('instagram_access_token'),
-        user: JSON.parse(localStorage.getItem('instagram_user') || '{}')
-      };
-
-      if (!instagramData.token || !instagramData.user.id) {
-        throw new Error('Instagram 연동 정보가 없습니다.');
-      }
-
-      console.log('미디어 데이터 로드 시작...');
-
-      // 백엔드 API 호출
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001/api/v1';
-      const authToken = localStorage.getItem('token');
+      console.log('배포용 모의 미디어 데이터 로드 시작...');
       
-      const response = await fetch(`${apiBaseUrl}/instagram/media?access_token=${instagramData.token}&user_id=${instagramData.user.id}`, {
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
+      // 배포용: 모의 로딩 시간
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
       
-      const result = await response.json();
-      
-      if (!result.success) {
-        console.warn('백엔드 API 오류:', result.message);
-        throw new Error(result.message);
-      }
-
-      console.log('Instagram 미디어 데이터:', result.data);
-
-      // 실제 데이터 처리
-      const mediaWithInsights: Media[] = result.data?.map((media: any, index: number) => ({
-        ...media,
-        like_count: media.like_count || Math.floor(Math.random() * 100) + 10,
-        comments_count: media.comments_count || Math.floor(Math.random() * 20) + 1,
-        insights: {
-          impressions: Math.floor(Math.random() * 1000) + 100,
-          reach: Math.floor(Math.random() * 800) + 80,
-          engagement: Math.floor(Math.random() * 50) + 5
-        }
-      })) || [];
-
-      setMediaList(mediaWithInsights);
-      
-    } catch (error: any) {
-      console.error('미디어 데이터 로드 실패:', error);
-      
-      // 에러 시 모의 데이터 사용
+      // 배포용 모의 데이터 사용
       const mockMedia: Media[] = [
         {
           id: "sample_1",
@@ -179,10 +137,44 @@ const InstagramMediaPage = () => {
             reach: 342,
             engagement: 82
           }
+        },
+        {
+          id: "sample_4",
+          media_type: 'VIDEO',
+          media_url: `data:image/svg+xml;base64,${btoa(`
+            <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="400" fill="#F3E8FF"/>
+              <circle cx="200" cy="200" r="40" fill="#8B5CF6"/>
+              <polygon points="185,185 185,215 210,200" fill="white"/>
+              <text x="200" y="320" font-family="Arial" font-size="16" fill="#7C3AED" text-anchor="middle">제품 소개 영상</text>
+            </svg>
+          `)}`,
+          thumbnail_url: `data:image/svg+xml;base64,${btoa(`
+            <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="400" fill="#F3E8FF"/>
+              <circle cx="200" cy="200" r="40" fill="#8B5CF6"/>
+              <polygon points="185,185 185,215 210,200" fill="white"/>
+            </svg>
+          `)}`,
+          permalink: "https://instagram.com/p/sample4",
+          caption: "새로운 상품 출시! 영상으로 자세히 보여드릴게요 🎥✨ #신상품 #영상리뷰",
+          timestamp: new Date(Date.now() - 1000 * 60 * 60 * 96).toISOString(),
+          like_count: 89,
+          comments_count: 23,
+          insights: {
+            impressions: 765,
+            reach: 542,
+            engagement: 112
+          }
         }
       ];
 
       setMediaList(mockMedia);
+      console.log('배포용 모의 미디어 데이터 로드 완료:', mockMedia.length, '개 항목');
+      
+    } catch (error: any) {
+      console.error('모의 데이터 로드 실패:', error);
+      setMediaList([]);
     } finally {
       setIsLoading(false);
     }

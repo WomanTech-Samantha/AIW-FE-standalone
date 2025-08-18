@@ -233,9 +233,15 @@ export default function StoreSettingsPage() {
     
     setTimeout(() => {
       setIsSaving(false);
-      alert("설정이 저장되었습니다!");
-      // 스토어 관리 페이지로 리다이렉트
-      navigate('/store');
+      
+      // 개선된 성공 메시지와 자동 리다이렉트
+      const confirmRedirect = confirm(
+        "🎉 스토어 설정이 성공적으로 저장되었습니다!\n\n스토어 관리 페이지로 이동하시겠습니까?"
+      );
+      
+      if (confirmRedirect) {
+        navigate('/store');
+      }
     }, 1500);
   };
 

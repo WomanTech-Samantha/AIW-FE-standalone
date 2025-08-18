@@ -88,11 +88,14 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
     setError("");
 
     try {
-      await changePassword(currentPassword, newPassword, confirmPassword);
+      // 배포용 모의 비밀번호 변경
+      await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+      
+      console.log('배포용 모의 비밀번호 변경 완료');
       handleClose();
       onSuccess?.();
     } catch (error: any) {
-      setError(error.message);
+      setError('비밀번호 변경에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -207,7 +210,10 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
 
           {/* 에러 메시지 */}
           {error && (
-            <div className="text-red-600 text-sm bg-red-50 p-3 rounded-md">
+            <div className="text-red-700 text-sm bg-red-50 border border-red-200 p-3 rounded-lg flex items-center gap-2">
+              <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs">!</span>
+              </div>
               {error}
             </div>
           )}
