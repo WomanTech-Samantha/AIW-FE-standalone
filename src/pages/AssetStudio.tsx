@@ -34,6 +34,98 @@ import { useState, useEffect } from "react";
 // Mock data
 import { mockProducts } from "@/services/mockData";
 
+// 업종별 목데이터 생성 함수
+const getBusinessMockProducts = () => {
+  try {
+    const demoUserData = JSON.parse(localStorage.getItem('demo_user_data') || '{}');
+    const userBusiness = demoUserData.business || "수공예";
+    
+    if (userBusiness.includes("침구")) {
+      return [
+        {
+          id: 'bedding-1',
+          name: '모달 이불커버 세트',
+          description: '고급스러운 모달 원단으로 제작된 이불커버 세트',
+          price: 125000,
+          category: 'bedding',
+          images: ['https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/rs_quotation_api/rguwzf38/f670f405baf44da5a4ee3203177dedcb.jpg'],
+          thumbnailUrl: 'https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/rs_quotation_api/rguwzf38/f670f405baf44da5a4ee3203177dedcb.jpg',
+          stock: 30,
+          featured: true,
+          createdAt: '2024-01-05T00:00:00Z'
+        },
+        {
+          id: 'bedding-2', 
+          name: '차렵이불 세트',
+          description: '전통적인 한국식 차렵이불 세트',
+          price: 85000,
+          category: 'bedding',
+          images: ['https://image.hanssem.com/hsimg/gds/1050/1099/1099323_A1.jpg?v=20250626154653'],
+          thumbnailUrl: 'https://image.hanssem.com/hsimg/gds/1050/1099/1099323_A1.jpg?v=20250626154653',
+          stock: 45,
+          featured: false,
+          createdAt: '2024-01-06T00:00:00Z'
+        },
+        {
+          id: 'bedding-3',
+          name: '오가닉 코튼 베개커버',
+          description: '100% 오가닉 코튼으로 만든 베개커버',
+          price: 32000,
+          category: 'bedding',
+          images: ['https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/511847068563899-43ef49cb-7d24-4308-be5f-06fbbad6e0c9.jpg'],
+          thumbnailUrl: 'https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/511847068563899-43ef49cb-7d24-4308-be5f-06fbbad6e0c9.jpg',
+          stock: 80,
+          featured: true,
+          createdAt: '2024-01-07T00:00:00Z'
+        }
+      ];
+    } else {
+      // 수공예 업종
+      return [
+        {
+          id: 'craft-1',
+          name: '니팅 스카프',
+          description: '따뜻한 손뜨개 울 스카프',
+          price: 42000,
+          category: 'craft',
+          images: ['https://img.29cm.co.kr/item/202502/11efe476c8f297198521d39ce3235e75.jpg?width=700&format=webp'],
+          thumbnailUrl: 'https://img.29cm.co.kr/item/202502/11efe476c8f297198521d39ce3235e75.jpg?width=700&format=webp',
+          stock: 25,
+          featured: true,
+          createdAt: '2024-01-05T00:00:00Z'
+        },
+        {
+          id: 'craft-2',
+          name: '자수 파우치',
+          description: '손자수로 장식된 감성 파우치',
+          price: 18000,
+          category: 'craft',
+          images: ['https://image.artbox.co.kr/upload/C00001/goods/800_800/215/241212006231215.jpg?s=/goods/org/215/241212006231215.jpg'],
+          thumbnailUrl: 'https://image.artbox.co.kr/upload/C00001/goods/800_800/215/241212006231215.jpg?s=/goods/org/215/241212006231215.jpg',
+          stock: 60,
+          featured: false,
+          createdAt: '2024-01-06T00:00:00Z'
+        },
+        {
+          id: 'craft-3',
+          name: '비즈 액세서리',
+          description: '수제 비즈로 만든 감성 액세서리',
+          price: 24000,
+          category: 'craft',
+          images: ['https://cafe24.poxo.com/ec01/ckals34/UVTjSep0dwP4/wX7AtHyXKnHA9kyKo3xcZFma76xOcayiiZOLDJr4l1B6euOkIJTMDhkxEFrGHo32fLjj4w9lQ==/_/web/product/big/202310/6af0b0845cfd794ffdb62990c24f60b9.jpg'],
+          thumbnailUrl: 'https://cafe24.poxo.com/ec01/ckals34/UVTjSep0dwP4/wX7AtHyXKnHA9kyKo3xcZFma76xOcayiiZOLDJr4l1B6euOkIJTMDhkxEFrGHo32fLjj4w9lQ==/_/web/product/big/202310/6af0b0845cfd794ffdb62990c24f60b9.jpg',
+          stock: 40,
+          featured: true,
+          createdAt: '2024-01-07T00:00:00Z'
+        }
+      ];
+    }
+  } catch (error) {
+    console.error('Error getting business mock products:', error);
+    return mockProducts; // 기본값
+  }
+};
+
 const AssetStudioPage = () => {
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
@@ -79,8 +171,9 @@ const AssetStudioPage = () => {
       // localStorage에서 사용자가 추가한 상품들 가져오기
       const savedProducts = JSON.parse(localStorage.getItem('demo_products') || '[]');
 
-      // 기본 Mock 상품들과 사용자 추가 상품들 합치기
-      const allProducts = [...mockProducts, ...savedProducts].map((p, index) => ({
+      // 업종별 Mock 상품들과 사용자 추가 상품들 합치기
+      const businessMockProducts = getBusinessMockProducts();
+      const allProducts = [...businessMockProducts, ...savedProducts].map((p, index) => ({
         ...p,
         id: p.id || `product-${index}`,
         thumbnailUrl: p.images?.[0] || p.thumbnailUrl || '/placeholder.svg',

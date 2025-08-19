@@ -33,41 +33,102 @@ const ProductAddPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [selectedDemo, setSelectedDemo] = useState<number | null>(null);
 
-  // 데모 상품 예시 데이터
-  const demoProducts = [
-    {
-      id: 1,
-      name: "손뜨개 마크라메 벽걸이",
-      price: "68000",
-      keywords: ["마크라메", "핸드메이드", "보헤미안", "인테리어"],
-      imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-      enhancedImageUrl: "" // 나중에 URL 추가 예정
-    },
-    {
-      id: 2,
-      name: "퀼트 러그 매트",
-      price: "75000",
-      keywords: ["퀼트", "러그", "인테리어", "포근"],
-      imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-      enhancedImageUrl: "" // 나중에 URL 추가 예정
-    },
-    {
-      id: 3,
-      name: "핸드메이드 패치워크 코스터",
-      price: "12000",
-      keywords: ["핸드메이드", "패치워크", "수공예", "인테리어"],
-      imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-      enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358463/products/enhanced/1755358461387_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_enhanced.jpg"
-    },
-    {
-      id: 4,
-      name: "패브릭 핸드메이드 파우치",
-      price: "25000",
-      keywords: ["패브릭", "파우치", "핸드메이드", "감성"],
-      imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-      enhancedImageUrl: "" // 나중에 URL 추가 예정
+  // 사용자의 업종 정보 가져오기
+  const getUserBusiness = () => {
+    try {
+      // MockAuthContext에서 저장한 키 사용
+      const demoUserData = JSON.parse(localStorage.getItem('demo_user_data') || '{}');
+      const userBusiness = demoUserData.business || "수공예";
+      
+      console.log('업종 정보:', userBusiness);
+      
+      return userBusiness;
+    } catch (error) {
+      console.error('Error getting user business:', error);
+      return "수공예";
     }
-  ];
+  };
+
+  const userBusiness = getUserBusiness();
+
+  // 업종에 따른 데모 상품 데이터
+  const getDemoProducts = () => {
+    if (userBusiness.includes("침구")) {
+      // 침구/이불 업종 데모 상품
+      return [
+        {
+          id: 1,
+          name: "프리미엄 냉감 이불",
+          price: "89000",
+          keywords: ["냉감", "숙면", "프리미엄", "항균"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        },
+        {
+          id: 2,
+          name: "천연 라벤더 베개",
+          price: "45000",
+          keywords: ["천연", "라벤더", "숙면", "힐링"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        },
+        {
+          id: 3,
+          name: "고급 메모리폼 매트리스",
+          price: "320000",
+          keywords: ["메모리폼", "매트리스", "척추", "편안"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        },
+        {
+          id: 4,
+          name: "사계절 덮개 이불세트",
+          price: "75000",
+          keywords: ["사계절", "이불세트", "부드러운", "세탁"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        }
+      ];
+    } else {
+      // 수공예품 업종 데모 상품 (기본값)
+      return [
+        {
+          id: 1,
+          name: "손뜨개 마크라메 벽걸이",
+          price: "68000",
+          keywords: ["마크라메", "핸드메이드", "보헤미안", "인테리어"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        },
+        {
+          id: 2,
+          name: "퀼트 러그 매트",
+          price: "75000",
+          keywords: ["퀼트", "러그", "인테리어", "포근"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        },
+        {
+          id: 3,
+          name: "핸드메이드 패치워크 코스터",
+          price: "12000",
+          keywords: ["핸드메이드", "패치워크", "수공예", "인테리어"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358463/products/enhanced/1755358461387_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_enhanced.jpg"
+        },
+        {
+          id: 4,
+          name: "패브릭 핸드메이드 파우치",
+          price: "25000",
+          keywords: ["패브릭", "파우치", "핸드메이드", "감성"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
+          enhancedImageUrl: ""
+        }
+      ];
+    }
+  };
+
+  const demoProducts = getDemoProducts();
 
 
   // 가격 포맷팅 함수
