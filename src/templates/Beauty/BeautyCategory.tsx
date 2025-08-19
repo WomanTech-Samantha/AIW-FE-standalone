@@ -26,6 +26,89 @@ const BeautyCategory = () => {
   
   // 현재 store 파라미터 가져오기
   const storeParam = new URLSearchParams(window.location.search).get('store');
+  
+  // Store data 가져오기
+  const storeData = (window as any).STORE_DATA;
+  const storeName = storeData?.store?.storeName || '내추럴뷰티';
+  const business = storeData?.store?.business || '';
+  
+  // 카테고리 제목 반환 함수
+  const getCategoryTitle = (categoryName: string, business: string) => {
+    if (business.includes('침구') || business.includes('이불')) {
+      const titles = {
+        'comforters': '이불 콜렉션',
+        'pillows': '베개 콜렉션',
+        'sheets': '시트 콜렉션',
+        'baby': '아기침구 콜렉션',
+        'sale': '특가 상품',
+        'all': '전체 상품'
+      };
+      return titles[categoryName] || '침구 콜렉션';
+    } else if (business.includes('수공예')) {
+      const titles = {
+        'pottery': '도자기 작품',
+        'textile': '직물 작품',
+        'woodwork': '목공예 작품',
+        'jewelry': '액세서리 작품',
+        'sale': '특가 작품',
+        'all': '전체 작품'
+      };
+      return titles[categoryName] || '수공예 작품';
+    }
+    return '콜렉션';
+  };
+  
+  // 카테고리 설명 반환 함수
+  const getCategoryDescription = (categoryName: string, business: string) => {
+    if (business.includes('침구') || business.includes('이불')) {
+      const descriptions = {
+        'comforters': '편안한 수면을 위한 프리미엄 이불',
+        'pillows': '목과 건강을 위한 기능성 베개',
+        'sheets': '부드럽고 시원한 침대 시트',
+        'baby': '우리 아이를 위한 안전한 침구',
+        'sale': '특별한 가격으로 만나보세요',
+        'all': '모든 침구 상품을 한눈에'
+      };
+      return descriptions[categoryName] || '최고의 품질로 만든 침구';
+    } else if (business.includes('수공예')) {
+      const descriptions = {
+        'pottery': '작가의 정성이 담긴 도자기',
+        'textile': '섬세한 손길로 완성한 직물 작품',
+        'woodwork': '자연의 아름다움을 담은 목공예',
+        'jewelry': '특별한 순간을 빛내줄 액세서리',
+        'sale': '특별 할인 작품',
+        'all': '모든 수공예 작품을 한눈에'
+      };
+      return descriptions[categoryName] || '손끝에서 탄생한 특별한 작품';
+    }
+    return '제품을 만나보세요';
+  };
+  
+  // 서브 카테고리 반환 함수
+  const getSubCategories = (categoryName: string, business: string) => {
+    if (business.includes('침구') || business.includes('이불')) {
+      const subCats = {
+        'comforters': ['극세사 이불', '구스다운', '카손이불', '계절이불'],
+        'pillows': ['메모리폼', '라텍스', '구스다운', '경추베개'],
+        'sheets': ['텐셀', '순면', '극세사', '에쥬집'],
+        'baby': ['블랭킷', '이불', '베개', '방수패드'],
+        'sale': ['이불', '베개', '시트', '세트'],
+        'all': ['이불', '베개', '시트', '세트']
+      };
+      return subCats[categoryName] || ['이불', '베개', '시트', '세트'];
+    } else if (business.includes('수공예')) {
+      const subCats = {
+        'pottery': ['찻잔', '그릇', '화병', '접시'],
+        'textile': ['자수', '위빙', '테피스트리', '캐왈'],
+        'woodwork': ['보울', '트레이', '좌탁', '소품'],
+        'jewelry': ['목걸이', '귀걸이', '팔찌', '반지'],
+        'sale': ['도자기', '직물', '목공예', '액세서리'],
+        'all': ['도자기', '직물', '목공예', '액세서리']
+      };
+      return subCats[categoryName] || ['도자기', '직물', '목공예', '액세서리'];
+    }
+    return ['전체'];
+  };
 
   useEffect(() => {
     fetchCategoryProducts();
@@ -42,16 +125,46 @@ const BeautyCategory = () => {
         console.log('전역 상품 데이터 발견:', storeData.products);
         
         // 카테고리 매핑
-        const categoryMap = {
-          'skincare': '스킨케어',
-          'makeup': '메이크업',
-          'fragrance': '향수',
-          'beauty-tools': '뷰티툴',
-          'cleansing': '클렌징',
-          'sale': '세일',
-          'new-collection': '신상품',
-          'all': ''
+        // 업종 정보 가져오기
+        const business = storeData.store?.business || '';
+        
+        // 업종에 따른 카테고리 매핑
+        const getCategoryMap = () => {
+          if (business.includes('침구') || business.includes('이불')) {
+            return {
+              'comforters': '이불',
+              'pillows': '베개',
+              'sheets': '시트',
+              'baby': '아기침구',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          } else if (business.includes('수공예')) {
+            return {
+              'pottery': '도자기',
+              'textile': '직물',
+              'woodwork': '목공예',
+              'jewelry': '액세서리',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          } else {
+            // 기본값 (침구)
+            return {
+              'comforters': '이불',
+              'pillows': '베개',
+              'sheets': '시트',
+              'baby': '아기침구',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          }
         };
+        
+        const categoryMap = getCategoryMap();
 
         const categoryNameKr = categoryMap[categoryName] || '';
         
@@ -179,16 +292,35 @@ const BeautyCategory = () => {
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
               <Link to={`/?store=${storeParam}`} className="text-2xl font-bold flex items-center">
-                <Leaf className="h-6 w-6 mr-2" />
-                <span style={{ color: 'var(--color-primary)' }}>내추럴뷰티</span>
+                <span className="text-2xl mr-2">{business.includes('수공예') ? '🎨' : '🌿'}</span>
+                <span style={{ color: 'var(--color-primary)' }}>{storeName}</span>
               </Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
               <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
-              <Link to={`/category/skincare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium" style={{ color: 'var(--color-primary)' }}>스킨케어</Link>
-              <Link to={`/category/makeup?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
-              <Link to={`/category/fragrance?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">향수</Link>
+              {business.includes('침구') || business.includes('이불') ? (
+                <>
+                  <Link to={`/category/comforters?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">이불·이불세트</Link>
+                  <Link to={`/category/pillows?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">베개·베개커버</Link>
+                  <Link to={`/category/sheets?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">시트·매트리스커버</Link>
+                  <Link to={`/category/baby?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">아기침구</Link>
+                </>
+              ) : business.includes('수공예') ? (
+                <>
+                  <Link to={`/category/pottery?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">도자기·세라믹</Link>
+                  <Link to={`/category/textile?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">직물·자수</Link>
+                  <Link to={`/category/woodwork?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">목공예</Link>
+                  <Link to={`/category/jewelry?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">액세서리</Link>
+                </>
+              ) : (
+                <>
+                  <Link to={`/category/comforters?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">이불·이불세트</Link>
+                  <Link to={`/category/pillows?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">베개·베개커버</Link>
+                  <Link to={`/category/sheets?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">시트·매트리스커버</Link>
+                  <Link to={`/category/baby?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">아기침구</Link>
+                </>
+              )}
               <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
             </nav>
 
@@ -208,7 +340,7 @@ const BeautyCategory = () => {
           <div className="text-base text-gray-600">
             <Link to={`/?store=${storeParam}`} className="text-gray-600 hover:text-gray-900">홈</Link>
             <span className="mx-2">/</span>
-            <span className="font-medium" style={{ color: 'var(--color-primary)' }}>스킨케어</span>
+            <span className="font-medium" style={{ color: 'var(--color-primary)' }}>{categoryName}</span>
           </div>
         </div>
       </div>
@@ -218,9 +350,9 @@ const BeautyCategory = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-4 flex items-center justify-center" style={{ color: 'var(--color-primary)' }}>
-              🌿 Skincare Collection
+              {business.includes('수공예') ? '🎨' : '🌿'} {getCategoryTitle(categoryName, business)}
             </h1>
-            <p className="text-xl text-gray-600">자연 성분으로 건강한 피부를 만드는 기초 화장품</p>
+            <p className="text-xl text-gray-600">{getCategoryDescription(categoryName, business)}</p>
           </div>
         </div>
       </section>
@@ -236,10 +368,9 @@ const BeautyCategory = () => {
               </button>
               <div className="flex space-x-4 text-base">
                 <button className="font-medium border-b-2 pb-1" style={{ color: 'var(--color-primary)', borderColor: 'var(--color-primary)' }}>전체</button>
-                <button className="text-gray-600 hover:opacity-80">세럼</button>
-                <button className="text-gray-600 hover:opacity-80">크림</button>
-                <button className="text-gray-600 hover:opacity-80">토너</button>
-                <button className="text-gray-600 hover:opacity-80">클렌징</button>
+                {getSubCategories(categoryName, business).map((subCat, idx) => (
+                  <button key={idx} className="text-gray-600 hover:opacity-80">{subCat}</button>
+                ))}
               </div>
               <span className="text-base text-gray-600">총 {products.length}개 제품</span>
             </div>
@@ -345,9 +476,53 @@ const BeautyCategory = () => {
       {/* 성분 정보 */}
       <section className="py-16 bg-beauty-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">Key Ingredients</h3>
+          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
+            {business.includes('수공예') ? '작품 특징' : business.includes('침구') ? '소재 특징' : 'Key Ingredients'}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
+            {(business.includes('침구') || business.includes('이불') ? [
+              {
+                icon: "🌿",
+                name: "오가닉 코튼",
+                benefit: "피부 친화적"
+              },
+              {
+                icon: "🧺",
+                name: "텐셀 소재",
+                benefit: "시원한 촉감"
+              },
+              {
+                icon: "🎍",
+                name: "대나무 섬유",
+                benefit: "항균 효과"
+              },
+              {
+                icon: "☁️",
+                name: "구스다운",
+                benefit: "보온성 우수"
+              }
+            ] : business.includes('수공예') ? [
+              {
+                icon: "🏺",
+                name: "천연 흙",
+                benefit: "전통 기법"
+              },
+              {
+                icon: "🧪",
+                name: "핸드메이드",
+                benefit: "정성스런 제작"
+              },
+              {
+                icon: "🎨",
+                name: "친환경 염료",
+                benefit: "자연 색상"
+              },
+              {
+                icon: "✨",
+                name: "하나뿐인 작품",
+                benefit: "특별한 가치"
+              }
+            ] : [
               {
                 icon: "🌿",
                 name: "알로에 베라",
@@ -368,7 +543,7 @@ const BeautyCategory = () => {
                 name: "로즈힙 오일",
                 benefit: "안티에이징"
               }
-            ].map((ingredient, index) => (
+            ]).map((ingredient, index) => (
               <Card key={index} className="text-center p-6 bg-beauty-card border-beauty-border">
                 <CardContent className="p-0">
                   <div className="text-4xl mb-4">{ingredient.icon}</div>
@@ -384,26 +559,74 @@ const BeautyCategory = () => {
       {/* 스킨케어 팁 */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">Skincare Tips</h3>
+          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
+            {business.includes('수공예') ? '작품 관리 팁' : business.includes('침구') ? '침구 관리 팁' : 'Skincare Tips'}
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="p-6 bg-beauty-card border-beauty-border">
-              <CardContent className="p-0">
-                <h4 className="text-lg font-semibold mb-3">🌅 모닝 루틴</h4>
-                <p className="text-base text-gray-600">토너 → 세럼 → 크림 → 선크림 순서로 발라주세요</p>
-              </CardContent>
-            </Card>
-            <Card className="p-6 bg-beauty-card border-beauty-border">
-              <CardContent className="p-0">
-                <h4 className="text-lg font-semibold mb-3">🌙 이브닝 루틴</h4>
-                <p className="text-base text-gray-600">클렌징 → 토너 → 세럼 → 크림으로 마무리하세요</p>
-              </CardContent>
-            </Card>
-            <Card className="p-6 bg-beauty-card border-beauty-border">
-              <CardContent className="p-0">
-                <h4 className="text-lg font-semibold mb-3">✨ 주간 케어</h4>
-                <p className="text-base text-gray-600">주 1-2회 엑스폴리에이션으로 각질을 제거해주세요</p>
-              </CardContent>
-            </Card>
+            {business.includes('침구') || business.includes('이불') ? (
+              <>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🌞 세탁 방법</h4>
+                    <p className="text-base text-gray-600">중성세제로 30도 미웩수에 세탁하세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🌬️ 보관 방법</h4>
+                    <p className="text-base text-gray-600">통풍이 잘 되는 건조한 곳에 보관하세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">✨ 교체 주기</h4>
+                    <p className="text-base text-gray-600">계절별로 1-2년 주기로 교체를 권장합니다</p>
+                  </CardContent>
+                </Card>
+              </>
+            ) : business.includes('수공예') ? (
+              <>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🧽 청소 방법</h4>
+                    <p className="text-base text-gray-600">부드러운 천으로 먼지를 닦아주세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">☀️ 보관 환경</h4>
+                    <p className="text-base text-gray-600">직사광선을 피하고 습도를 조절해주세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🎁 포장 팁</h4>
+                    <p className="text-base text-gray-600">선물용 포장은 무료로 제공해드립니다</p>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🌅 모닝 루틴</h4>
+                    <p className="text-base text-gray-600">토너 → 세럼 → 크림 → 선크림 순서로 발라주세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">🌙 이브닝 루틴</h4>
+                    <p className="text-base text-gray-600">클렌징 → 토너 → 세럼 → 크림으로 마무리하세요</p>
+                  </CardContent>
+                </Card>
+                <Card className="p-6 bg-beauty-card border-beauty-border">
+                  <CardContent className="p-0">
+                    <h4 className="text-lg font-semibold mb-3">✨ 주간 케어</h4>
+                    <p className="text-base text-gray-600">주 1-2회 엑스폴리에이션으로 각질을 제거해주세요</p>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -414,10 +637,14 @@ const BeautyCategory = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h4 className="text-2xl font-bold mb-6 flex items-center">
-                <Leaf className="h-6 w-6 mr-2" />
-                내추럴뷰티
+                <span className="text-2xl mr-2">{business.includes('수공예') ? '🎨' : '🌿'}</span>
+                {storeName}
               </h4>
-              <p className="text-base leading-relaxed">자연에서 온 순수한 아름다움으로<br />건강한 피부를 만들어가세요</p>
+              <p className="text-base leading-relaxed">
+                {business.includes('수공예') ? '작가의 정성이 담긴<br />특별한 작품을 만나보세요' : 
+                 business.includes('침구') ? '편안한 수면을 위한<br />프리미엄 침구를 만나보세요' :
+                 '자연에서 온 순수한 아름다움으로<br />건강한 피부를 만들어가세요'}
+              </p>
             </div>
             <div>
               <h5 className="text-lg font-semibold mb-6">고객 지원</h5>
@@ -428,18 +655,18 @@ const BeautyCategory = () => {
             <div>
               <h5 className="text-lg font-semibold mb-6">서비스</h5>
               <p className="text-base mb-2">무료 배송</p>
-              <p className="text-base mb-2">피부 진단</p>
-              <p className="text-base">샘플 키트</p>
+              <p className="text-base mb-2">{business.includes('수공예') ? '작품 주문제작' : business.includes('침구') ? '맞춤 제작' : '피부 진단'}</p>
+              <p className="text-base">{business.includes('수공예') ? '선물 포장' : business.includes('침구') ? '방문 설치' : '샘플 키트'}</p>
             </div>
             <div>
               <h5 className="text-lg font-semibold mb-6">브랜드</h5>
               <p className="text-base mb-2">브랜드 스토리</p>
-              <p className="text-base mb-2">성분 이야기</p>
-              <p className="text-base">지속가능성</p>
+              <p className="text-base mb-2">{business.includes('수공예') ? '작가 소개' : business.includes('침구') ? '소재 이야기' : '성분 이야기'}</p>
+              <p className="text-base">{business.includes('수공예') ? '전시회 일정' : '지속가능성'}</p>
             </div>
           </div>
           <div className="border-t border-beauty-accent/20 mt-12 pt-8 text-center">
-            <p className="text-base">&copy; 2024 내추럴뷰티. All rights reserved.</p>
+            <p className="text-base">&copy; 2024 {storeName}. All rights reserved.</p>
           </div>
         </div>
       </footer>

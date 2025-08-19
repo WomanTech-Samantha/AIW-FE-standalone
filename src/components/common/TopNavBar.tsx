@@ -34,8 +34,8 @@ export default function TopNavBar() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center border-[2.5px] border-black">
+                <span className="text-black font-bold text-lg leading-none flex items-center justify-center transform translate-x-[0.5px] -translate-y-[0.5px]">A</span>
               </div>
               <span className="font-bold text-xl text-foreground">ALL IN WOM</span>
             </Link>

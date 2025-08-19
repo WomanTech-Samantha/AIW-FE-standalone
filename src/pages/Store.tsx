@@ -160,7 +160,6 @@ const StorePage = () => {
           >
             <Plus className="mr-2 h-6 w-6" />
             온라인 스토어 만들기
-            <ArrowRight className="ml-2 h-6 w-6" />
           </Button>
         </div>
       </div>

@@ -89,34 +89,41 @@ export default function OnboardingPage() {
   const generateAIImage = () => {
     setIsGeneratingImage(true);
     
-    // 2초 후 이미지 생성
+    // 10초 후 이미지 생성
     setTimeout(() => {
-      // 업종에 따른 색상
-      const colors = {
-        "침구": "#9B7EBD",
-        "커튼": "#6B8E65",
-        "의류": "#D4526E",
-        "음식": "#C67B5C",
-        "뷰티": "#E8A49C",
-        "수공예": "#7189A6"
-      };
+      // 업종에 따른 이미지 URL 설정 (나중에 실제 URL로 교체)
+      let imageUrl = "";
       
-      const businessType = Object.keys(colors).find(key => business.includes(key));
-      const color = colors[businessType] || "#9B7EBD";
-      const initials = storeName.slice(0, 2).toUpperCase() || "AI";
+      if (business.includes("침구")) {
+        // 침구 업종용 이미지 URL (나중에 교체)
+        imageUrl = "https://drive.google.com/uc?export=view&id=1n1chKjFGQWHCNyCrF0JNO1oOppizqs0B";
+      } else if (business.includes("수공예")) {
+        // 수공예 업종용 이미지 URL (나중에 교체)
+        imageUrl = "https://drive.google.com/uc?export=view&id=1YJmNCDhU2iRCCRI_Zu1Sqy7zwZxmXhwU";
+      } else {
+        // 기본 이미지 (SVG)
+        const colors = {
+          "침구": "#9B7EBD",
+          "수공예": "#7189A6"
+        };
+        
+        const businessType = Object.keys(colors).find(key => business.includes(key));
+        const color = colors[businessType] || "#9B7EBD";
+        const initials = storeName.slice(0, 2).toUpperCase() || "AI";
 
-      const mockImage = `data:image/svg+xml;base64,${btoa(`
-        <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="200" height="200" fill="#FAFAFA"/>
-          <circle cx="100" cy="100" r="70" fill="${color}"/>
-          <text x="100" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${initials}</text>
-        </svg>
-      `)}`;
+        imageUrl = `data:image/svg+xml;base64,${btoa(`
+          <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#FAFAFA"/>
+            <circle cx="100" cy="100" r="70" fill="${color}"/>
+            <text x="100" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${initials}</text>
+          </svg>
+        `)}`;
+      }
       
-      setBrandImagePreview(mockImage);
-      setBrandImageUrl(mockImage);
+      setBrandImagePreview(imageUrl);
+      setBrandImageUrl(imageUrl);
       setIsGeneratingImage(false);
-    }, 2000);
+    }, 10000); // 10초로 변경
   };
 
   const themeOptions = [
@@ -313,7 +320,7 @@ export default function OnboardingPage() {
                     <div>
                       <Label className="text-lg mb-4 block">업종 선택</Label>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {["🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", "🍽️ 음식·요리", "💄 뷰티·화장품", "🧵 수공예"].map((label) => (
+                        {["침구·이불", "수공예"].map((label) => (
                           <Button
                             key={label}
                             variant={business === label ? "default" : "outline"}
@@ -332,7 +339,7 @@ export default function OnboardingPage() {
                         id="storeName" 
                         value={storeName} 
                         onChange={(e) => setStoreName(e.target.value)} 
-                        placeholder="예: 지숙커튼&침구"
+                        placeholder=" 예: 지숙커튼 & 침구"
                         className="text-lg"
                       />
                     </div>
@@ -345,7 +352,7 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>사이트 주소 설정</CardTitle>
-                    <CardDescription>온라인 스토어의 주소를 설정하세요</CardDescription>
+                    <CardDescription>새로 개설할 온라인 스토어의 주소를 설정하세요</CardDescription>
                   </CardHeader>
                   
                   <div className="space-y-6">
@@ -365,7 +372,7 @@ export default function OnboardingPage() {
                       </div>
                       {!isSubdomainValid && (
                         <p className="text-sm text-destructive mt-2">
-                          영문 소문자, 숫자, 하이픈만 사용 가능하며 3자 이상이어야 합니다
+                          영문 소문자, 숫자, 하이픈(-)만 사용 가능하며 3자 이상이어야 합니다
                         </p>
                       )}
                     </div>
@@ -377,8 +384,9 @@ export default function OnboardingPage() {
               {currentStep === 3 && (
                 <>
                   <CardHeader className="p-0">
-                    <CardTitle>사이트 템플릿 및 테마</CardTitle>
-                    <CardDescription>사이트 디자인과 색상을 선택하세요</CardDescription>
+                    <CardTitle>쇼핑몰 템플릿 및 테마 색상</CardTitle>
+                    <CardDescription>생성할 쇼핑몰 홈페이지의 분위기와 주요 색상을 선택할 수 있어요.</CardDescription>
+                    <CardDescription>하단에서 쇼핑몰 미리보기가 가능합니다.</CardDescription>
                   </CardHeader>
                   
                   <div className="space-y-8">
@@ -500,7 +508,7 @@ export default function OnboardingPage() {
                               <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                               <h4 className="font-medium text-lg mb-2">이미지 업로드</h4>
                               <p className="text-sm text-muted-foreground">
-                                보유하신 로고나 대표 이미지를 업로드하세요
+                                가지고 계신 로고나 대표 이미지 파일을 업로드하세요
                               </p>
                             </CardContent>
                           </Card>
@@ -517,7 +525,7 @@ export default function OnboardingPage() {
                                   <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
                                   <h4 className="font-medium text-lg mb-2">이미지 생성 중...</h4>
                                   <p className="text-sm text-muted-foreground">
-                                    AI가 열심히 만들고 있어요
+                                    AI가 열심히 만들고 있어요. 시간이 걸려도 잠시만 기다려 주세요.
                                   </p>
                                 </>
                               ) : (
@@ -607,7 +615,7 @@ export default function OnboardingPage() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="tagline">브랜드 대표 문장 (선택)</Label>
+                      <Label htmlFor="tagline">브랜드를 대표하는 한 문장 (선택)</Label>
                       <Input 
                         id="tagline" 
                         placeholder="예: 더 따뜻한 밤, 더 편안한 아침" 

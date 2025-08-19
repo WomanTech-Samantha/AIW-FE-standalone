@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, Search, Menu, User, Plus, Minus, Star, Truck, Shield, RotateCcw } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import '../base.css';
 import { useState, useEffect } from "react";
 // 간단한 이미지 플레이스홀더 생성 함수
@@ -18,10 +18,161 @@ const cozyBeddingImage = createSimpleImage("#f3f4f6", "이미지");
 const cozyCurtainsImage = createSimpleImage("#e5e7eb", "이미지");
 
 const CozyProduct = () => {
+  const { productId } = useParams();
   const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState("베이지");
-  const [selectedSize, setSelectedSize] = useState("킹");
+  const [productData, setProductData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  // 기본 상품 데이터 생성
+  const createDefaultProduct = (business, id) => {
+    if (business.includes('수공예')) {
+      return {
+        id: id,
+        name: '수제 도자기 찻잔 세트',
+        category: '도자기',
+        price: 145000,
+        originalPrice: 185000,
+        description: '전통 기법으로 제작된 수제 도자기 찻잔 세트입니다. 작가의 정성이 담긴 특별한 작품으로, 차를 마시는 시간을 더욱 특별하게 만들어드립니다.',
+        imageUrl: createSimpleImage("#f3f4f6", "수제 도자기"),
+        inStock: true,
+        rating: 4.9,
+        reviewCount: 87
+      };
+    } else {
+      return {
+        id: id,
+        name: '프리미엄 코튼 침구 세트',
+        category: '침구',
+        price: 129000,
+        originalPrice: 189000,
+        description: '100% 프리미엄 코튼으로 제작된 침구 세트입니다. 부드러운 촉감과 뛰어난 통기성으로 편안한 수면을 제공합니다.',
+        imageUrl: createSimpleImage("#f3f4f6", "프리미엄 침구"),
+        inStock: true,
+        rating: 4.8,
+        reviewCount: 156
+      };
+    }
+  };
+
+  // 업종별 상품 정보 설정
+  const getBusinessContent = (product) => {
+    if (!product) return null;
+    
+    const storeData = (window as any).STORE_DATA;
+    const business = storeData?.store?.business || '';
+    
+    if (business.includes('수공예')) {
+      return {
+        title: product.name || '수제 도자기 찻잔 세트',
+        breadcrumb: product.category || '도자기·세라믹',
+        colors: ['자연색', '청자색', '백자색', '갈색'],
+        sizes: ['소형', '중형', '대형', '세트'],
+        price: `${product.price?.toLocaleString() || '145,000'}원`,
+        originalPrice: product.originalPrice ? `${product.originalPrice.toLocaleString()}원` : '185,000원',
+        rating: product.rating || 4.9,
+        reviews: product.reviewCount || 87,
+        description: product.description || '전통 기법으로 제작된 수제 도자기 찻잔 세트입니다. 작가의 정성이 담긴 특별한 작품으로, 차를 마시는 시간을 더욱 특별하게 만들어드립니다.',
+        features: ['🎨 작가 수제작품', '🏺 전통 도예기법', '🌿 친환경 소재', '📦 안전 포장'],
+        relatedProducts: [
+          {
+            id: 1,
+            image: cozyCurtainsImage,
+            title: "전통 자수 벽걸이",
+            price: "95,000원",
+            originalPrice: "125,000원"
+          },
+          {
+            id: 2,
+            image: cozyBeddingImage,
+            title: "원목 트레이",
+            price: "68,000원",
+            originalPrice: "89,000원"
+          }
+        ]
+      };
+    } else {
+      // 침구 기본값
+      return {
+        title: product.name || '프리미엄 코튼 침구 세트',
+        breadcrumb: product.category || '침구류',
+        colors: ['베이지', '화이트', '그레이', '네이비'],
+        sizes: ['싱글', '슈퍼싱글', '퀸', '킹'],
+        price: `${product.price?.toLocaleString() || '129,000'}원`,
+        originalPrice: product.originalPrice ? `${product.originalPrice.toLocaleString()}원` : '189,000원',
+        rating: product.rating || 4.8,
+        reviews: product.reviewCount || 156,
+        description: product.description || '100% 프리미엄 코튼으로 제작된 침구 세트입니다. 부드러운 촉감과 뛰어난 통기성으로 편안한 수면을 제공합니다.',
+        features: ['🛏️ 100% 프리미엄 코튼', '🌙 편안한 수면', '🧼 세탁 용이', '📦 무료배송'],
+        relatedProducts: [
+          {
+            id: 1,
+            image: cozyCurtainsImage,
+            title: "메모리폼 베개",
+            price: "89,000원",
+            originalPrice: "125,000원"
+          },
+          {
+            id: 2,
+            image: cozyBeddingImage,
+            title: "실크 베개커버",
+            price: "59,000원",
+            originalPrice: "89,000원"
+          }
+        ]
+      };
+    }
+  };
+
+  const [selectedColor, setSelectedColor] = useState('베이지');
+  const [selectedSize, setSelectedSize] = useState('퀸');
+
+  // productData가 로드된 후에만 businessContent 계산
+  const businessContent = productData ? getBusinessContent(productData) : null;
+
+  // productData가 로드되면 기본 색상과 사이즈 업데이트
+  useEffect(() => {
+    if (businessContent) {
+      setSelectedColor(businessContent.colors?.[0] || '베이지');
+      setSelectedSize(businessContent.sizes?.[0] || '퀸');
+    }
+  }, [businessContent]);
+
+  // URL의 productId로 상품 데이터 찾기
+  useEffect(() => {
+    const loadProductData = () => {
+      console.log('CozyProduct - Loading product data for ID:', productId);
+      const storeData = (window as any).STORE_DATA;
+      console.log('CozyProduct - Store data:', storeData);
+      
+      if (storeData && storeData.products && productId) {
+        // 전역 상품 데이터에서 해당 ID의 상품 찾기
+        const foundProduct = storeData.products.find(product => 
+          product.id === productId || 
+          product.id === `popular-${productId.split('-')[1]}` ||
+          productId.includes(product.id)
+        );
+        
+        console.log('CozyProduct - Found product:', foundProduct);
+        if (foundProduct) {
+          setProductData(foundProduct);
+        } else {
+          // 상품을 찾지 못한 경우 기본 상품 생성
+          const business = storeData?.store?.business || '';
+          console.log('CozyProduct - Creating default product for business:', business);
+          setProductData(createDefaultProduct(business, productId));
+        }
+      } else {
+        // 전역 데이터가 없는 경우 기본 상품 생성
+        const storeData = (window as any).STORE_DATA;
+        const business = storeData?.store?.business || '';
+        setProductData(createDefaultProduct(business, productId));
+      }
+      setLoading(false);
+    };
+
+    loadProductData();
+  }, [productId]);
 
   // 테마 적용 함수
   const applyTheme = (templateColor: string) => {
@@ -47,35 +198,48 @@ const CozyProduct = () => {
       applyTheme(storeData.store.templateColor);
     }
   }, []);
-  const colors = ["베이지", "화이트", "그레이", "네이비"];
-  const sizes = ["싱글", "슈퍼싱글", "퀸", "킹"];
 
-  const relatedProducts = [
-    {
-      id: 1,
-      image: cozyCurtainsImage,
-      title: "모던 암막 커튼",
-      price: "89,000원",
-      originalPrice: "125,000원"
-    },
-    {
-      id: 2,
-      image: cozyBeddingImage,
-      title: "울트라소프트 베개",
-      price: "45,000원",
-      originalPrice: "65,000원"
-    }
-  ];
+  // 스토어 정보 가져오기
+  const getStoreInfo = () => {
+    const storeData = (window as any).STORE_DATA;
+    return {
+      storeName: storeData?.store?.storeName || '코지홈',
+      description: storeData?.store?.description || '포근하고 따뜻한 일상을 만들어가는 홈 텍스타일 전문몰'
+    };
+  };
+
+  const storeInfo = getStoreInfo();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">상품을 불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!productData || !businessContent) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">상품 정보를 찾을 수 없습니다.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
-              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>코지홈</Link>
+              <Link to={`/?store=${storeParam}`} className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{storeInfo.storeName}</Link>
             </div>
             
             <nav className="hidden lg:flex space-x-8">
@@ -86,10 +250,10 @@ const CozyProduct = () => {
             </nav>
 
             <div className="flex items-center space-x-4">
-              <Search className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <Heart className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <ShoppingCart className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
-              <User className="h-6 w-6 cursor-pointer hover:text-cozy-primary transition-smooth" />
+              <Search className="h-6 w-6 cursor-pointer hover:opacity-70 transition-smooth" />
+              <Heart className="h-6 w-6 cursor-pointer hover:opacity-70 transition-smooth" />
+              <ShoppingCart className="h-6 w-6 cursor-pointer hover:opacity-70 transition-smooth" />
+              <User className="h-6 w-6 cursor-pointer hover:opacity-70 transition-smooth" />
             </div>
           </div>
         </div>
@@ -97,33 +261,33 @@ const CozyProduct = () => {
 
       {/* 브레드크럼 */}
       <div className="bg-cozy-muted py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
-            <Link to={`/?store=${storeParam}`} className="hover:text-cozy-primary transition-smooth">홈</Link>
+            <Link to={`/?store=${storeParam}`} className="hover:opacity-70 transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to={`/category/bedding?store=${storeParam}`} className="hover:text-cozy-primary transition-smooth">침구류</Link>
+            <Link to={`/category/bedding?store=${storeParam}`} className="hover:opacity-70 transition-smooth">{businessContent.breadcrumb}</Link>
             <span className="mx-2">/</span>
-            <span className="text-cozy-primary font-medium">프리미엄 코튼 침구 세트</span>
+            <span className="font-medium" style={{ color: 'var(--color-primary)' }}>{businessContent.title}</span>
           </div>
         </div>
       </div>
 
       {/* 상품 상세 */}
       <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* 상품 이미지 */}
             <div className="space-y-4">
               <div className="aspect-square overflow-hidden rounded-lg bg-cozy-card">
                 <img 
                   src={cozyBeddingImage} 
-                  alt="프리미엄 코튼 침구 세트"
+                  alt={businessContent.title}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="grid grid-cols-4 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="aspect-square overflow-hidden rounded-lg bg-cozy-card border-2 border-cozy-primary cursor-pointer">
+                  <div key={i} className="aspect-square overflow-hidden rounded-lg bg-cozy-card border-2 border-gray-600 cursor-pointer">
                     <img 
                       src={cozyBeddingImage} 
                       alt={`상품 이미지 ${i + 1}`}
@@ -137,41 +301,46 @@ const CozyProduct = () => {
             {/* 상품 정보 */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">프리미엄 코튼 침구 세트</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">{businessContent.title}</h1>
                 <div className="flex items-center space-x-4 mb-4">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-cozy-accent fill-current" />
                     ))}
-                    <span className="text-base text-gray-600 ml-2">4.8 (156 리뷰)</span>
+                    <span className="text-base text-gray-600 ml-2">{businessContent.rating} ({businessContent.reviews} 리뷰)</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 mb-6">
-                  <span className="text-3xl font-bold text-cozy-primary">129,000원</span>
-                  <span className="text-xl text-gray-400 line-through">189,000원</span>
-                  <span className="bg-cozy-primary text-cozy-primary-foreground px-3 py-1 rounded text-base font-semibold">32% OFF</span>
+                  <span className="text-3xl font-bold" style={{ color: 'var(--color-primary)' }}>{businessContent.price}</span>
+                  <span className="text-xl text-gray-400 line-through">{businessContent.originalPrice}</span>
+                  <span className="text-white px-3 py-1 rounded text-base font-semibold" style={{ backgroundColor: 'var(--color-primary)' }}>
+                    {Math.round(((parseInt(businessContent.originalPrice.replace(/[^\d]/g, '')) - parseInt(businessContent.price.replace(/[^\d]/g, ''))) / parseInt(businessContent.originalPrice.replace(/[^\d]/g, ''))) * 100)}% OFF
+                  </span>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <p className="text-base text-gray-600 leading-relaxed">
-                  100% 순면으로 제작된 프리미엄 침구 세트입니다. 부드럽고 촉촉한 감촉으로 편안한 잠자리를 선사합니다. 
-                  고밀도 직조 기법으로 내구성이 뛰어나며, 세탁 후에도 형태가 유지됩니다.
+                  {businessContent.description}
                 </p>
 
                 {/* 색상 선택 */}
                 <div>
                   <h3 className="text-lg font-semibold mb-3">색상</h3>
                   <div className="flex space-x-3">
-                    {colors.map((color) => (
+                    {businessContent.colors.map((color) => (
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
                         className={`px-4 py-2 rounded border-2 text-base transition-smooth ${
                           selectedColor === color
-                            ? "border-cozy-primary bg-cozy-primary text-cozy-primary-foreground"
-                            : "border-cozy-border bg-cozy-card hover:border-cozy-primary"
+                            ? "text-white border-2" 
+                            : "border-gray-300 bg-white hover:border-gray-400"
                         }`}
+                        style={selectedColor === color ? { 
+                          backgroundColor: 'var(--color-primary)', 
+                          borderColor: 'var(--color-primary)' 
+                        } : {}}
                       >
                         {color}
                       </button>
@@ -183,15 +352,19 @@ const CozyProduct = () => {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">사이즈</h3>
                   <div className="flex space-x-3">
-                    {sizes.map((size) => (
+                    {businessContent.sizes.map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
                         className={`px-4 py-2 rounded border-2 text-base transition-smooth ${
                           selectedSize === size
-                            ? "border-cozy-primary bg-cozy-primary text-cozy-primary-foreground"
-                            : "border-cozy-border bg-cozy-card hover:border-cozy-primary"
+                            ? "text-white"
+                            : "border-gray-300 bg-white hover:border-gray-400"
                         }`}
+                        style={selectedSize === size ? { 
+                          backgroundColor: 'var(--color-primary)', 
+                          borderColor: 'var(--color-primary)' 
+                        } : {}}
                       >
                         {size}
                       </button>
@@ -225,11 +398,11 @@ const CozyProduct = () => {
 
                 {/* 구매 버튼 */}
                 <div className="space-y-3 pt-6">
-                  <Button className="w-full bg-cozy-primary hover:bg-cozy-primary/90 text-cozy-primary-foreground py-4 text-lg font-semibold transition-smooth">
+                  <Button className="w-full text-white hover:opacity-90 py-4 text-lg font-semibold transition-smooth" style={{ backgroundColor: 'var(--color-primary)' }}>
                     <ShoppingCart className="h-5 w-5 mr-2" />
                     장바구니 담기
                   </Button>
-                  <Button className="w-full bg-cozy-accent hover:bg-cozy-accent/90 text-black py-4 text-lg font-semibold transition-smooth">
+                  <Button className="w-full text-gray-800 py-4 text-lg font-semibold transition-smooth hover:opacity-90" style={{ backgroundColor: 'var(--color-secondary)' }}>
                     바로 구매하기
                   </Button>
                   <Button variant="outline" className="w-full border-cozy-border hover:bg-cozy-muted py-4 text-lg">
@@ -241,15 +414,15 @@ const CozyProduct = () => {
                 {/* 배송/보장 정보 */}
                 <div className="bg-cozy-muted p-6 rounded-lg space-y-4">
                   <div className="flex items-center space-x-3">
-                    <Truck className="h-5 w-5 text-cozy-primary" />
+                    <Truck className="h-5 w-5 font-medium" />
                     <span className="text-base">무료배송 (3만원 이상 구매시)</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Shield className="h-5 w-5 text-cozy-primary" />
+                    <Shield className="h-5 w-5 font-medium" />
                     <span className="text-base">품질보증 1년</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <RotateCcw className="h-5 w-5 text-cozy-primary" />
+                    <RotateCcw className="h-5 w-5 font-medium" />
                     <span className="text-base">7일 무료 교환/반품</span>
                   </div>
                 </div>
@@ -261,23 +434,21 @@ const CozyProduct = () => {
 
       {/* 상품 상세 정보 */}
       <section className="py-12 bg-cozy-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-b border-cozy-border mb-8">
             <nav className="flex space-x-8">
-              <button className="text-lg font-semibold text-cozy-primary border-b-2 border-cozy-primary pb-4">상품정보</button>
-              <button className="text-lg font-medium text-gray-600 hover:text-cozy-primary pb-4 transition-smooth">리뷰 (156)</button>
-              <button className="text-lg font-medium text-gray-600 hover:text-cozy-primary pb-4 transition-smooth">Q&A</button>
-              <button className="text-lg font-medium text-gray-600 hover:text-cozy-primary pb-4 transition-smooth">배송/교환/반품</button>
+              <button className="text-lg font-semibold pb-4 border-b-2" style={{ color: 'var(--color-primary)', borderBottomColor: 'var(--color-primary)' }}>상품정보</button>
+              <button className="text-lg font-medium text-gray-600 hover:opacity-70 pb-4 transition-smooth">리뷰 ({businessContent.reviews})</button>
+              <button className="text-lg font-medium text-gray-600 hover:opacity-70 pb-4 transition-smooth">Q&A</button>
+              <button className="text-lg font-medium text-gray-600 hover:opacity-70 pb-4 transition-smooth">배송/교환/반품</button>
             </nav>
           </div>
           <div className="prose max-w-none">
             <h3 className="text-xl font-bold mb-4">제품 특징</h3>
             <ul className="text-base leading-relaxed space-y-2 text-gray-700">
-              <li>• 100% 순면 소재로 부드럽고 통기성이 뛰어남</li>
-              <li>• 고밀도 직조 기법으로 내구성과 형태 안정성 확보</li>
-              <li>• 저자극 천연염료 사용으로 피부에 안전</li>
-              <li>• 세탁 후에도 색상 변화 없이 오래 사용 가능</li>
-              <li>• 구성품: 이불커버 1개, 베개커버 2개, 침대시트 1개</li>
+              {businessContent.features.map((feature, index) => (
+                <li key={index}>• {feature}</li>
+              ))}
             </ul>
           </div>
         </div>
@@ -285,10 +456,10 @@ const CozyProduct = () => {
 
       {/* 관련 상품 */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold mb-8">함께 보면 좋은 상품</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {relatedProducts.map((product) => (
+            {businessContent.relatedProducts.map((product) => (
               <Card key={product.id} className="group cursor-pointer hover:shadow-cozy transition-smooth bg-cozy-card border-cozy-border">
                 <div className="flex">
                   <div className="w-32 h-32 overflow-hidden rounded-l-lg">
@@ -301,7 +472,7 @@ const CozyProduct = () => {
                   <CardContent className="flex-1 p-4">
                     <h4 className="text-lg font-semibold mb-2">{product.title}</h4>
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold text-cozy-primary">{product.price}</span>
+                      <span className="text-lg font-bold font-medium">{product.price}</span>
                       <span className="text-base text-gray-400 line-through">{product.originalPrice}</span>
                     </div>
                     <Button className="mt-3 bg-cozy-secondary hover:bg-cozy-secondary/80 text-gray-800 border border-cozy-border">
@@ -316,12 +487,12 @@ const CozyProduct = () => {
       </section>
 
       {/* 푸터 */}
-      <footer className="bg-cozy-primary text-cozy-primary-foreground py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="text-white font-medium-foreground py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h4 className="text-xl font-bold mb-4">코지홈</h4>
-              <p className="text-base">포근하고 따뜻한 일상을<br />만들어가는 홈 텍스타일 전문몰</p>
+              <h4 className="text-xl font-bold mb-4">{storeInfo.storeName}</h4>
+              <p className="text-base">{storeInfo.description}</p>
             </div>
             <div>
               <h5 className="text-lg font-semibold mb-4">고객센터</h5>

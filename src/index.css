@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* shimmer 애니메이션 */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@layer utilities {
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -19,9 +31,9 @@ All colors MUST be HSL.
     --popover-foreground: 25 15% 15%;
 
     /* Warm, trustworthy primary color */
-    --primary: 25 85% 55%;
+    --primary: 29 100% 53%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 25 90% 70%;
+    --primary-glow: 29 100% 58%;
 
     /* Soft secondary colors */
     --secondary: 35 30% 92%;

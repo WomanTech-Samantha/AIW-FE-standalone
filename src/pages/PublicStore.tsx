@@ -21,6 +21,7 @@ interface StoreData {
   templateType: string;
   templateColor: string;
   visitorCount: number;
+  business?: string; // 업종 정보
 }
 
 interface BrandData {
@@ -420,7 +421,8 @@ export default function PublicStore() {
         bannerImageUrl: user?.brandImageUrl || "",
         templateType: user?.template || "cozy", // 사용자가 선택한 템플릿
         templateColor: user?.theme || "warm-rose", // 사용자가 선택한 색상
-        visitorCount: 1254
+        visitorCount: 1254,
+        business: user?.business || "침구·이불" // 업종 정보 추가
       };
       
       console.log('Generated store data:', mockStoreData);
@@ -556,7 +558,8 @@ export default function PublicStore() {
       bannerImageUrl: "",
       templateType: "cozy",
       templateColor: "warm-rose",
-      visitorCount: 1254
+      visitorCount: 1254,
+      business: "침구·이불"
     };
     
     const defaultBrandData: BrandData = {

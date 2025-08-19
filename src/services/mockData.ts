@@ -33,10 +33,10 @@ export const mockApiResponses = {
 
 export const useMockApi = (endpoint: string) => {
   const parts = endpoint.split('/').filter(Boolean);
-  let response = mockApiResponses;
+  let response: any = mockApiResponses;
   
   for (const part of parts) {
-    response = response[part as keyof typeof response];
+    response = response[part];
     if (!response) return { error: 'Endpoint not found' };
   }
   

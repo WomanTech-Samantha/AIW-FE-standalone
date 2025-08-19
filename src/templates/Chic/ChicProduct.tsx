@@ -19,8 +19,83 @@ const chicAccessoriesImage = createSimpleImage("#f3f4f6", "이미지");
 
 const ChicProduct = () => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedColor, setSelectedColor] = useState("블랙");
-  const [selectedSize, setSelectedSize] = useState("M");
+
+  // 업종별 상품 정보 설정
+  const getBusinessContent = () => {
+    const storeData = (window as any).STORE_DATA;
+    const business = storeData?.store?.business || '';
+    
+    if (business.includes('수공예')) {
+      return {
+        title: 'HANDCRAFTED CERAMIC SET',
+        titleKr: '수제 도자기 세트',
+        breadcrumb: 'POTTERY',
+        colors: ['NATURAL', 'CELADON', 'WHITE', 'BROWN'],
+        sizes: ['SMALL', 'MEDIUM', 'LARGE', 'SET'],
+        price: '145,000',
+        originalPrice: '185,000',
+        rating: 4.9,
+        reviews: 87,
+        description: 'Handcrafted with traditional pottery techniques, this ceramic tea set brings elegance to your daily moments.',
+        features: ['🎨 ARTISAN HANDMADE', '🏺 TRADITIONAL TECHNIQUE', '🌿 ECO-FRIENDLY', '📦 SAFE PACKAGING'],
+        relatedProducts: [
+          {
+            id: 1,
+            image: chicAccessoriesImage,
+            title: "EMBROIDERED WALL ART",
+            titleKr: "전통 자수 벽걸이",
+            price: "95,000",
+            originalPrice: "125,000"
+          },
+          {
+            id: 2,
+            image: chicDressImage,
+            title: "WOODEN TRAY",
+            titleKr: "원목 트레이",
+            price: "68,000",
+            originalPrice: "89,000"
+          }
+        ]
+      };
+    } else {
+      // 침구 기본값
+      return {
+        title: 'PREMIUM BEDDING SET',
+        titleKr: '프리미엄 침구 세트',
+        breadcrumb: 'BEDDING',
+        colors: ['BEIGE', 'WHITE', 'GREY', 'NAVY'],
+        sizes: ['SINGLE', 'SUPER SINGLE', 'QUEEN', 'KING'],
+        price: '289,000',
+        originalPrice: '359,000',
+        rating: 4.8,
+        reviews: 156,
+        description: 'Crafted from premium cotton for the ultimate sleep experience with hotel-grade quality and comfort.',
+        features: ['🛏️ PREMIUM COTTON', '🌙 COMFORT SLEEP', '🧼 EASY CARE', '📦 FREE SHIPPING'],
+        relatedProducts: [
+          {
+            id: 1,
+            image: chicAccessoriesImage,
+            title: "MEMORY FOAM PILLOW",
+            titleKr: "메모리폼 베개",
+            price: "89,000",
+            originalPrice: "129,000"
+          },
+          {
+            id: 2,
+            image: chicDressImage,
+            title: "SILK PILLOWCASE",
+            titleKr: "실크 베개커버",
+            price: "59,000",
+            originalPrice: "89,000"
+          }
+        ]
+      };
+    }
+  };
+
+  const businessContent = getBusinessContent();
+  const [selectedColor, setSelectedColor] = useState(businessContent.colors[0]);
+  const [selectedSize, setSelectedSize] = useState(businessContent.sizes[0]);
 
   const storeParam = new URLSearchParams(window.location.search).get('store');
 
@@ -49,25 +124,6 @@ const ChicProduct = () => {
     }
   }, []);
 
-  const colors = ["블랙", "네이비", "베이지", "화이트"];
-  const sizes = ["XS", "S", "M", "L", "XL"];
-
-  const relatedProducts = [
-    {
-      id: 1,
-      image: chicAccessoriesImage,
-      title: "골드 체인 목걸이",
-      price: "125,000원",
-      originalPrice: "178,000원"
-    },
-    {
-      id: 2,
-      image: chicDressImage,
-      title: "실크 블라우스",
-      price: "159,000원",
-      originalPrice: "229,000원"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -107,9 +163,9 @@ const ChicProduct = () => {
           <div className="text-base text-gray-600">
             <Link to={`/?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to={`/category/dresses?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">원피스</Link>
+            <Link to={`/category/bedding?store=${storeParam}`} className="hover:text-chic-primary transition-smooth">{businessContent.breadcrumb}</Link>
             <span className="mx-2">/</span>
-            <span className="text-chic-primary font-medium">시그니처 블랙 드레스</span>
+            <span className="text-chic-primary font-medium">{businessContent.title}</span>
           </div>
         </div>
       </div>
@@ -123,7 +179,7 @@ const ChicProduct = () => {
               <div className="aspect-[3/4] overflow-hidden rounded-lg bg-chic-card shadow-chic">
                 <img 
                   src={chicDressImage} 
-                  alt="시그니처 블랙 드레스"
+                  alt={businessContent.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -147,34 +203,34 @@ const ChicProduct = () => {
                   <span className="bg-chic-accent text-black px-3 py-1 rounded-full text-sm font-bold mr-3">BEST</span>
                   <span className="text-base text-gray-600">SKU: CHC-001</span>
                 </div>
-                <h1 className="text-4xl font-bold text-chic-primary mb-6">Signature Black Dress</h1>
+                <h1 className="text-4xl font-bold text-chic-primary mb-6">{businessContent.title}</h1>
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-chic-accent fill-current" />
                     ))}
-                    <span className="text-base text-gray-600 ml-2">4.9 (142 리뷰)</span>
+                    <span className="text-base text-gray-600 ml-2">{businessContent.rating} ({businessContent.reviews} 리뷰)</span>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 mb-8">
-                  <span className="text-4xl font-bold text-chic-primary">189,000원</span>
-                  <span className="text-2xl text-gray-400 line-through">259,000원</span>
-                  <span className="bg-chic-primary text-chic-primary-foreground px-4 py-2 rounded text-lg font-semibold">27% OFF</span>
+                  <span className="text-4xl font-bold text-chic-primary">{businessContent.price}원</span>
+                  <span className="text-2xl text-gray-400 line-through">{businessContent.originalPrice}원</span>
+                  <span className="bg-chic-primary text-chic-primary-foreground px-4 py-2 rounded text-lg font-semibold">
+                    {Math.round(((parseInt(businessContent.originalPrice) - parseInt(businessContent.price)) / parseInt(businessContent.originalPrice)) * 100)}% OFF
+                  </span>
                 </div>
               </div>
 
               <div className="space-y-6">
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  타임리스한 우아함을 담은 시그니처 블랙 드레스입니다. 고급 원단과 완벽한 핏으로 어떤 상황에서도 
-                  세련된 스타일을 연출할 수 있습니다. 미니멀하면서도 디테일이 살아있는 디자인으로 
-                  다양한 액세서리와 매치하여 개성 있는 룩을 완성해보세요.
+                  {businessContent.description}
                 </p>
 
                 {/* 색상 선택 */}
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Color</h3>
                   <div className="flex space-x-3">
-                    {colors.map((color) => (
+                    {businessContent.colors.map((color) => (
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
@@ -194,7 +250,7 @@ const ChicProduct = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Size</h3>
                   <div className="flex space-x-3">
-                    {sizes.map((size) => (
+                    {businessContent.sizes.map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}

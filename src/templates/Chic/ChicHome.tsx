@@ -35,6 +35,89 @@ const ChicFashion = () => {
   const brandName = brandData?.brandName || 'CHIC';
   const slogan = brandData?.slogan || 'MINIMAL & ELEGANT';
   const description = storeData?.description || '세련된 감성의 프리미엄 패션';
+  const business = storeData?.business || '';
+
+  // 업종에 따른 카테고리 메뉴 설정
+  const getCategories = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        { path: 'comforters', name: 'COMFORTERS' },
+        { path: 'pillows', name: 'PILLOWS' },
+        { path: 'sheets', name: 'SHEETS' },
+        { path: 'baby', name: 'BABY' }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        { path: 'pottery', name: 'POTTERY' },
+        { path: 'textile', name: 'TEXTILE' },
+        { path: 'woodwork', name: 'WOODWORK' },
+        { path: 'jewelry', name: 'JEWELRY' }
+      ];
+    } else {
+      // 기본값 (침구)
+      return [
+        { path: 'comforters', name: 'COMFORTERS' },
+        { path: 'pillows', name: 'PILLOWS' },
+        { path: 'sheets', name: 'SHEETS' },
+        { path: 'baby', name: 'BABY' }
+      ];
+    }
+  };
+
+  const categories = getCategories();
+
+  // 업종별 문구 설정
+  const getBusinessContent = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return {
+        heroTitle1: 'Premium',
+        heroTitle2: 'Bedding',
+        heroSubtext: '고급 침구로 완성하는\n품격 있는 수면 공간',
+        promoText: 'FREE SHIPPING ON ORDERS OVER 100,000원',
+        sectionTitle: 'Best Sellers',
+        sectionSubtitle: '인기 침구 컬렉션',
+        products: [
+          { name: '프리미엄 이불 세트', desc: '호텔급 품질', price: '289,000', originalPrice: '359,000', badge: 'NEW' },
+          { name: '메모리폼 베개', desc: '완벽한 지지력', price: '89,000', originalPrice: '129,000', badge: 'BEST' },
+          { name: '실크 베개커버', desc: '부드러운 촉감', price: '59,000', originalPrice: '89,000', badge: 'SALE' }
+        ],
+        categoryTitle: 'Shop by Category'
+      };
+    } else if (business.includes('수공예')) {
+      return {
+        heroTitle1: 'Handmade',
+        heroTitle2: 'Artisan',
+        heroSubtext: '정성스런 손길로 완성된\n특별한 수공예 작품들',
+        promoText: 'FREE SHIPPING ON ORDERS OVER 80,000원',
+        sectionTitle: 'Featured Works',
+        sectionSubtitle: '작가 추천 작품',
+        products: [
+          { name: '수제 도자기 볼', desc: '전통 기법', price: '125,000', originalPrice: '165,000', badge: 'NEW' },
+          { name: '자수 쿠션커버', desc: '핸드스티치', price: '78,000', originalPrice: '98,000', badge: 'BEST' },
+          { name: '원목 트레이', desc: '천연 원목', price: '45,000', originalPrice: '65,000', badge: 'SALE' }
+        ],
+        categoryTitle: 'Shop by Category'
+      };
+    } else {
+      // 기본값 (침구)
+      return {
+        heroTitle1: 'Premium',
+        heroTitle2: 'Bedding',
+        heroSubtext: '고급 침구로 완성하는\n품격 있는 수면 공간',
+        promoText: 'FREE SHIPPING ON ORDERS OVER 100,000원',
+        sectionTitle: 'Best Sellers',
+        sectionSubtitle: '인기 침구 컬렉션',
+        products: [
+          { name: '프리미엄 이불 세트', desc: '호텔급 품질', price: '289,000', originalPrice: '359,000', badge: 'NEW' },
+          { name: '메모리폼 베개', desc: '완벽한 지지력', price: '89,000', originalPrice: '129,000', badge: 'BEST' },
+          { name: '실크 베개커버', desc: '부드러운 촉감', price: '59,000', originalPrice: '89,000', badge: 'SALE' }
+        ],
+        categoryTitle: 'Shop by Category'
+      };
+    }
+  };
+
+  const businessContent = getBusinessContent();
   return (
     <div className="min-h-screen bg-white">
       {/* 헤더 - 미니멀하고 세련된 디자인 */}
@@ -45,9 +128,15 @@ const ChicFashion = () => {
             
             <nav className="hidden lg:flex space-x-12">
               <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">HOME</Link>
-              <Link to={`/category/dresses?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">DRESSES</Link>
-              <Link to={`/category/tops?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">TOPS</Link>
-              <Link to={`/category/accessories?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">ACCESSORIES</Link>
+              {categories.map((category) => (
+                <Link 
+                  key={category.path}
+                  to={`/category/${category.path}?store=${storeParam}`} 
+                  className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex items-center space-x-6">
@@ -73,12 +162,11 @@ const ChicFashion = () => {
           <div className="order-2 lg:order-1 flex items-center justify-center p-20" style={{ backgroundColor: 'var(--color-background)' }}>
             <div className="max-w-md">
               <h2 className="text-5xl font-light leading-tight mb-6 text-gray-800">
-                Elegant<br />
-                <span style={{ color: 'var(--color-primary)' }}>Style</span>
+                {businessContent.heroTitle1}<br />
+                <span style={{ color: 'var(--color-primary)' }}>{businessContent.heroTitle2}</span>
               </h2>
-              <p className="text-lg text-gray-600 mb-8 font-light">
-                세련되고 우아한 스타일로<br />
-                당신만의 개성을 표현하세요
+              <p className="text-lg text-gray-600 mb-8 font-light whitespace-pre-line">
+                {businessContent.heroSubtext}
               </p>
               <button 
                 className="px-10 py-4 border text-sm font-medium tracking-wider hover:text-white transition-all"
@@ -109,23 +197,19 @@ const ChicFashion = () => {
 
       {/* 특별 프로모션 - 심플한 배너 */}
       <section className="py-2 text-center text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
-        <p className="text-sm tracking-wider">FREE SHIPPING ON ORDERS OVER 150,000원</p>
+        <p className="text-sm tracking-wider">{businessContent.promoText}</p>
       </section>
 
       {/* 베스트셀러 - 그리드 갤러리 */}
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-16">
-            <h3 className="text-4xl font-light text-gray-800 mb-4">Best Sellers</h3>
-            <p className="text-gray-600 font-light">시그니처 컬렉션</p>
+            <h3 className="text-4xl font-light text-gray-800 mb-4">{businessContent.sectionTitle}</h3>
+            <p className="text-gray-600 font-light">{businessContent.sectionSubtitle}</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { name: '시그니처 블랙 원피스', desc: '미니멀한 실루엣', price: '189,000', originalPrice: '259,000', badge: 'NEW' },
-              { name: '슬리브리스 블라우스', desc: '우아한 라인', price: '129,000', originalPrice: '169,000', badge: 'BEST' },
-              { name: '핀턱 쇼츠', desc: '클래식 핏', price: '89,000', originalPrice: '119,000', badge: 'SALE' }
-            ].map((item, idx) => (
+            {businessContent.products.map((item, idx) => (
               <div key={idx} className="group">
                 <Link to={`/product/1?store=${storeParam}`}>
                   <div className="relative overflow-hidden">
@@ -160,7 +244,7 @@ const ChicFashion = () => {
       {/* 카테고리 - 미니멀 카드 */}
       <section className="py-20" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="container">
-          <h3 className="text-4xl font-light text-center text-gray-800 mb-16">Shop by Category</h3>
+          <h3 className="text-4xl font-light text-center text-gray-800 mb-16">{businessContent.categoryTitle}</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { name: 'DRESSES', count: '45' },
@@ -192,10 +276,10 @@ const ChicFashion = () => {
             <div>
               <h3 className="text-3xl font-light text-gray-800 mb-6">Our Philosophy</h3>
               <p className="text-gray-600 leading-relaxed mb-4 font-light">
-                시크는 미니멀리즘과 우아함을 추구하는 현대 여성을 위한 브랜드입니다.
+                시크는 미니멀리즘과 우아한 인테리어를 추구하는 현대인들을 위한 브랜드입니다.
               </p>
               <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                각 피스는 시간을 초월한 디자인과 최고급 소재로 제작되어, 당신만의 스타일을 완성합니다.
+                각 상품은 최고급 소재로 제작되어, 당신만의 이상적인 방 안에 녹아듭니다.
               </p>
               <button 
                 className="text-sm font-medium tracking-wider pb-1 border-b transition-all"

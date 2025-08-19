@@ -12,6 +12,7 @@ import {
   Target,
   BarChart3,
   ArrowRight,
+  ArrowLeft,
   Lightbulb,
   Shield
 } from "lucide-react";
@@ -196,7 +197,20 @@ const ComparisonPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-8 py-16">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            뒤로가기
+          </Button>
+        </div>
+        
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">기존 방식 vs 올인원 자동화</h1>
@@ -441,15 +455,6 @@ const ComparisonPage = () => {
                 >
                   <Zap className="mr-2 h-5 w-5" />
                   무료로 체험하기
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  onClick={() => navigate('/dashboard')}
-                  className="btn-large"
-                >
-                  <BarChart3 className="mr-2 h-5 w-5" />
-                  성과 확인하기
                 </Button>
               </div>
             </CardContent>

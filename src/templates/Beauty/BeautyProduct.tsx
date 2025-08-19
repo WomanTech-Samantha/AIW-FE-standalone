@@ -19,9 +19,44 @@ const beautyMakeupImage = createSimpleImage("#fef7ff", "이미지");
 
 const BeautyProduct = () => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState("30ml");
 
-  const sizes = ["15ml", "30ml", "50ml"];
+  // 업종별 상품 정보 설정
+  const getBusinessContent = () => {
+    const storeData = (window as any).STORE_DATA;
+    const business = storeData?.store?.business || '';
+    
+    if (business.includes('수공예')) {
+      return {
+        title: '수제 도자기 찻잔 세트',
+        breadcrumb: '도자기·세라믹',
+        colors: ['자연색', '청자색', '백자색', '갈색'],
+        sizes: ['소형', '중형', '대형', '세트'],
+        price: '145,000원',
+        originalPrice: '185,000원',
+        rating: 4.9,
+        reviews: 87,
+        description: '전통 기법으로 제작된 수제 도자기 찻잔 세트입니다. 작가의 정성이 담긴 특별한 작품으로, 차를 마시는 시간을 더욱 특별하게 만들어드립니다.',
+        features: ['🎨 작가 수제작품', '🏺 전통 도예기법', '🌿 친환경 소재', '📦 안전 포장', '✨ 유니크 디자인']
+      };
+    } else {
+      // 침구 기본값
+      return {
+        title: '오가닉 코튼 침구 세트',
+        breadcrumb: '침구·이불',
+        colors: ['베이지', '화이트', '그레이', '네이비'],
+        sizes: ['싱글', '슈퍼싱글', '퀸', '킹'],
+        price: '189,000원',
+        originalPrice: '259,000원',
+        rating: 4.8,
+        reviews: 156,
+        description: '100% 유기농 면으로 제작된 프리미엄 침구 세트입니다. 부드러운 촉감과 자연스러운 통기성으로 건강한 수면 환경을 제공합니다.',
+        features: ['🌿 100% 유기농 면', '🛏️ 호텔급 품질', '💧 우수한 흡습성', '🧼 세탁 용이', '🌙 편안한 수면']
+      };
+    }
+  };
+
+  const businessContent = getBusinessContent();
+  const [selectedSize, setSelectedSize] = useState(businessContent.sizes[0]);
   const storeParam = new URLSearchParams(window.location.search).get('store');
 
   // 테마 적용 함수
@@ -103,9 +138,9 @@ const BeautyProduct = () => {
           <div className="text-base text-gray-600">
             <Link to={`/?store=${storeParam}`} className="hover:text-beauty-primary transition-smooth">홈</Link>
             <span className="mx-2">/</span>
-            <Link to={`/category/skincare?store=${storeParam}`} className="hover:text-beauty-primary transition-smooth">스킨케어</Link>
+            <Link to={`/category/bedding?store=${storeParam}`} className="hover:text-beauty-primary transition-smooth">{businessContent.breadcrumb}</Link>
             <span className="mx-2">/</span>
-            <span className="text-beauty-primary font-medium">오가닉 비타민C 세럼</span>
+            <span className="text-beauty-primary font-medium">{businessContent.title}</span>
           </div>
         </div>
       </div>
@@ -119,7 +154,7 @@ const BeautyProduct = () => {
               <div className="aspect-square overflow-hidden rounded-lg bg-beauty-card shadow-beauty">
                 <img 
                   src={beautySkincareImage} 
-                  alt="오가닉 비타민C 세럼"
+                  alt={businessContent.title}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -144,13 +179,13 @@ const BeautyProduct = () => {
                   <span className="bg-beauty-primary text-beauty-primary-foreground px-3 py-1 rounded-full text-sm font-bold mr-3">VEGAN</span>
                   <span className="text-base text-gray-600">SKU: NB-VC-001</span>
                 </div>
-                <h1 className="text-4xl font-bold text-beauty-primary mb-6">Organic Vitamin C Serum</h1>
+                <h1 className="text-4xl font-bold text-beauty-primary mb-6">{businessContent.title}</h1>
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="h-5 w-5 text-beauty-accent fill-current" />
                     ))}
-                    <span className="text-base text-gray-600 ml-2">4.9 (284 리뷰)</span>
+                    <span className="text-base text-gray-600 ml-2">{businessContent.rating} ({businessContent.reviews} 리뷰)</span>
                   </div>
                   <div className="flex items-center">
                     <Award className="h-5 w-5 text-beauty-accent mr-1" />
@@ -158,9 +193,11 @@ const BeautyProduct = () => {
                   </div>
                 </div>
                 <div className="flex items-center space-x-4 mb-8">
-                  <span className="text-4xl font-bold text-beauty-primary">89,000원</span>
-                  <span className="text-2xl text-gray-400 line-through">119,000원</span>
-                  <span className="bg-beauty-primary text-beauty-primary-foreground px-4 py-2 rounded text-lg font-semibold">25% OFF</span>
+                  <span className="text-4xl font-bold text-beauty-primary">{businessContent.price}</span>
+                  <span className="text-2xl text-gray-400 line-through">{businessContent.originalPrice}</span>
+                  <span className="bg-beauty-primary text-beauty-primary-foreground px-4 py-2 rounded text-lg font-semibold">
+                    {Math.round(((parseInt(businessContent.originalPrice.replace(/[^\d]/g, '')) - parseInt(businessContent.price.replace(/[^\d]/g, ''))) / parseInt(businessContent.originalPrice.replace(/[^\d]/g, ''))) * 100)}% OFF
+                  </span>
                 </div>
               </div>
 
@@ -188,7 +225,7 @@ const BeautyProduct = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Size</h3>
                   <div className="flex space-x-3">
-                    {sizes.map((size) => (
+                    {businessContent.sizes.map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}

@@ -21,6 +21,98 @@ const BeautyShop = () => {
   const brandName = brandData?.brandName || '내추럴코스뷰';
   const slogan = brandData?.slogan || 'Natural Beauty';
   const description = storeData?.description || '자연에서 온 순수한 아름다움';
+  const business = storeData?.business || '';
+
+  // 업종에 따른 카테고리 메뉴 설정
+  const getCategories = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        { path: 'comforters', name: '이불·이불세트' },
+        { path: 'pillows', name: '베개·베개커버' },
+        { path: 'sheets', name: '시트·매트리스커버' },
+        { path: 'baby', name: '아기침구' },
+        { path: 'sale', name: '세일' }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        { path: 'pottery', name: '도자기·세라믹' },
+        { path: 'textile', name: '직물·자수' },
+        { path: 'woodwork', name: '목공예' },
+        { path: 'jewelry', name: '액세서리' },
+        { path: 'sale', name: '세일' }
+      ];
+    } else {
+      // 기본값 (침구)
+      return [
+        { path: 'comforters', name: '이불·이불세트' },
+        { path: 'pillows', name: '베개·베개커버' },
+        { path: 'sheets', name: '시트·매트리스커버' },
+        { path: 'baby', name: '아기침구' },
+        { path: 'sale', name: '세일' }
+      ];
+    }
+  };
+
+  const categories = getCategories();
+
+  // 업종별 문구 설정
+  const getBusinessContent = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return {
+        heroTitle: '편안한 수면을 위한 프리미엄 침구',
+        heroSubtext: '자연소재로 만든 건강한 침구',
+        heroDesc: '매일 밤 깊은 잠에 빠져보세요',
+        collectionTitle: '2025 신상 침구 컬렉션',
+        collectionSubtitle: '새로운 시즌, 새로운 편안함',
+        featuredTitle: '인기 침구용품',
+        featuredSubtitle: '가장 사랑받는 제품들',
+        products: [
+          { name: '오가닉 코튼 이불', desc: '100% 유기농 면', price: '189,000', badge: '🌿 친환경' },
+          { name: '라텍스 베개', desc: '목 건강 케어', price: '89,000', badge: '⭐ 베스트' },
+          { name: '텐셀 시트', desc: '실크 같은 촉감', price: '129,000', badge: '🆕 신상품' }
+        ],
+        promoTitle: '건강한 수면 환경',
+        promoDesc: '알레르기 방지 소재로 만든 침구용품'
+      };
+    } else if (business.includes('수공예')) {
+      return {
+        heroTitle: '손끝에서 탄생한 아름다운 작품',
+        heroSubtext: '전통과 현대가 만나는 핸드메이드',
+        heroDesc: '작가의 정성이 담긴 특별한 순간',
+        collectionTitle: '2025 신작 수공예 컬렉션',
+        collectionSubtitle: '새로운 영감, 새로운 창작',
+        featuredTitle: '작가 추천 작품',
+        featuredSubtitle: '특별한 가치를 담은 작품들',
+        products: [
+          { name: '청자 찻잔 세트', desc: '전통 도예 기법', price: '145,000', badge: '🏆 작가추천' },
+          { name: '자수 벽걸이', desc: '한국전통자수', price: '95,000', badge: '⭐ 베스트' },
+          { name: '원목 보울', desc: '천연 무늬', price: '68,000', badge: '🆕 신작' }
+        ],
+        promoTitle: '정성스런 핸드메이드',
+        promoDesc: '오직 하나뿐인 특별한 작품을 만나보세요'
+      };
+    } else {
+      // 기본값 (침구)
+      return {
+        heroTitle: '편안한 수면을 위한 프리미엄 침구',
+        heroSubtext: '자연소재로 만든 건강한 침구',
+        heroDesc: '매일 밤 깊은 잠에 빠져보세요',
+        collectionTitle: '2025 신상 침구 컬렉션',
+        collectionSubtitle: '새로운 시즌, 새로운 편안함',
+        featuredTitle: '인기 침구용품',
+        featuredSubtitle: '가장 사랑받는 제품들',
+        products: [
+          { name: '오가닉 코튼 이불', desc: '100% 유기농 면', price: '189,000', badge: '🌿 친환경' },
+          { name: '라텍스 베개', desc: '목 건강 케어', price: '89,000', badge: '⭐ 베스트' },
+          { name: '텐셀 시트', desc: '실크 같은 촉감', price: '129,000', badge: '🆕 신상품' }
+        ],
+        promoTitle: '건강한 수면 환경',
+        promoDesc: '알레르기 방지 소재로 만든 침구용품'
+      };
+    }
+  };
+
+  const businessContent = getBusinessContent();
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 - 자연스럽고 부드러운 디자인 */}
@@ -35,10 +127,15 @@ const BeautyShop = () => {
             
             <nav className="hidden lg:flex space-x-8">
               <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
-              <Link to={`/category/skincare?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">스킨케어</Link>
-              <Link to={`/category/makeup?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">메이크업</Link>
-              <Link to={`/category/fragrance?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">향수</Link>
-              <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
+              {categories.map((category) => (
+                <Link 
+                  key={category.path}
+                  to={`/category/${category.path}?store=${storeParam}`} 
+                  className="text-gray-700 hover:text-gray-900 font-medium"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -81,19 +178,18 @@ const BeautyShop = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left relative z-10">
               <h2 className="heading-xl-responsive font-light mb-6 text-gray-800 leading-tight">
-                자연에서 온<br />
-                <span style={{ color: 'var(--color-primary)' }}>순수한 아름다움</span>
+                {businessContent.heroSubtext}<br />
+                <span style={{ color: 'var(--color-primary)' }}>{businessContent.heroTitle.split(' ').slice(-2).join(' ')}</span>
               </h2>
               <p className="text-responsive text-gray-600 mb-10 leading-relaxed">
-                피부에 순하고 환경에 친화적인<br />
-                천연 화장품으로 건강한 아름다움을 찾아보세요
+                {businessContent.heroDesc}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button className="btn btn-primary px-8 py-4 text-white font-medium rounded-lg shadow-lg hover:shadow-xl">
-                  바로 상품 둘러보기
-                </button>
+                <Link to={`/category/all?store=${storeParam}`} className="btn btn-primary px-8 py-4 text-white font-medium rounded-lg shadow-lg hover:shadow-xl">
+                  {business.includes('수공예') ? '작품 둘러보기' : '바로 상품 둘러보기'}
+                </Link>
                 <button className="btn btn-secondary px-8 py-4 font-medium rounded-lg">
-                  브랜드 알아보기
+                  {business.includes('수공예') ? '작가 알아보기' : '브랜드 알아보기'}
                 </button>
               </div>
             </div>
@@ -114,17 +210,17 @@ const BeautyShop = () => {
             <div className="text-center">
               <h3 className="heading-responsive font-medium mb-6" style={{ color: 'var(--color-primary)' }}>
                 <br></br>
-                신규 고객님께 드리는 선물
-                <span className="text-4xl ml-3">✨</span>
+                {businessContent.promoTitle}
+                <span className="text-4xl ml-3">{business.includes('수공예') ? '🎨' : '✨'}</span>
               </h3>
-              <p className="text-responsive text-gray-700 mb-8">첫 구매시, 전 상품 25% 할인 + 무료 샘플 키트까지 증정</p>
+              <p className="text-responsive text-gray-700 mb-8">{businessContent.promoDesc}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="btn btn-primary px-10 py-4 text-white rounded-lg shadow-lg hover:shadow-xl font-medium">
-                  지금 혜택 받으러 가기
-                </button>
-                <button className="btn btn-secondary px-8 py-4 bg-white rounded-lg shadow-md hover:shadow-lg font-medium">
-                  상품 구경하기
-                </button>
+                <Link to={`/category/sale?store=${storeParam}`} className="btn btn-primary px-10 py-4 text-white rounded-lg shadow-lg hover:shadow-xl font-medium">
+                  {business.includes('수공예') ? '특가 작품 보기' : '지금 혜택 받으러 가기'}
+                </Link>
+                <Link to={`/category/all?store=${storeParam}`} className="btn btn-secondary px-8 py-4 bg-white rounded-lg shadow-md hover:shadow-lg font-medium">
+                  {business.includes('수공예') ? '작품 구경하기' : '상품 구경하기'}
+                </Link>
               </div>
             </div>
           </div>
@@ -135,16 +231,12 @@ const BeautyShop = () => {
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-16">
-            <h3 className="heading-responsive font-medium text-gray-800 mb-4">Best Products</h3>
-            <p className="text-responsive text-gray-600">가장 사랑받는 제품들</p>
+            <h3 className="heading-responsive font-medium text-gray-800 mb-4">{businessContent.featuredTitle}</h3>
+            <p className="text-responsive text-gray-600">{businessContent.featuredSubtitle}</p>
           </div>
           
           <div className="responsive-grid responsive-grid-3 gap-8">
-            {[
-              { title: '오가닉 비타민C 세럼', desc: '브라이트닝 & 안티에이징', badge: 'ORGANIC', price: '89,000', originalPrice: '119,000' },
-              { title: '내추럴 틴트 립밤', desc: '촉촉함 & 자연스러운 컬러', badge: 'VEGAN', price: '45,000', originalPrice: '65,000' },
-              { title: '허브 수딩 크림', desc: '진정 & 보습', badge: 'SENSITIVE', price: '62,000', originalPrice: '89,000' }
-            ].map((item, idx) => (
+            {businessContent.products.map((item, idx) => (
               <div key={idx} className="group">
                 <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all">
                   <div className="relative">
@@ -164,12 +256,11 @@ const BeautyShop = () => {
                     </div>
                   </div>
                   <div className="p-6">
-                    <h4 className="text-lg font-medium text-gray-800 mb-2">{item.title}</h4>
+                    <h4 className="text-lg font-medium text-gray-800 mb-2">{item.name}</h4>
                     <p className="text-sm text-gray-600 mb-4">{item.desc}</p>
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <span className="text-2xl font-semibold" style={{ color: 'var(--color-primary)' }}>{item.price}원</span>
-                        <span className="text-sm text-gray-400 line-through ml-2">{item.originalPrice}원</span>
                       </div>
                       <div className="flex items-center space-x-1 text-yellow-400">
                         {[...Array(5)].map((_, i) => (
@@ -201,12 +292,12 @@ const BeautyShop = () => {
       {/* 성분 스토리 - 아이콘 기반 레이아웃 */}
       <section className="py-20 bg-white">
         <div className="container">
-          <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">천연 화장품에 대한 우리 브랜드의 자세</h3>
+          <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '작품 제작에 대한 우리의 철학' : '천연 제작 소재에 대한 우리 브랜드의 자세'}</h3>
           <div className="responsive-grid responsive-grid-3 gap-12">
             {[
-              { icon: '🌿', title: 'Natural Ingredients', desc: '깨끗한 자연에서 추출한 순수 성분으로만' },
-              { icon: '🧪', title: 'Non-Toxic Formula', desc: '파라벤, 실리콘 무첨가' },
-              { icon: '🐰', title: 'Cruelty-Free', desc: '동물실험을 하지 않습니다' }
+              { icon: '🌿', title: '천연 소재', desc: '오가닉 면과 대나무 섬유로 만든 건강한 제품' },
+              { icon: '🧵', title: '장인정신', desc: '한 땀 한 땀 정성으로 완성한 프리미엄 품질' },
+              { icon: '🫶', title: '피부 친화적', desc: '민감한 피부에도 안심하고 사용할 수 있는 저자극 소재' }
             ].map((feature, idx) => (
               <div key={idx} className="text-center group">
                 <div 
@@ -227,12 +318,12 @@ const BeautyShop = () => {
       {/* 고객 후기 - 말풍선 스타일 */}
       <section className="py-20">
         <div className="container">
-          <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">고객님들의 성원에 보답하는 마음으로 만듭니다</h3>
+          <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '고객님들의 특별한 이야기' : '고객님들의 성원에 보답하는 마음으로 만듭니다'}</h3>
           <div className="responsive-grid responsive-grid-3 gap-8">
             {[
-              { name: '김민정', review: '천연 성분이라 피부가 정말 좋아졌어요.', product: '비타민C-아마노이드 세럼' },
-              { name: '이수진', review: '촉촉함이 하루종일 지속돼요.', product: '허니팟 틴트 립밤' },
-              { name: '박지영', review: '민감한 피부에도 자극이 없어요.', product: '알로에 수딩 크림' }
+              { name: '김민정', review: '품질이 정말 뛰어나고 만족스러워요.', product: '시그니처 컬렉션' },
+              { name: '이수진', review: '디자인과 실용성을 모두 갖춘 제품이에요.', product: '프리미엄 라인' },
+              { name: '박지영', review: '선물하기 좋은 품격있는 제품입니다.', product: '베스트셀러 에디션' }
             ].map((review, idx) => (
               <div key={idx} className="bg-white rounded-2xl p-6 shadow-md relative">
                 <div className="flex mb-3">
@@ -286,29 +377,20 @@ const BeautyShop = () => {
               </ul>
             </div>
             <div>
-              <h5 className="font-medium mb-3">서비스</h5>
-              <ul className="text-sm opacity-90 space-y-1">
-                <li><a href="#" className="hover:underline">무료 배송</a></li>
-                <li><a href="#" className="hover:underline">피부 진단</a></li>
-                <li><a href="#" className="hover:underline">교환/반품</a></li>
-                <li><a href="#" className="hover:underline">리뷰 포인트</a></li>
-              </ul>
-            </div>
-            <div>
               <h5 className="font-medium mb-3">브랜드</h5>
               <ul className="text-sm opacity-90 space-y-1">
                 <li><a href="#" className="hover:underline">브랜드 스토리</a></li>
-                <li><a href="#" className="hover:underline">지속가능성</a></li>
-                <li><a href="#" className="hover:underline">인증서</a></li>
-                <li><a href="#" className="hover:underline">채용정보</a></li>
+                <li><a href="#" className="hover:underline">{business.includes('수공예') ? '작가 소개' : '지속가능성'}</a></li>
+                <li><a href="#" className="hover:underline">{business.includes('수공예') ? '공방 소식' : '인증서'}</a></li>
+                <li><a href="#" className="hover:underline">{business.includes('수공예') ? '전시회 일정' : '채용정보'}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-white border-opacity-20 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center text-sm opacity-80">
-              <p>© 2025 내추럴뷰티. All rights reserved.</p>
-              <p className="mt-2 md:mt-0">Certified Organic & Cruelty-Free 🌿</p>
+              <p>© 2025 {storeName}. All rights reserved.</p>
+              <p className="mt-2 md:mt-0">{business.includes('수공예') ? 'Handmade with Love 🎨' : 'Premium Quality Certified 🌿'}</p>
             </div>
           </div>
         </div>

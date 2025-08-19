@@ -21,20 +21,154 @@ const CozyHome = () => {
   const brandName = brandData?.brandName || '브랜드명';
   const slogan = brandData?.slogan || '포근하고 따뜻한 우리집';
   const description = storeData?.description || '편안한 휴식을 위한 프리미엄 침구';
+  const business = storeData?.business || '';
+
+  // 업종에 따른 카테고리 메뉴 설정
+  const getCategories = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        { path: 'comforters', name: '이불·이불세트' },
+        { path: 'pillows', name: '베개·베개커버' },
+        { path: 'sheets', name: '시트·매트리스커버' },
+        { path: 'baby', name: '아기침구' },
+        { path: 'sale', name: '세일' }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        { path: 'pottery', name: '도자기·세라믹' },
+        { path: 'textile', name: '직물·자수' },
+        { path: 'woodwork', name: '목공예' },
+        { path: 'jewelry', name: '액세서리' },
+        { path: 'sale', name: '세일' }
+      ];
+    } else {
+      // 기본값 (침구)
+      return [
+        { path: 'comforters', name: '이불·이불세트' },
+        { path: 'pillows', name: '베개·베개커버' },
+        { path: 'sheets', name: '시트·매트리스커버' },
+        { path: 'baby', name: '아기침구' },
+        { path: 'sale', name: '세일' }
+      ];
+    }
+  };
+
+  const categories = getCategories();
+
+  // 업종별 문구 설정
+  const getBusinessContent = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return {
+        heroSubtext: '프리미엄 침구와 편안한 수면 환경',
+        collectionText: '2025 신상 침구 컬렉션 확인하기',
+        promoTitle: '다가오는 겨울, 따뜻한 침구로 포근하게 보내세요',
+        promoSubtitle: '겨울맞이 침구 특별 세일',
+        saleInfo: '최대 40% 할인 침구 확인!',
+        categoryPromo1: '🛏️ 프리미엄 이불세트',
+        categoryPromo2: '🛏️ 호텔급 베개',
+        categoryPromo3: '🛏️ 부드러운 시트',
+        emoji: '🛏️'
+      };
+    } else if (business.includes('수공예')) {
+      return {
+        heroSubtext: '정성으로 만든 핸드메이드 작품들',
+        collectionText: '2025 신작 수공예품 확인하기',
+        promoTitle: '특별한 순간, 정성 담긴 수공예품과 함께하세요',
+        promoSubtitle: '핸드메이드 작품 특가전',
+        saleInfo: '최대 30% 할인 수공예품 확인!',
+        categoryPromo1: '🎨 도자기·세라믹',
+        categoryPromo2: '🧵 직물·자수작품',
+        categoryPromo3: '🪵 목공예품',
+        emoji: '🎨'
+      };
+    } else {
+      // 기본값 (침구)
+      return {
+        heroSubtext: '프리미엄 침구와 편안한 수면 환경',
+        collectionText: '2025 신상 침구 컬렉션 확인하기',
+        promoTitle: '다가오는 겨울, 따뜻한 침구로 포근하게 보내세요',
+        promoSubtitle: '겨울맞이 침구 특별 세일',
+        saleInfo: '최대 40% 할인 침구 확인!',
+        categoryPromo1: '🛏️ 프리미엄 이불세트',
+        categoryPromo2: '🛏️ 호텔급 베개',
+        categoryPromo3: '🛏️ 부드러운 시트',
+        emoji: '🛏️'
+      };
+    }
+  };
+
+  const businessContent = getBusinessContent();
+
+  // 업종별 인기 상품 설정
+  const getPopularProducts = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        { name: '프리미엄 구스다운 이불', desc: '최고급 구스다운으로 만든 따뜻하고 부드러운 이불', price: '189,000', originalPrice: '220,000', discount: '15%', icon: '🛏️' },
+        { name: '호텔식 베개 세트', desc: '5성급 호텔에서 사용하는 프리미엄 베개 2개 세트', price: '89,000', originalPrice: '110,000', discount: '20%', icon: '🛏️' },
+        { name: '순면 침대 시트 세트', desc: '100% 순면으로 만든 부드러운 침대 시트 세트', price: '65,000', originalPrice: '85,000', discount: '25%', icon: '🛏️' }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        { name: '핸드메이드 도자기 머그컵', desc: '수작업으로 만든 유니크한 도자기 머그컵', price: '45,000', originalPrice: '55,000', discount: '18%', icon: '🎨' },
+        { name: '우드 카빙 트레이', desc: '천연 원목으로 제작한 핸드메이드 트레이', price: '68,000', originalPrice: '79,000', discount: '15%', icon: '🪵' },
+        { name: '마크라메 월행잉', desc: '천연 코튼으로 만든 보헤미안 스타일 벽장식', price: '52,000', originalPrice: '65,000', discount: '20%', icon: '🧵' }
+      ];
+    } else {
+      // 기본값 (침구)
+      return [
+        { name: '프리미엄 구스다운 이불', desc: '최고급 구스다운으로 만든 따뜻하고 부드러운 이불', price: '189,000', originalPrice: '220,000', discount: '15%', icon: '🛏️' },
+        { name: '호텔식 베개 세트', desc: '5성급 호텔에서 사용하는 프리미엄 베개 2개 세트', price: '89,000', originalPrice: '110,000', discount: '20%', icon: '🛏️' },
+        { name: '순면 침대 시트 세트', desc: '100% 순면으로 만든 부드러운 침대 시트 세트', price: '65,000', originalPrice: '85,000', discount: '25%', icon: '🛏️' }
+      ];
+    }
+  };
+
+  const popularProducts = getPopularProducts();
+
+  // 업종별 카테고리 설정
+  const getCategoryDisplay = () => {
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        { name: '침구류', desc: '편안한 잠자리를 위한', count: '120+ 개의 상품', icon: '🛏️', link: `/category/bedding?store=${storeParam}` },
+        { name: '커튼/블라인드', desc: '완벽한 공간 연출을 위한', count: '85+ 개의 상품', icon: '🪟', link: `/category/curtains?store=${storeParam}` },
+        { name: '홈데코', desc: '따뜻한 분위기 연출을 위한', count: '200+ 개의 상품', icon: '🏠', link: `/category/homedeco?store=${storeParam}` }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        { name: '도자기·세라믹', desc: '정성으로 빚어낸', count: '95+ 개의 상품', icon: '🏺', link: `/category/pottery?store=${storeParam}` },
+        { name: '직물·자수', desc: '섬세한 손끝에서 탄생한', count: '120+ 개의 상품', icon: '🧵', link: `/category/textile?store=${storeParam}` },
+        { name: '목공예', desc: '자연의 따뜻함을 담은', count: '80+ 개의 상품', icon: '🪵', link: `/category/woodwork?store=${storeParam}` }
+      ];
+    } else {
+      // 기본값 (침구)
+      return [
+        { name: '침구류', desc: '편안한 잠자리를 위한', count: '120+ 개의 상품', icon: '🛏️', link: `/category/bedding?store=${storeParam}` },
+        { name: '커튼/블라인드', desc: '완벽한 공간 연출을 위한', count: '85+ 개의 상품', icon: '🪟', link: `/category/curtains?store=${storeParam}` },
+        { name: '홈데코', desc: '따뜻한 분위기 연출을 위한', count: '200+ 개의 상품', icon: '🏠', link: `/category/homedeco?store=${storeParam}` }
+      ];
+    }
+  };
+
+  const categoryDisplay = getCategoryDisplay();
   return (
     <div className="bg-gray-50">
       {/* 헤더 */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <h1 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{storeName}</h1>
             
             <nav className="hidden lg:flex space-x-8">
               <Link to={`/?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈</Link>
-              <Link to={`/category/bedding?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">침구류</Link>
-              <Link to={`/category/curtains?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">커튼</Link>
-              <Link to={`/category/homedeco?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">홈데코</Link>
-              <Link to={`/category/sale?store=${storeParam}`} className="text-gray-700 hover:text-gray-900 font-medium">세일</Link>
+              {categories.map((category) => (
+                <Link 
+                  key={category.path}
+                  to={`/category/${category.path}?store=${storeParam}`} 
+                  className="text-gray-700 hover:text-gray-900 font-medium"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex items-center space-x-4">
@@ -63,7 +197,7 @@ const CozyHome = () => {
       {/* 코지 템플릿 특징: 부드러운 곡선과 따뜻한 레이아웃 */}
       {/* 히어로 섹션 - 둥근 모서리와 오버레이 */}
       <section className="relative overflow-hidden py-responsive" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left">
               <h2 className="heading-xl-responsive font-bold mb-6 text-gray-800 leading-tight">
@@ -72,11 +206,11 @@ const CozyHome = () => {
               </h2>
               <p className="text-responsive text-gray-600 mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">
                 {description}<br />
-                프리미엄 홈 텍스타일과 라이프스타일 제품
+                {businessContent.heroSubtext}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link to={`/category/new-collection?store=${storeParam}`} className="btn btn-primary px-8 py-4 text-white font-medium rounded-full shadow-lg hover:shadow-xl text-center">
-                  2025 S/S 컬렉션 확인하기
+                  {businessContent.collectionText}
                 </Link>
                 <Link to={`/category/all?store=${storeParam}`} className="btn btn-secondary px-8 py-4 font-medium rounded-full text-center">
                   전체 상품 보기
@@ -89,7 +223,7 @@ const CozyHome = () => {
                   <svg className="w-24 h-24 text-gray-300 absolute" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <div className="text-6xl opacity-30">🛏️</div>
+                  <div className="text-6xl opacity-30">{businessContent.emoji}</div>
                 </div>
               </div>
             </div>
@@ -103,7 +237,10 @@ const CozyHome = () => {
         <div className="container relative">
 
           <h2 className="heading-xl-responsive font-bold mb-6 text-gray-800 leading-tight text-center">
-              다가오는 겨울, <span style={{ color: 'var(--color-primary)' }}>{storeName}</span>과 함께 따뜻하게 보내세요
+              {businessContent.promoTitle.includes('침구') 
+                ? <>다가오는 겨울, <span style={{ color: 'var(--color-primary)' }}>{storeName}</span>과 함께 따뜻하게 보내세요</>
+                : <>특별한 순간, <span style={{ color: 'var(--color-primary)' }}>{storeName}</span>과 함께하세요</>
+              }
           </h2>
 
           <div className="max-w-4xl mx-auto">
@@ -118,25 +255,25 @@ const CozyHome = () => {
               </div>
               
               <h3 className="heading-responsive font-bold mb-6 animate-bounce" style={{ color: 'var(--color-primary)', animationDuration: '3s' }}>
-                겨울맞이 특별 세일
+                {businessContent.promoSubtitle}
               </h3>
               
               <div className="mb-8">
-                <p className="text-2xl font-bold mb-2 text-right" >최대 40% 할인 품목 확인!&nbsp;&nbsp;&nbsp;</p>
+                <p className="text-2xl font-bold mb-2 text-right">{businessContent.saleInfo}&nbsp;&nbsp;&nbsp;</p>
               </div>
               
               <div className="border-t border-b border-gray-200 py-6 mb-6">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                   <div>
-                    <p className="text-lg font-semibold text-gray-800">침구 세트</p>
-                    <p className="text-sm text-gray-600">40% 할인</p>
+                    <p className="text-lg font-semibold text-gray-800">{businessContent.categoryPromo1.split(' ')[1]}</p>
+                    <p className="text-sm text-gray-600">{business.includes('침구') ? '40% 할인' : '30% 할인'}</p>
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-gray-800">커튼류</p>
-                    <p className="text-sm text-gray-600">30% 할인</p>
+                    <p className="text-lg font-semibold text-gray-800">{businessContent.categoryPromo2.split(' ')[1]}</p>
+                    <p className="text-sm text-gray-600">{business.includes('침구') ? '30% 할인' : '25% 할인'}</p>
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-gray-800">홈데코</p>
+                    <p className="text-lg font-semibold text-gray-800">{businessContent.categoryPromo3.split(' ')[1]}</p>
                     <p className="text-sm text-gray-600">25% 할인</p>
                   </div>
                 </div>
@@ -163,20 +300,16 @@ const CozyHome = () => {
 
       {/* 인기 상품 - 카드형 레이아웃 */}
       <section className="py-responsive">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h3 className="heading-responsive font-bold text-gray-800 mb-4">이번 주 인기 상품</h3>
             <p className="text-responsive text-gray-600">고객님들이 가장 사랑하는 상품들</p>
           </div>
           
           <div className="responsive-grid responsive-grid-3 gap-8">
-            {[
-              { name: '프리미엄 침구 세트', desc: '부드러운 촉감의 프리미엄 소재', price: '129,000', originalPrice: '189,000', discount: '30%', icon: '🛏️' },
-              { name: '암막 커튼 세트', desc: '완벽한 차광과 단열 효과', price: '89,000', originalPrice: '125,000', discount: '25%', icon: '🪟' },
-              { name: '홈데코 쿠션 세트', desc: '따뜻한 감성의 인테리어 소품', price: '45,000', originalPrice: '65,000', discount: '35%', icon: '🏠' }
-            ].map((item, idx) => (
-              <div key={idx} className="group">
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:scale-105">
+            {popularProducts.map((item, idx) => (
+              <Link key={idx} to={`/product/popular-${idx + 1}?store=${storeParam}`} className="group block">
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all hover:scale-105 cursor-pointer">
                   <div className="relative">
                     <div className="h-64 bg-muted/20 flex items-center justify-center relative group">
                       <svg className="w-16 h-16 text-gray-300 absolute" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,7 +355,7 @@ const CozyHome = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
           
@@ -236,14 +369,10 @@ const CozyHome = () => {
 
       {/* 카테고리 - 원형 아이콘 레이아웃 */}
       <section className="py-responsive" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-bold text-center text-gray-800 mb-12">관심있는 카테고리부터 보세요</h3>
           <div className="responsive-grid responsive-grid-3 gap-12">
-            {[
-              { name: '침구류', desc: '편안한 잠자리를 위한', count: '120+ 개의 상품', icon: '🛏️', link: `/category/bedding?store=${storeParam}` },
-              { name: '커튼/블라인드', desc: '완벽한 공간 연출을 위한', count: '85+ 개의 상품', icon: '🪟', link: `/category/curtains?store=${storeParam}` },
-              { name: '홈데코', desc: '따뜻한 분위기 연출을 위한', count: '200+ 개의 상품', icon: '🏠', link: `/category/homedeco?store=${storeParam}` }
-            ].map((cat, idx) => (
+            {categoryDisplay.map((cat, idx) => (
               <Link key={idx} to={cat.link} className="group cursor-pointer block">
                 <div className="text-center bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all hover:scale-105">
                   <div 
@@ -268,7 +397,7 @@ const CozyHome = () => {
 
       {/* 푸터 */}
       <footer className="py-responsive text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="responsive-grid responsive-grid-4 gap-8 mb-8">
             <div>
               <h4 className="text-xl font-bold mb-4">{storeName}</h4>

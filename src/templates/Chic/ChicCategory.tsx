@@ -41,16 +41,46 @@ const ChicCategory = () => {
       if (storeData && storeData.products) {
         console.log('전역 상품 데이터 발견:', storeData.products);
         
-        // 카테고리 매핑
-        const categoryMap = {
-          'dresses': '드레스',
-          'tops': '상의',
-          'bottoms': '하의',
-          'accessories': '액세서리',
-          'sale': '세일',
-          'new-collection': '신상품',
-          'all': ''
+        // 업종 정보 가져오기
+        const business = storeData.store?.business || '';
+        
+        // 업종에 따른 카테고리 매핑
+        const getCategoryMap = () => {
+          if (business.includes('침구') || business.includes('이불')) {
+            return {
+              'comforters': '이불',
+              'pillows': '베개',
+              'sheets': '시트',
+              'baby': '아기침구',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          } else if (business.includes('수공예')) {
+            return {
+              'pottery': '도자기',
+              'textile': '직물',
+              'woodwork': '목공예',
+              'jewelry': '액세서리',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          } else {
+            // 기본값 (침구)
+            return {
+              'comforters': '이불',
+              'pillows': '베개',
+              'sheets': '시트',
+              'baby': '아기침구',
+              'sale': '세일',
+              'new-collection': '신상품',
+              'all': ''
+            };
+          }
         };
+        
+        const categoryMap = getCategoryMap();
 
         const categoryNameKr = categoryMap[categoryName] || '';
         

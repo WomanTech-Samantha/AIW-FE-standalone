@@ -73,10 +73,6 @@ export default function StoreSettingsPage() {
       // 업종에 따른 색상
       const colors = {
         "침구": "#9B7EBD",
-        "커튼": "#6B8E65",
-        "의류": "#D4526E",
-        "음식": "#C67B5C",
-        "뷰티": "#E8A49C",
         "수공예": "#7189A6"
       };
       
@@ -272,7 +268,7 @@ export default function StoreSettingsPage() {
               <div>
                 <Label className="text-base mb-4 block">업종</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {["🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", "🍽️ 음식·요리", "💄 뷰티·화장품", "🧵 수공예"].map((label) => (
+                  {["🛏️ 침구·이불", "🧵 수공예"].map((label) => (
                     <div
                       key={label}
                       onClick={() => setBusiness(label)}
@@ -306,7 +302,7 @@ export default function StoreSettingsPage() {
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                   className="text-lg"
-                  placeholder="예: 지수커튼침구"
+                  placeholder="예: 지수침구"
                 />
               </div>
               
