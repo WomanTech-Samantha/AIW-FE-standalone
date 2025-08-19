@@ -48,6 +48,11 @@ const AssetStudioPage = () => {
   const [generatedDetailImage, setGeneratedDetailImage] = useState<string | null>(null);
   const [generatedImageModalOpen, setGeneratedImageModalOpen] = useState(false);
 
+  // 인스타 피드 이미지 생성 상태
+  const [feedImageGenerating, setFeedImageGenerating] = useState(false);
+  const [generatedFeedImage, setGeneratedFeedImage] = useState<string | null>(null);
+  const [feedImageModalOpen, setFeedImageModalOpen] = useState(false);
+
   // 삭제 모달 상태
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<any>(null);
@@ -112,14 +117,14 @@ const AssetStudioPage = () => {
 
   // 팁 순환 효과
   useEffect(() => {
-    if (detailImageGenerating) {
+    if (detailImageGenerating || feedImageGenerating) {
       const interval = setInterval(() => {
         setCurrentTipIndex((prev) => (prev + 1) % marketingTips.length);
       }, 3000); // 3초마다 팁 변경
 
       return () => clearInterval(interval);
     }
-  }, [detailImageGenerating, marketingTips.length]);
+  }, [detailImageGenerating, feedImageGenerating, marketingTips.length]);
 
   const currentProducts = products;
 
@@ -146,6 +151,8 @@ const AssetStudioPage = () => {
 
     if (contentType === 'detail') {
       await handleDetailImageGeneration(selectedProductData);
+    } else if (contentType === 'feed') {
+      await handleFeedImageGeneration(selectedProductData);
     } else {
       // 다른 콘텐츠 타입들은 간단한 알림으로 처리
       alert(`${contentType} 콘텐츠 생성이 완료되었습니다! (데모)`);
@@ -178,25 +185,72 @@ const AssetStudioPage = () => {
     }
   };
 
-  // 이미지 다운로드 함수 (Mock)
+  // 인스타 피드 이미지 생성 (Mock)
+  const handleFeedImageGeneration = async (productData: any) => {
+    setFeedImageGenerating(true);
+    setFeedImageModalOpen(true); // 모달 바로 열기
+    setCurrentTipIndex(0); // 팁 초기화
+    setGeneratedFeedImage(null); // 이전 이미지 초기화
+
+    try {
+      console.log('Mock 인스타 피드 이미지 생성 시작:', productData);
+
+      // Mock 이미지 생성 시뮬레이션 (30-45초 사이 랜덤)
+      const delay = Math.floor(Math.random() * 15000) + 30000; // 30-45초
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      // Mock 생성된 이미지 URL
+      setGeneratedFeedImage('/placeholder.svg');
+      setFeedImageGenerating(false);
+      console.log('Mock 인스타 피드 이미지 생성 완료');
+
+    } catch (error) {
+      console.error('인스타 피드 이미지 생성 실패:', error);
+      alert('인스타 피드 이미지 생성 중 오류가 발생했습니다.');
+      setFeedImageGenerating(false);
+    }
+  };
+
+  // 상품 상세 이미지 다운로드 함수 (Mock)
   const handleDownloadImage = async () => {
     if (!generatedDetailImage) return;
 
     try {
       // Mock 다운로드 시뮬레이션
-      console.log('Mock 이미지 다운로드:', generatedDetailImage);
-      alert('이미지가 다운로드되었습니다! (데모)');
+      console.log('Mock 상품 상세 이미지 다운로드:', generatedDetailImage);
+      alert('상품 상세 이미지가 다운로드되었습니다! (데모)');
     } catch (error) {
       console.error('다운로드 실패:', error);
       alert('이미지 다운로드에 실패했습니다.');
     }
   };
 
-  // 쇼핑몰 업로드 함수 (Mock)
+  // 인스타 피드 이미지 다운로드 함수 (Mock)
+  const handleDownloadFeedImage = async () => {
+    if (!generatedFeedImage) return;
+
+    try {
+      // Mock 다운로드 시뮬레이션
+      console.log('Mock 인스타 피드 이미지 다운로드:', generatedFeedImage);
+      alert('인스타 피드 이미지가 다운로드되었습니다! (데모)');
+    } catch (error) {
+      console.error('다운로드 실패:', error);
+      alert('이미지 다운로드에 실패했습니다.');
+    }
+  };
+
+  // 상품 상세 이미지 쇼핑몰 업로드 함수 (Mock)
   const handleUploadToStore = async () => {
     // Mock 업로드 시뮬레이션
-    console.log('Mock 쇼핑몰 업로드');
-    alert('쇼핑몰에 업로드되었습니다! (데모)');
+    console.log('Mock 상품 상세 이미지 쇼핑몰 업로드');
+    alert('상품 상세 이미지가 쇼핑몰에 업로드되었습니다! (데모)');
+  };
+
+  // 인스타 피드 이미지 인스타그램 업로드 함수 (Mock)
+  const handleUploadToInstagram = async () => {
+    // Mock 업로드 시뮬레이션
+    console.log('Mock 인스타 피드 이미지 인스타그램 업로드');
+    alert('인스타 피드 이미지가 인스타그램에 업로드되었습니다! (데모)');
   };
 
   // 상품 삭제 함수 (Mock)
@@ -518,14 +572,16 @@ const AssetStudioPage = () => {
                   variant="outline"
                   onClick={() => handleContentGeneration(type.id)}
                   className="h-auto flex-col p-4 space-y-2"
-                  disabled={!selectedProduct || (type.id === 'detail' && detailImageGenerating)}
+                  disabled={!selectedProduct || (type.id === 'detail' && detailImageGenerating) || (type.id === 'feed' && feedImageGenerating)}
                 >
                   <div className="flex flex-col items-center space-y-1">
                     {type.icon}
                     <span className="font-bold text-lg">{type.title}</span>
                   </div>
                   <span className="text-xs opacity-80">
-                    {type.id === 'detail' && detailImageGenerating ? '생성 중...' : type.description}
+                    {type.id === 'detail' && detailImageGenerating ? '생성 중...' : 
+                     type.id === 'feed' && feedImageGenerating ? '생성 중...' : 
+                     type.description}
                   </span>
                 </Button>
               ))}
@@ -643,6 +699,92 @@ const AssetStudioPage = () => {
                 >
                   <Upload className="h-4 w-4" />
                   쇼핑몰에 업로드
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* \uc778\uc2a4\ud0c0 \ud53c\ub4dc \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ubaa8\ub2ec */}
+      <Dialog open={feedImageModalOpen} onOpenChange={setFeedImageModalOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>
+              {feedImageGenerating ? "인스타 피드 이미지 생성 중..." : "인스타 피드 이미지 생성 완료"}
+            </DialogTitle>
+            <DialogDescription>
+              {feedImageGenerating
+                ? "올인움 AI가 멋진 인스타 피드 이미지를 만들고 있어요!"
+                : "올인움 AI가 생성한 인스타 피드 이미지입니다. 다운로드하거나 인스타그램에 업로드할 수 있습니다."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-4">
+            {feedImageGenerating ? (
+              // 로딩 상태
+              <div className="flex flex-col items-center justify-center py-12 space-y-6">
+                {/* 애니메이션 로더 */}
+                <div className="relative">
+                  <Loader2 className="h-16 w-16 animate-spin text-primary" />
+                  <Sparkles className="absolute top-0 right-0 h-6 w-6 text-yellow-500 animate-pulse" />
+                </div>
+
+                {/* 진행 상태 메시지 */}
+                <div className="text-center space-y-2">
+                  <p className="text-lg font-medium">잠시만 기다려주세요...</p>
+                  <p className="text-sm text-gray-500">보통 30-45초 정도 소요됩니다</p>
+                </div>
+
+                {/* 마케팅 팁 */}
+                <div className="w-full max-w-md p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                  <p className="text-sm text-center text-gray-700 transition-all duration-500">
+                    {marketingTips[currentTipIndex]}
+                  </p>
+                </div>
+              </div>
+            ) : generatedFeedImage ? (
+              <div className="relative w-full max-h-[60vh] overflow-auto border rounded-lg bg-gray-50 p-4">
+                <img
+                  src={generatedFeedImage}
+                  alt="Generated Instagram Feed"
+                  className="w-[50%] h-auto mx-auto"
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter className="mt-6">
+            {feedImageGenerating ? (
+              <Button
+                variant="outline"
+                onClick={() => setFeedImageModalOpen(false)}
+              >
+                백그라운드에서 진행
+              </Button>
+            ) : (
+              // 완료 후 버튼
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setFeedImageModalOpen(false)}
+                >
+                  닫기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadFeedImage}
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  다운로드
+                </Button>
+                <Button
+                  onClick={handleUploadToInstagram}
+                  className="flex items-center gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  인스타그램에 업로드
                 </Button>
               </>
             )}
