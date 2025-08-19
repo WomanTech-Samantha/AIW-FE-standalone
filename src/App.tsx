@@ -18,7 +18,6 @@ import StoreSettingsPage from "./pages/StoreSettings";
 import InstagramConnectPage from "./pages/InstagramConnect";  
 import InstagramCallbackPage from "./pages/InstagramCallback";
 import InstagramManagePage from "./pages/InstagramManage";
-import InstagramInsightsPage from "./pages/InstagramInsights";
 import InstagramPostPage from "./pages/InstagramPost";
 import InstagramCommentsPage from "./pages/InstagramComments";
 import InstagramMediaPage from "./pages/InstagramMedia";
@@ -63,7 +62,6 @@ const App = () => (
               <Route path="/store/settings" element={<StoreSettingsPage />} />
               <Route path="/instagram/connect" element={<InstagramConnectPage />} />
               <Route path="/instagram/manage" element={<InstagramManagePage />} />
-              <Route path="/instagram/insights" element={<InstagramInsightsPage />} />
               <Route path="/instagram/post" element={<InstagramPostPage />} />
               <Route path="/instagram/comments" element={<InstagramCommentsPage />} />
               <Route path="/instagram/media" element={<InstagramMediaPage />} />
