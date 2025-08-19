@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
+import { checkInstagramConnection } from "@/utils/instagramAuth";
 
 export default function TopNavBar() {
   const { user, logout } = useAuth();
@@ -21,12 +22,49 @@ export default function TopNavBar() {
   const isStoreActive = pathname.startsWith("/store");
   
   useEffect(() => {
-    // 배포용 하드코딩: 무조건 Instagram 연결됨
-    setIsInstagramConnected(true);
+    // Instagram 연동 상태 확인
+    const connection = checkInstagramConnection();
+    setIsInstagramConnected(connection.isConnected);
     
     const savedStore = localStorage.getItem('has_online_store');
     setHasOnlineStore(savedStore === 'true');
   }, []);
+
+  // Instagram 연동 상태 변경 감지를 위한 useEffect
+  useEffect(() => {
+    const checkConnection = () => {
+      const connection = checkInstagramConnection();
+      setIsInstagramConnected(connection.isConnected);
+    };
+
+    // localStorage 변경 감지
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'instagram_access_token' || e.key === 'instagram_user' || e.key === 'instagram_connected') {
+        checkConnection();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // 페이지 포커스 시에도 확인 (다른 탭에서 연동 상태가 변경될 수 있음)
+    const handleFocus = () => {
+      checkConnection();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+
+  // MockAuth user 상태 변경 감지
+  useEffect(() => {
+    if (user?.instagramConnected !== undefined) {
+      setIsInstagramConnected(user.instagramConnected);
+    }
+  }, [user?.instagramConnected]);
 
   return (
     <TooltipProvider>

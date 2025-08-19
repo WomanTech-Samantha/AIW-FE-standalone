@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useAuth } from "@/context/MockAuthContext";
 import { 
   Instagram, 
   Loader2, 
@@ -18,6 +19,7 @@ interface InstagramDirectLoginProps {
 }
 
 const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps) => {
+  const { setInstagramConnection } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [userInfo, setUserInfo] = useState<any>(null);
@@ -111,6 +113,9 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
         media_count: userData.media_count || 0
       }));
       localStorage.setItem('instagram_connected', 'true');
+      
+      // MockAuth 상태 업데이트
+      setInstagramConnection(true);
 
       console.log('Instagram 연동 완료:', userData.username);
 
@@ -132,30 +137,32 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
     }
   };
 
-  // 연동 상태 확인 (배포용 하드코딩)
+  // 연동 상태 확인
   useEffect(() => {
-    // 하드코딩된 연결 상태 설정
-    const hardcodedToken = "demo_access_token_for_deployment";
-    const hardcodedUser = {
-      id: "demo_instagram_user",
-      username: "demo_store_official",
-      name: "데모 스토어", 
-      account_type: "BUSINESS",
-      media_count: 42
-    };
+    // localStorage에서 기존 연동 정보 확인
+    const token = localStorage.getItem('instagram_access_token');
+    const userStr = localStorage.getItem('instagram_user');
     
-    setAccessToken(hardcodedToken);
-    setUserInfo(hardcodedUser);
-    console.log('하드코딩된 Instagram 연동 정보 로드:', hardcodedUser.username);
-    
-    // 성공 콜백 호출
-    if (onSuccess) {
-      onSuccess({
-        access_token: hardcodedToken,
-        user: hardcodedUser
-      });
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setAccessToken(token);
+        setUserInfo(user);
+        console.log('기존 Instagram 연동 정보 로드:', user.username);
+        
+        // MockAuth 상태 업데이트 
+        setInstagramConnection(true);
+        
+        // 기존 연동 정보 로드할 때는 onSuccess 콜백 호출하지 않음
+        // (새로 연동할 때만 호출하도록 함)
+      } catch (e) {
+        console.error('Instagram 사용자 정보 파싱 실패:', e);
+        localStorage.removeItem('instagram_access_token');
+        localStorage.removeItem('instagram_user');
+        localStorage.removeItem('instagram_connected');
+      }
     }
-  }, [onSuccess]);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -165,19 +172,16 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
           <div className="flex items-center justify-center mb-4">
             <Instagram className="h-12 w-12 text-pink-500" />
           </div>
-          <CardTitle className="text-2xl text-center">Instagram 비즈니스 계정 연동</CardTitle>
-          <CardDescription className="text-center">
-            Instagram API를 통해 콘텐츠를 자동으로 게시하고 관리할 수 있습니다
-          </CardDescription>
+          <CardTitle className="text-xl text-center">Instagram 비즈니스 계정 연동하기</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {!accessToken ? (
             <>
-              {/* OAuth 로그인 버튼 */}
+              {/* 연동 버튼 */}
               <Button 
-                onClick={handleInstagramLogin}
+                onClick={handleDirectTokenTest}
                 disabled={isLoading}
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full bg-pink-500 text-white hover:bg-pink-600"
                 size="lg"
               >
                 {isLoading ? (
@@ -188,27 +192,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
                 ) : (
                   <>
                     <Instagram className="mr-2 h-5 w-5" />
-                    Instagram OAuth 로그인
-                  </>
-                )}
-              </Button>
-
-              {/* 개발용 토큰 테스트 버튼 */}
-              <Button 
-                onClick={handleDirectTokenTest}
-                disabled={isLoading}
-                variant="outline"
-                className="w-full"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    테스트 중...
-                  </>
-                ) : (
-                  <>
-                    <Link2 className="mr-2 h-4 w-4" />
-                    개발용 토큰으로 테스트
+                    데모 계정 연결
                   </>
                 )}
               </Button>
@@ -248,6 +232,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
                   localStorage.removeItem('instagram_access_token');
                   localStorage.removeItem('instagram_user');
                   localStorage.removeItem('instagram_connected');
+                  setInstagramConnection(false);
                   setAccessToken(null);
                   setUserInfo(null);
                 }}
@@ -270,35 +255,6 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
         </CardContent>
       </Card>
 
-      {/* 안내 사항 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Info className="h-5 w-5 text-blue-500" />
-            Instagram 연동 안내
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <h4 className="font-semibold">필수 요구사항:</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-              <li>Instagram 비즈니스 또는 크리에이터 계정</li>
-              <li>Facebook 페이지와 연결 (선택사항)</li>
-              <li>프로필 정보 완성</li>
-            </ul>
-          </div>
-
-          <div className="space-y-2">
-            <h4 className="font-semibold">지원 기능:</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-              <li>콘텐츠 자동 게시 (이미지/동영상)</li>
-              <li>미디어 관리 및 조회</li>
-              <li>댓글 관리 및 답글</li>
-              <li>인사이트 분석</li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

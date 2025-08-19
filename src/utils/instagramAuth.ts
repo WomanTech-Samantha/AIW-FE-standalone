@@ -1,36 +1,7 @@
 // Instagram 연동 상태 확인 유틸리티
 
 export const checkInstagramConnection = () => {
-  // 배포용 하드코딩: 무조건 항상 연결된 상태로 설정
-  const hardcodedUser = {
-    id: "demo_instagram_user",
-    username: "demo_store_official",
-    name: "데모 스토어",
-    account_type: "BUSINESS",
-    media_count: 42
-  };
-  
-  const hardcodedToken = "demo_access_token_for_deployment";
-  
-  // localStorage에도 저장해서 다른 함수들이 참조할 수 있도록
-  try {
-    localStorage.setItem('instagram_access_token', hardcodedToken);
-    localStorage.setItem('instagram_user', JSON.stringify(hardcodedUser));
-    localStorage.setItem('instagram_connected', 'true');
-  } catch (e) {
-    // localStorage 오류 무시
-  }
-  
-  return {
-    isConnected: true,
-    data: {
-      token: hardcodedToken,
-      user: hardcodedUser
-    }
-  };
-  
-  // 원래 로직 (주석 처리)
-  /*
+  // 사용자 초기값: 연결되지 않은 상태
   const token = localStorage.getItem('instagram_access_token');
   const user = localStorage.getItem('instagram_user');
   
@@ -51,7 +22,6 @@ export const checkInstagramConnection = () => {
     console.error('Instagram 데이터 파싱 실패:', e);
     return { isConnected: false, data: null };
   }
-  */
 };
 
 export const disconnectInstagram = () => {

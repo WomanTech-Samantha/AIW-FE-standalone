@@ -35,13 +35,12 @@ const InstagramManagePage = () => {
     
     if (connection.isConnected && connection.data) {
       setInstagramData(connection.data);
+      setIsLoading(false);
     } else {
       // 연동되지 않은 경우 연동 페이지로 리다이렉션
       navigate('/instagram/connect');
       return;
     }
-    
-    setIsLoading(false);
   };
 
   const handleRefresh = async () => {

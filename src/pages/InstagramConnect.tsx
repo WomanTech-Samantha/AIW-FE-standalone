@@ -10,20 +10,17 @@ const InstagramConnectPage = () => {
   const { user } = useAuth();
   const [isInstagramLoginComplete, setIsInstagramLoginComplete] = useState(false);
 
-  // 컴포넌트 마운트시 연동 상태 확인 및 자동 리다이렉트 체크
+  // 컴포넌트 마운트시 연동 상태 확인 및 자동 리다이렉트
   useEffect(() => {
-    // 하드코딩된 연결 상태로 바로 manage 페이지로 이동
     const connection = checkInstagramConnection();
     if (connection.isConnected) {
-      // 약간의 지연 후 이동 (사용자가 연결 상태를 확인할 수 있도록)
-      setTimeout(() => {
-        navigate('/instagram/manage');
-      }, 1500);
-      return;
+      setIsInstagramLoginComplete(true);
+      // 이미 연동되어 있으면 관리 페이지로 리다이렉트
+      navigate('/instagram/manage');
     }
   }, [navigate]);
 
-  // 개발?? ?�동 ?�태 초기???�수
+  // 연동 해제 함수
   const clearConnection = () => {
     disconnectInstagram();
     localStorage.removeItem('instagram_connected');
@@ -35,7 +32,7 @@ const InstagramConnectPage = () => {
   const handleInstagramLoginSuccess = (response: any) => {
     console.log('Instagram login successful:', response);
     setIsInstagramLoginComplete(true);
-    // 로그???�공 ??관�??�이지�??�동
+    // 로그인 성공 후 2초 지연 후 관리 페이지로 이동
     setTimeout(() => {
       navigate('/instagram/manage');
     }, 2000);
@@ -50,24 +47,14 @@ const InstagramConnectPage = () => {
     <div className="page-container">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Instagram 비즈?�스 계정 ?�동</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Instagram 비즈니스 계정 연동</h1>
         <p className="text-lg text-muted-foreground">
-          콘텐츠�? ?�동?�로 게시?�고 관리하�??�해 계정???�결?�세??        </p>
-        {/* 개발???�버�?버튼 */}
-        {isInstagramLoginComplete && (
-          <Button
-            onClick={clearConnection}
-            variant="outline"
-            size="sm"
-            className="mt-4"
-          >
-            ?�동 초기??(개발??
-          </Button>
-        )}
+          콘텐츠를 자동으로 게시하고 관리하기 위해 계정을 연결하세요
+        </p>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         <InstagramDirectLogin 
           onSuccess={handleInstagramLoginSuccess}
           onError={handleInstagramLoginError}
