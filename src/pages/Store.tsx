@@ -233,6 +233,106 @@ const StorePage = () => {
         </CardContent>
       </Card>
 
+
+      {/* 빠른 작업 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <Card className="card-soft">
+          <CardHeader>
+            <CardTitle>최근 활동</CardTitle>
+            <CardDescription>
+              스토어의 최근 활동 내역입니다
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <ShoppingCart className="h-4 w-4 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">새 주문이 접수되었습니다</p>
+                  <p className="text-xs text-muted-foreground">5분 전</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <Star className="h-4 w-4 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">고객 리뷰가 등록되었습니다</p>
+                  <p className="text-xs text-muted-foreground">1시간 전</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <Package className="h-4 w-4 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">상품이 재고 부족 상태입니다</p>
+                  <p className="text-xs text-muted-foreground">3시간 전</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                  <Truck className="h-4 w-4 text-orange-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">배송이 완료되었습니다</p>
+                  <p className="text-xs text-muted-foreground">5시간 전</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="card-soft">
+          <CardHeader>
+            <CardTitle>빠른 작업</CardTitle>
+            <CardDescription>
+              자주 사용하는 기능들을 빠르게 실행하세요
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <Button 
+                variant="outline" 
+                className="h-auto p-4 flex-col gap-2"
+                onClick={() => navigate('/studio')}
+              >
+                <Package className="h-8 w-8" />
+                <span>상품 추가</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-auto p-4 flex-col gap-2"
+                onClick={handleStoreSettings}
+              >
+                <Settings className="h-8 w-8" />
+                <span>스토어 설정</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-auto p-4 flex-col gap-2"
+                onClick={() => navigate('/dashboard')}
+              >
+                <BarChart3 className="h-8 w-8" />
+                <span>분석 보기</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-auto p-4 flex-col gap-2"
+                onClick={handleViewStore}
+              >
+                <Eye className="h-8 w-8" />
+                <span>스토어 미리보기</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* 통계 카드들 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card className="card-soft">
@@ -303,107 +403,9 @@ const StorePage = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* 빠른 작업 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="card-soft">
-          <CardHeader>
-            <CardTitle>빠른 작업</CardTitle>
-            <CardDescription>
-              자주 사용하는 기능들을 빠르게 실행하세요
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={() => navigate('/studio')}
-              >
-                <Package className="h-8 w-8" />
-                <span>상품 추가</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={handleStoreSettings}
-              >
-                <Settings className="h-8 w-8" />
-                <span>스토어 설정</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={() => navigate('/dashboard')}
-              >
-                <BarChart3 className="h-8 w-8" />
-                <span>분석 보기</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={handleViewStore}
-              >
-                <Eye className="h-8 w-8" />
-                <span>스토어 미리보기</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="card-soft">
-          <CardHeader>
-            <CardTitle>최근 활동</CardTitle>
-            <CardDescription>
-              스토어의 최근 활동 내역입니다
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <ShoppingCart className="h-4 w-4 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">새 주문이 접수되었습니다</p>
-                  <p className="text-xs text-muted-foreground">5분 전</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Star className="h-4 w-4 text-green-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">고객 리뷰가 등록되었습니다</p>
-                  <p className="text-xs text-muted-foreground">1시간 전</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Package className="h-4 w-4 text-purple-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">상품이 재고 부족 상태입니다</p>
-                  <p className="text-xs text-muted-foreground">3시간 전</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <Truck className="h-4 w-4 text-orange-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">배송이 완료되었습니다</p>
-                  <p className="text-xs text-muted-foreground">5시간 전</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
+
+    
   );
 };
 

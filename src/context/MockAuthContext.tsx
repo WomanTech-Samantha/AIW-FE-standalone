@@ -19,6 +19,7 @@ type User = {
   subdomain?: string;
   brandImageUrl?: string;
   tagline?: string;
+  instagramConnected?: boolean;
 };
 
 type AuthContextValue = {
@@ -28,6 +29,7 @@ type AuthContextValue = {
   login: (email: string, password: string) => Promise<void>;
   socialLogin: (provider: any, userData: any) => Promise<void>;
   signup: (payload: { email: string; password: string; name: string; phone?: string }) => Promise<void>;
+  setInstagramConnection: (connected: boolean) => void;
   logout: () => Promise<void>;
   completeOnboarding: (profile: Partial<User>) => void;
   updateUserProfile: (profile: Partial<User>) => void;
@@ -57,7 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       name: "데모 사용자",
       phone: "010-1234-5678",
       onboardingCompleted: false,
-      hasOnlineStore: false
+      hasOnlineStore: false,
+      instagramConnected: false
     };
   };
 
@@ -130,11 +133,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await new Promise(resolve => setTimeout(resolve, 500));
   };
 
+  const setInstagramConnection = useCallback((connected: boolean) => {
+    const updatedUser = user ? {
+      ...user,
+      instagramConnected: connected
+    } : null;
+    
+    if (updatedUser) {
+      setUser(updatedUser);
+      // localStorage에 저장
+      try {
+        localStorage.setItem('demo_user_data', JSON.stringify(updatedUser));
+        console.log('Instagram connection status updated:', connected);
+      } catch (error) {
+        console.error('Failed to save user data to localStorage:', error);
+      }
+    }
+  }, [user]);
+
   const resetDemo = useCallback(() => {
     // localStorage 초기화
     try {
       localStorage.removeItem('demo_user_data');
       localStorage.removeItem('has_online_store');
+      localStorage.removeItem('instagram_access_token');
+      localStorage.removeItem('instagram_user');
+      localStorage.removeItem('instagram_connected');
     } catch (error) {
       console.error('Failed to clear localStorage:', error);
     }
@@ -146,7 +170,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       name: "데모 사용자",
       phone: "010-1234-5678",
       onboardingCompleted: false,
-      hasOnlineStore: false
+      hasOnlineStore: false,
+      instagramConnected: false
     };
     
     setUser(initialUser);
@@ -165,7 +190,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateUserProfile,
     checkEmail,
     changePassword,
-    resetDemo
+    resetDemo,
+    setInstagramConnection
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
