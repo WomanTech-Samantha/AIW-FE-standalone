@@ -177,116 +177,81 @@ const StorePage = () => {
             스토어 현황을 확인하고 관리하세요
           </p>
         </div>
-        <div className="flex gap-3 mt-4 md:mt-0">
-          <Button 
-            variant="outline" 
-            onClick={handleStoreSettings}
-            className="flex items-center gap-2"
-          >
-            <Settings className="h-4 w-4" />
-            스토어 설정
-          </Button>
-          <Button 
-            onClick={handleViewStore}
-            className="flex items-center gap-2"
-          >
-            <ExternalLink className="h-4 w-4" />
-            스토어 보기
-          </Button>
-        </div>
       </div>
 
-      {/* 스토어 정보 카드 */}
-      <Card className="card-soft mb-8">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <Store className="h-6 w-6" />
-                {user?.storeName || "내 스토어"}
-              </CardTitle>
-              <CardDescription>
-                온라인 스토어 기본 정보
-              </CardDescription>
-            </div>
-            <Badge className="bg-green-100 text-green-700 border-green-200">
-              <CheckCircle2 className="mr-1 h-3 w-3" />
-              운영중
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <Label className="text-sm font-medium text-muted-foreground">스토어 URL</Label>
-              <p className="text-base font-medium break-all">{storeUrl}</p>
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-muted-foreground">업종</Label>
-              <p className="text-base font-medium">{user?.business || "일반"}</p>
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-muted-foreground">개설일</Label>
-              <p className="text-base font-medium">2025년 8월 19일</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-
-      {/* 빠른 작업 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      {/* 스토어 정보 & 빠른 작업 카드 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* 스토어 정보 & 최근 활동 카드 */}
         <Card className="card-soft">
           <CardHeader>
-            <CardTitle>최근 활동</CardTitle>
-            <CardDescription>
-              스토어의 최근 활동 내역입니다
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Store className="h-5 w-5" />
+                  {user?.storeName || "내 스토어"} <span className="text-sm font-normal text-muted-foreground">· {user?.business || "일반"} 상점</span>
+                </CardTitle>
+                <CardDescription>
+                  스토어 기본 정보 및 최근 활동
+                </CardDescription>
+              </div>
+              <Badge className="bg-green-100 text-green-700 border-green-200 hover:bg-green-100">
+                <CheckCircle2 className="mr-1 h-3 w-3" />
+                운영중
+              </Badge>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <ShoppingCart className="h-4 w-4 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">새 주문이 접수되었습니다</p>
-                  <p className="text-xs text-muted-foreground">5분 전</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <Star className="h-4 w-4 text-green-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">고객 리뷰가 등록되었습니다</p>
-                  <p className="text-xs text-muted-foreground">1시간 전</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="pr-4 border-r border-border/50">
+                <h3 className="font-semibold mb-3 text-base flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  기본 정보
+                </h3>
+                <div className="space-y-3">
+                  <div className="p-2 bg-muted/30 rounded-md">
+                    <Label className="text-sm font-medium text-muted-foreground">스토어 URL</Label>
+                    <p className="text-base font-medium break-all mt-1">{storeUrl}</p>
+                  </div>
+                  <div className="p-2 bg-muted/30 rounded-md">
+                    <Label className="text-sm font-medium text-muted-foreground">개설일</Label>
+                    <p className="text-base font-medium mt-1">2025년 8월 19일</p>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Package className="h-4 w-4 text-purple-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">상품이 재고 부족 상태입니다</p>
-                  <p className="text-xs text-muted-foreground">3시간 전</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <Truck className="h-4 w-4 text-orange-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">배송이 완료되었습니다</p>
-                  <p className="text-xs text-muted-foreground">5시간 전</p>
+              <div className="pl-4">
+                <h3 className="font-semibold mb-3 text-base flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                  최근 활동
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 p-2 rounded-md">
+                    <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center border border-blue-200">
+                      <ShoppingCart className="h-3 w-3 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">새 주문 접수</p>
+                      <p className="text-sm text-muted-foreground">5분 전</p>
+                    </div>
+                    <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse"></div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 p-2 rounded-md">
+                    <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center border border-green-200">
+                      <Star className="h-3 w-3 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">리뷰 등록</p>
+                      <p className="text-sm text-muted-foreground">1시간 전</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* 빠른 작업 카드 */}
         <Card className="card-soft">
           <CardHeader>
             <CardTitle>빠른 작업</CardTitle>
@@ -295,114 +260,117 @@ const StorePage = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <Button 
                 variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={() => navigate('/studio')}
+                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-orange-50/50 border-orange-200 hover:bg-orange-100/50 text-orange-900 hover:text-orange-900"
+                onClick={() => navigate('/product-add')}
               >
-                <Package className="h-8 w-8" />
-                <span>상품 추가</span>
+                상품 추가
+                <Plus className="h-10 w-10 text-orange-600" />
               </Button>
               <Button 
                 variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
+                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-blue-50/50 border-blue-200 hover:bg-blue-100/50 text-blue-900 hover:text-blue-900"
+                onClick={() => navigate('/orders')}
+              >
+                주문 관리
+                <ShoppingCart className="h-10 w-10 text-blue-600" />
+              </Button>
+              <Button 
+                variant="outline" 
+                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-teal-50/50 border-teal-200 hover:bg-teal-100/50 text-teal-900 hover:text-teal-900"
                 onClick={handleStoreSettings}
               >
-                <Settings className="h-8 w-8" />
-                <span>스토어 설정</span>
+                스토어 설정
+                <Settings className="h-10 w-10 text-teal-600" />
               </Button>
               <Button 
                 variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
-                onClick={() => navigate('/dashboard')}
-              >
-                <BarChart3 className="h-8 w-8" />
-                <span>분석 보기</span>
-              </Button>
-              <Button 
-                variant="outline" 
-                className="h-auto p-4 flex-col gap-2"
+                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-purple-50/50 border-purple-200 hover:bg-purple-100/50 text-purple-900 hover:text-purple-900"
                 onClick={handleViewStore}
               >
-                <Eye className="h-8 w-8" />
-                <span>스토어 미리보기</span>
+                스토어 바로가기
+                <ExternalLink className="h-10 w-10 text-purple-600" />
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* 통계 카드들 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="card-soft">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">오늘 주문</p>
-                <p className="text-2xl font-bold">12</p>
+      {/* 통계 대시보드 */}
+      <Card className="card-soft mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            오늘의 스토어 현황
+          </CardTitle>
+          <CardDescription>실시간 스토어 운영 지표를 확인하세요</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="h-4 w-4 text-blue-600" />
+                  <span className="text-base font-medium text-blue-900">주문</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                  <TrendingUp className="h-3 w-3" />
+                  +8.2%
+                </div>
               </div>
-              <ShoppingCart className="h-8 w-8 text-blue-500" />
+              <div className="text-2xl font-bold text-blue-900">12건</div>
+              <p className="text-sm text-blue-600">어제 대비 증가</p>
             </div>
-            <div className="flex items-center mt-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+8.2%</span>
-              <span className="text-muted-foreground ml-1">어제 대비</span>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="card-soft">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">오늘 매출</p>
-                <p className="text-2xl font-bold">₩340,000</p>
+            <div className="p-4 bg-green-50/50 rounded-lg border border-green-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-green-600" />
+                  <span className="text-base font-medium text-green-900">매출</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                  <TrendingUp className="h-3 w-3" />
+                  +12.1%
+                </div>
               </div>
-              <DollarSign className="h-8 w-8 text-green-500" />
+              <div className="text-2xl font-bold text-green-900">₩340,000</div>
+              <p className="text-sm text-green-600">목표 달성률 78%</p>
             </div>
-            <div className="flex items-center mt-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+12.1%</span>
-              <span className="text-muted-foreground ml-1">어제 대비</span>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="card-soft">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">방문자</p>
-                <p className="text-2xl font-bold">1,254</p>
+            <div className="p-4 bg-purple-50/50 rounded-lg border border-purple-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-purple-600" />
+                  <span className="text-base font-medium text-purple-900">방문자</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                  <TrendingUp className="h-3 w-3" />
+                  +5.7%
+                </div>
               </div>
-              <Users className="h-8 w-8 text-purple-500" />
+              <div className="text-2xl font-bold text-purple-900">1,254명</div>
+              <p className="text-sm text-purple-600">평균 세션 3.2분</p>
             </div>
-            <div className="flex items-center mt-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+5.7%</span>
-              <span className="text-muted-foreground ml-1">어제 대비</span>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="card-soft">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">전환율</p>
-                <p className="text-2xl font-bold">2.8%</p>
+            <div className="p-4 bg-orange-50/50 rounded-lg border border-orange-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Target className="h-4 w-4 text-orange-600" />
+                  <span className="text-base font-medium text-orange-900">구매전환율</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                  <TrendingUp className="h-3 w-3" />
+                  +0.3%
+                </div>
               </div>
-              <Target className="h-8 w-8 text-orange-500" />
+              <div className="text-2xl font-bold text-orange-900">2.8%</div>
+              <p className="text-sm text-orange-600">방문자 중 구매한 비율</p>
             </div>
-            <div className="flex items-center mt-2 text-sm">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-green-500">+0.3%</span>
-              <span className="text-muted-foreground ml-1">어제 대비</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
 
     
