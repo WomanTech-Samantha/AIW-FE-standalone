@@ -125,8 +125,8 @@ const InstagramManagePage = () => {
         {/* 계정 정보 */}
         <div className="lg:col-span-1">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+            <CardHeader className="mt-4">
+              <CardTitle className="flex items-center gap-2 text-2xl font-bold">
                 <User className="h-5 w-5" />
                 계정 관리
               </CardTitle>
@@ -149,14 +149,14 @@ const InstagramManagePage = () => {
 
               <div className="flex gap-3 justify-end my-6">
                 <button 
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium mt-4 text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
                   onClick={() => window.open(`https://instagram.com/${instagramData.user.username}`, '_blank')}
                 >
                   <ExternalLink className="h-4 w-4 text-blue-600" />
                   프로필 보기
                 </button>
                 <button 
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium  mt-4 text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors"
                   onClick={handleDisconnect}
                 >
                   <AlertCircle className="h-4 w-4" />
@@ -167,7 +167,7 @@ const InstagramManagePage = () => {
               <Separator className="my-4" />
 
               {/* 빠른 액션 */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3 py-2">
                 <button
                   className="flex flex-col items-center gap-3 p-5 text-sm font-medium bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:from-blue-100 hover:to-blue-200 transition-all"
                   onClick={() => navigate('/instagram/post')}
@@ -205,7 +205,7 @@ const InstagramManagePage = () => {
         {/* 계정 현황 및 인사이트 */}
         <div className="lg:col-span-2">
           <Card>
-            <CardHeader>
+            <CardHeader className="mt-4">
               <CardTitle className="text-2xl font-bold flex items-center gap-3">
                 <TrendingUp className="h-6 w-6 text-green-500" />
                 계정 현황
@@ -216,7 +216,7 @@ const InstagramManagePage = () => {
             </CardHeader>
             <CardContent className="space-y-8 mb-8">
               {/* 성과 지표 */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-12 border">
+              <div className="bg-gray-50 rounded-lg p-4 mb-20 border">
                 <div className="grid grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
@@ -252,10 +252,12 @@ const InstagramManagePage = () => {
                 </div>
               </div>
 
+              <Separator className="my-4" />
+
               {/* 최근 게시물 */}
               <div>
                 <h3 className="font-semibold mb-3">최근 게시물</h3>
-                <div className="flex gap-3 overflow-x-auto pb-4">
+                <div className="flex gap-3 overflow-x-auto pb-4 my-8">
                   {/* 오늘: 피드 게시물 */}
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '200px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative" style={{ height: '200px' }}>
