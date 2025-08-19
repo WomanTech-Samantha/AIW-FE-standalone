@@ -8,6 +8,7 @@ import { AuthProvider } from "@/context/MockAuthContext";
 import Index from "./pages/Index";
 import OnboardingPage from "./pages/OnboardingNew";
 import AssetStudioPage from "./pages/AssetStudio";
+import ProductAddPage from "./pages/ProductAdd";
 import CalendarPage from "./pages/Calendar";
 import DashboardPage from "./pages/Dashboard";
 import ComparisonPage from "./pages/Comparison";
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/store" element={<StorePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/studio" element={<AssetStudioPage />} />
+              <Route path="/product-add" element={<ProductAddPage />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/store/settings" element={<StoreSettingsPage />} />
               <Route path="/instagram/connect" element={<InstagramConnectPage />} />
