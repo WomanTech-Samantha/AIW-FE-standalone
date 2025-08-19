@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, Store, Palette, Layout, Upload, Sparkles } from "lucide-react";
+import { CheckCircle2, Store, Palette, Layout, Upload, Sparkles, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/MockAuthContext";
 import CozyHome from "@/templates/Cozy/CozyHome";
 import ChicFashion from "@/templates/Chic/ChicHome";
@@ -14,6 +14,10 @@ import "@/templates/base.css";
 
 export default function StoreSettingsPage() {
   const navigate = useNavigate();
+  
+  // 변경사항 추적
+  const [hasChanges, setHasChanges] = useState(false);
+  const [originalData, setOriginalData] = useState<any>(null);
   const { user, completeOnboarding, updateUserProfile } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -53,14 +57,26 @@ export default function StoreSettingsPage() {
   // 사용자 데이터가 변경될 때 state 업데이트
   useEffect(() => {
     if (user) {
-      setBusiness(user.business ?? "");
-      setStoreName(user.storeName ?? "");
-      setSelectedTheme(user.theme ?? "");
-      setSelectedTemplate(user.template ?? "");
-      setSubdomain(user.subdomain ?? "");
-      setBrandImageUrl(user.brandImageUrl ?? "");
-      setBrandImagePreview(user.brandImageUrl ?? "");
-      setTagline(user.tagline ?? "");
+      const userData = {
+        business: user.business ?? "",
+        storeName: user.storeName ?? "",
+        theme: user.theme ?? "",
+        template: user.template ?? "",
+        subdomain: user.subdomain ?? "",
+        brandImageUrl: user.brandImageUrl ?? "",
+        tagline: user.tagline ?? ""
+      };
+      
+      setBusiness(userData.business);
+      setStoreName(userData.storeName);
+      setSelectedTheme(userData.theme);
+      setSelectedTemplate(userData.template);
+      setSubdomain(userData.subdomain);
+      setBrandImageUrl(userData.brandImageUrl);
+      setBrandImagePreview(userData.brandImageUrl);
+      setTagline(userData.tagline);
+      
+      setOriginalData(userData);
     }
   }, [user]);
 
@@ -212,6 +228,24 @@ export default function StoreSettingsPage() {
     const isValid = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(subdomain) && subdomain.length >= 3;
     setIsSubdomainValid(isValid);
   }, [subdomain]);
+  
+  // 변경사항 감지
+  useEffect(() => {
+    if (!originalData) return;
+    
+    const currentData = {
+      business,
+      storeName,
+      theme: selectedTheme,
+      template: selectedTemplate,
+      subdomain,
+      brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
+      tagline
+    };
+    
+    const hasChanged = JSON.stringify(currentData) !== JSON.stringify(originalData);
+    setHasChanges(hasChanged);
+  }, [business, storeName, selectedTheme, selectedTemplate, subdomain, brandImageUrl, brandImagePreview, brandImageFile, tagline, originalData]);
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -240,19 +274,42 @@ export default function StoreSettingsPage() {
       }
     }, 1500);
   };
+  
+  const handleGoBack = () => {
+    if (hasChanges) {
+      if (confirm('변경사항이 저장되지 않았습니다. 정말 나가시겠습니까?')) {
+        navigate(-1);
+      }
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-6">
+    <div className="page-container">
+      <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">쇼핑몰 설정</h1>
-          <p className="text-lg text-muted-foreground">
-            쇼핑몰의 디자인과 정보를 설정하세요
-          </p>
+        <div className="mb-8">
+          <div className="mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGoBack}
+              className="mb-4"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              뒤로가기
+            </Button>
+          </div>
+          <div className="text-center mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">쇼핑몰 설정</h1>
+            <p className="text-lg text-muted-foreground">
+              쇼핑몰의 디자인과 정보를 설정하세요
+            </p>
+          </div>
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="space-y-6">
           {/* 기본 정보 설정 */}
           <Card className="card-soft">
             <CardHeader>
@@ -268,7 +325,7 @@ export default function StoreSettingsPage() {
               <div>
                 <Label className="text-base mb-4 block">업종</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {["🛏️ 침구·이불", "🧵 수공예"].map((label) => (
+                  {["침구·이불", "수공예"].map((label) => (
                     <div
                       key={label}
                       onClick={() => setBusiness(label)}

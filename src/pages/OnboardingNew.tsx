@@ -91,14 +91,14 @@ export default function OnboardingPage() {
     
     // 10초 후 이미지 생성
     setTimeout(() => {
-      // 업종에 따른 이미지 URL 설정 (나중에 실제 URL로 교체)
+      // 업종에 따른 이미지 URL 설정
       let imageUrl = "";
       
       if (business.includes("침구")) {
-        // 침구 업종용 이미지 URL (나중에 교체)
+        // 침구 업종용 이미지 URL
         imageUrl = "https://drive.google.com/uc?export=view&id=1n1chKjFGQWHCNyCrF0JNO1oOppizqs0B";
       } else if (business.includes("수공예")) {
-        // 수공예 업종용 이미지 URL (나중에 교체)
+        // 수공예 업종용 이미지 URL 
         imageUrl = "https://drive.google.com/uc?export=view&id=1YJmNCDhU2iRCCRI_Zu1Sqy7zwZxmXhwU";
       } else {
         // 기본 이미지 (SVG)
@@ -123,7 +123,7 @@ export default function OnboardingPage() {
       setBrandImagePreview(imageUrl);
       setBrandImageUrl(imageUrl);
       setIsGeneratingImage(false);
-    }, 10000); // 10초로 변경
+    }, 8000); // 10초로 변경
   };
 
   const themeOptions = [

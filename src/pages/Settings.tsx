@@ -24,6 +24,10 @@ import {
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  
+  // 변경사항 추적
+  const [hasChanges, setHasChanges] = useState(false);
+  const [originalData, setOriginalData] = useState<any>(null);
   const { user, logout, updateUserProfile } = useAuth();
   const { toast } = useToast();
   
@@ -44,15 +48,36 @@ const SettingsPage = () => {
   useEffect(() => {
     if (user) {
       console.log('Settings - User data loaded:', user); // 디버깅용
-      setStoreName(user.storeName || "");
-      setBusiness(user.business || "");
-      setEmail(user.email || "");
+      const userData = {
+        storeName: user.storeName || "",
+        business: user.business || "",
+        email: user.email || ""
+      };
+      
+      setStoreName(userData.storeName);
+      setBusiness(userData.business);
+      setEmail(userData.email);
+      
+      setOriginalData(userData);
     }
   }, [user]);
+  
+  // 변경사항 감지
+  useEffect(() => {
+    if (!originalData) return;
+    
+    const currentData = {
+      storeName,
+      business,
+      email
+    };
+    
+    const hasChanged = JSON.stringify(currentData) !== JSON.stringify(originalData);
+    setHasChanges(hasChanged);
+  }, [storeName, business, email, originalData]);
 
   const businessOptions = [
-    "🛏️ 침구·이불", "🪟 커튼·블라인드", "👗 의류·패션", 
-    "🍽️ 음식·요리", "💄 뷰티·화장품", "🧵 수공예"
+    "침구·이불", "수공예"
   ];
 
   const handleSave = async () => {
@@ -73,6 +98,16 @@ const SettingsPage = () => {
         description: "설정이 성공적으로 저장되었습니다.",
       });
     }, 1200);
+  };
+  
+  const handleGoBack = () => {
+    if (hasChanges) {
+      if (confirm('변경사항이 저장되지 않았습니다. 정말 나가시겠습니까?')) {
+        navigate(-1);
+      }
+    } else {
+      navigate(-1);
+    }
   };
 
   const handleDeleteAccount = () => {
@@ -95,10 +130,22 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="page-container-narrow">
+    <div className="page-container">
+      <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="mb-8">
-          <div className="text-left mb-4">
+          <div className="mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGoBack}
+              className="mb-4"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              뒤로가기
+            </Button>
+          </div>
+          <div className="text-center mb-4">
             <h1 className="text-3xl md:text-4xl font-bold">설정</h1>
             <p className="text-lg text-muted-foreground">
               계정 정보와 앱 설정을 관리하세요
@@ -380,6 +427,7 @@ const SettingsPage = () => {
           onOpenChange={setShowChangePassword}
           onSuccess={handleChangePasswordSuccess}
         />
+        </div>
     </div>
   );
 };
