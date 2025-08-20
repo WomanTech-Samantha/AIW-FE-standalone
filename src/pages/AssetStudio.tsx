@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +28,10 @@ import {
   Download,
   Upload,
   Loader2,
-  Sparkles
+  Sparkles,
+  PenTool,
+  Send,
+  Check
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -144,6 +149,27 @@ const AssetStudioPage = () => {
   const [feedImageGenerating, setFeedImageGenerating] = useState(false);
   const [generatedFeedImage, setGeneratedFeedImage] = useState<string | null>(null);
   const [feedImageModalOpen, setFeedImageModalOpen] = useState(false);
+  
+  // 피드 캡션 생성 상태
+  const [feedCaptionGenerating, setFeedCaptionGenerating] = useState(false);
+  const [generatedCaption, setGeneratedCaption] = useState<string | null>(null);
+  const [feedStep, setFeedStep] = useState<'image' | 'caption' | 'complete'>('image');
+  
+  // 백그라운드 생성 추적 상태
+  const [backgroundDetailGeneration, setBackgroundDetailGeneration] = useState<{
+    isGenerating: boolean;
+    productId: string | null;
+    startTime: number | null;
+    expectedDuration: number | null;
+  }>({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
+  
+  const [backgroundFeedGeneration, setBackgroundFeedGeneration] = useState<{
+    isGenerating: boolean;
+    productId: string | null;
+    startTime: number | null;
+    expectedDuration: number | null;
+    captionGenerating: boolean;
+  }>({ isGenerating: false, productId: null, startTime: null, expectedDuration: null, captionGenerating: false });
 
   // 삭제 모달 상태
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -210,16 +236,66 @@ const AssetStudioPage = () => {
 
   // 팁 순환 효과
   useEffect(() => {
-    if (detailImageGenerating || feedImageGenerating) {
+    if (detailImageGenerating || feedImageGenerating || feedCaptionGenerating) {
       const interval = setInterval(() => {
         setCurrentTipIndex((prev) => (prev + 1) % marketingTips.length);
       }, 3000); // 3초마다 팁 변경
 
       return () => clearInterval(interval);
     }
-  }, [detailImageGenerating, feedImageGenerating, marketingTips.length]);
+  }, [detailImageGenerating, feedImageGenerating, feedCaptionGenerating, marketingTips.length]);
+
+  // 백그라운드 생성 상태 확인
+  useEffect(() => {
+    const checkBackgroundGeneration = () => {
+      // 상세 이미지 백그라운드 생성 확인
+      if (backgroundDetailGeneration.isGenerating && backgroundDetailGeneration.startTime && backgroundDetailGeneration.expectedDuration) {
+        const elapsed = Date.now() - backgroundDetailGeneration.startTime;
+        
+        if (elapsed >= backgroundDetailGeneration.expectedDuration) {
+          // 생성 완료
+          setGeneratedDetailImage('/placeholder.svg');
+          setDetailImageGenerating(false);
+          setBackgroundDetailGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
+        }
+      }
+
+      // 피드 이미지 백그라운드 생성 확인
+      if (backgroundFeedGeneration.isGenerating && backgroundFeedGeneration.startTime && backgroundFeedGeneration.expectedDuration && !backgroundFeedGeneration.captionGenerating) {
+        const elapsed = Date.now() - backgroundFeedGeneration.startTime;
+        
+        if (elapsed >= backgroundFeedGeneration.expectedDuration) {
+          // 이미지 생성 완료
+          setGeneratedFeedImage('/placeholder.svg');
+          setFeedImageGenerating(false);
+          setFeedStep('image');
+          setBackgroundFeedGeneration(prev => ({ ...prev, isGenerating: false }));
+        }
+      }
+    };
+
+    const interval = setInterval(checkBackgroundGeneration, 1000); // 1초마다 확인
+    return () => clearInterval(interval);
+  }, [backgroundDetailGeneration, backgroundFeedGeneration]);
 
   const currentProducts = products;
+
+  // 캡션에서 해시태그와 멘션을 파란색으로 렌더링하는 함수
+  const formatCaption = (text: string) => {
+    if (!text) return text;
+    
+    const parts = text.split(/(\s+)/);
+    return parts.map((part, index) => {
+      if (part.startsWith('#') || part.startsWith('@')) {
+        return (
+          <span key={index} className="text-blue-600 font-medium">
+            {part}
+          </span>
+        );
+      }
+      return part;
+    });
+  };
 
   const handlePrevPage = () => {
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : totalPages));
@@ -243,9 +319,60 @@ const AssetStudioPage = () => {
     }
 
     if (contentType === 'detail') {
-      await handleDetailImageGeneration(selectedProductData);
+      // 백그라운드에서 생성 중이거나 완료된 상태 확인
+      if (backgroundDetailGeneration.isGenerating && backgroundDetailGeneration.productId === selectedProduct) {
+        // 백그라운드에서 진행 중인 생성이 있음
+        setGeneratedImageModalOpen(true);
+        setDetailImageGenerating(true);
+        
+        // 진행 상황 확인
+        const elapsed = Date.now() - (backgroundDetailGeneration.startTime || 0);
+        const expectedDuration = backgroundDetailGeneration.expectedDuration || 37500;
+        
+        if (elapsed >= expectedDuration) {
+          // 이미 완료되었어야 할 시간
+          setGeneratedDetailImage('/placeholder.svg');
+          setDetailImageGenerating(false);
+          setBackgroundDetailGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
+        }
+      } else if (generatedDetailImage) {
+        // 이미 생성 완료된 상태
+        setGeneratedImageModalOpen(true);
+        setDetailImageGenerating(false);
+      } else {
+        // 새로운 생성 시작
+        await handleDetailImageGeneration(selectedProductData);
+      }
     } else if (contentType === 'feed') {
-      await handleFeedImageGeneration(selectedProductData);
+      // 백그라운드에서 생성 중이거나 완료된 상태 확인
+      if (backgroundFeedGeneration.isGenerating && backgroundFeedGeneration.productId === selectedProduct) {
+        // 백그라운드에서 진행 중인 생성이 있음
+        setFeedImageModalOpen(true);
+        setFeedImageGenerating(!generatedFeedImage);
+        
+        // 진행 상황 확인
+        const elapsed = Date.now() - (backgroundFeedGeneration.startTime || 0);
+        const expectedDuration = backgroundFeedGeneration.expectedDuration || 37500;
+        
+        if (elapsed >= expectedDuration && !generatedFeedImage) {
+          // 이미 완료되었어야 할 시간
+          setGeneratedFeedImage('/placeholder.svg');
+          setFeedImageGenerating(false);
+          setFeedStep('image'); // 이미지만 완료된 상태로 설정
+          setBackgroundFeedGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null, captionGenerating: false });
+        }
+      } else if (generatedFeedImage) {
+        // 이미 생성 완료된 상태
+        setFeedImageModalOpen(true);
+        setFeedImageGenerating(false);
+        // 캡션이 생성되지 않았다면 이미지 단계로 설정
+        if (!generatedCaption) {
+          setFeedStep('image');
+        }
+      } else {
+        // 새로운 생성 시작
+        await handleFeedImageGeneration(selectedProductData);
+      }
     } else {
       // 다른 콘텐츠 타입들은 간단한 알림으로 처리
       alert(`${contentType} 콘텐츠 생성이 완료되었습니다! (데모)`);
@@ -264,17 +391,30 @@ const AssetStudioPage = () => {
 
       // Mock 이미지 생성 시뮬레이션 (30-45초 사이 랜덤)
       const delay = Math.floor(Math.random() * 15000) + 30000; // 30-45초
+      
+      // 백그라운드 생성 상태 초기화 - 실제 지연 시간으로 설정
+      setBackgroundDetailGeneration({
+        isGenerating: true,
+        productId: productData.id,
+        startTime: Date.now(),
+        expectedDuration: delay
+      });
+
       await new Promise(resolve => setTimeout(resolve, delay));
 
-      // Mock 생성된 이미지 URL
-      setGeneratedDetailImage('/placeholder.svg');
-      setDetailImageGenerating(false);
-      console.log('Mock 상품 상세 이미지 생성 완료');
+      // 백그라운드에서 진행 중이 아닌 경우에만 완료 처리
+      if (backgroundDetailGeneration.isGenerating && backgroundDetailGeneration.productId === productData.id) {
+        setGeneratedDetailImage('/placeholder.svg');
+        setDetailImageGenerating(false);
+        setBackgroundDetailGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
+        console.log('Mock 상품 상세 이미지 생성 완료');
+      }
 
     } catch (error) {
       console.error('상품 상세 이미지 생성 실패:', error);
       alert('상품 상세 이미지 생성 중 오류가 발생했습니다.');
       setDetailImageGenerating(false);
+      setBackgroundDetailGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
     }
   };
 
@@ -284,23 +424,40 @@ const AssetStudioPage = () => {
     setFeedImageModalOpen(true); // 모달 바로 열기
     setCurrentTipIndex(0); // 팁 초기화
     setGeneratedFeedImage(null); // 이전 이미지 초기화
+    setGeneratedCaption(null); // 이전 캡션 초기화
+    setFeedStep('image'); // 이미지 단계로 시작
 
     try {
       console.log('Mock 인스타 피드 이미지 생성 시작:', productData);
 
       // Mock 이미지 생성 시뮬레이션 (30-45초 사이 랜덤)
       const delay = Math.floor(Math.random() * 15000) + 30000; // 30-45초
+      
+      // 백그라운드 생성 상태 초기화 - 실제 지연 시간으로 설정
+      setBackgroundFeedGeneration({
+        isGenerating: true,
+        productId: productData.id,
+        startTime: Date.now(),
+        expectedDuration: delay,
+        captionGenerating: false
+      });
+
       await new Promise(resolve => setTimeout(resolve, delay));
 
-      // Mock 생성된 이미지 URL
-      setGeneratedFeedImage('/placeholder.svg');
-      setFeedImageGenerating(false);
-      console.log('Mock 인스타 피드 이미지 생성 완료');
+      // 백그라운드에서 진행 중이 아닌 경우에만 완료 처리
+      if (backgroundFeedGeneration.isGenerating && backgroundFeedGeneration.productId === productData.id) {
+        setGeneratedFeedImage('/placeholder.svg');
+        setFeedImageGenerating(false);
+        setFeedStep('image'); // 이미지만 완료된 상태로 설정
+        setBackgroundFeedGeneration(prev => ({ ...prev, isGenerating: false }));
+        console.log('Mock 인스타 피드 이미지 생성 완료');
+      }
 
     } catch (error) {
       console.error('인스타 피드 이미지 생성 실패:', error);
       alert('인스타 피드 이미지 생성 중 오류가 발생했습니다.');
       setFeedImageGenerating(false);
+      setBackgroundFeedGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null, captionGenerating: false });
     }
   };
 
@@ -337,6 +494,47 @@ const AssetStudioPage = () => {
     // Mock 업로드 시뮬레이션
     console.log('Mock 상품 상세 이미지 쇼핑몰 업로드');
     alert('상품 상세 이미지가 쇼핑몰에 업로드되었습니다! (데모)');
+  };
+
+  // 인스타 피드 캡션 생성 함수 (Mock)
+  const handleGenerateCaption = async () => {
+    setFeedCaptionGenerating(true);
+    setFeedStep('caption');
+    setCurrentTipIndex(0); // 팁 초기화
+    setGeneratedCaption(""); // 캡션 초기화
+
+    try {
+      console.log('Mock 인스타 피드 캡션 생성 시작');
+
+      // Mock 캡션 생성 시뮬레이션 (15-20초 사이 랜덤)
+      const delay = Math.floor(Math.random() * 5000) + 15000; // 15-20초
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      // Mock 생성된 캡션 - 차분하고 자연스러운 톤
+      const mockCaptions = [
+        "마음을 담아 한 땀 한 땀 만든 패치워크 하트 코스터입니다.\n서로 다른 원단들이 만나 하나의 아름다운 작품이 되었어요.\n\n일상 속 작은 여유를 선사하는 특별한 아이템이에요.\n따뜻한 차 한 잔과 함께 소중한 시간을 만들어보세요.\n\n정성스럽게 마무리된 스티치가 오래도록 변하지 않는 품질을 보장합니다.\n선물용으로도 정말 좋은 선택이 될 것 같아요.\n\n하나하나 수작업으로 만들어지는 특별함을 느껴보세요.\n\n#패치워크 #하트코스터 #수공예 #핸드메이드 #일상소품 #홈카페 #선물추천 #정성스런손길 #따뜻한감성 #소중한시간 #수작업 #빈티지감성",
+        
+        "포근하고 따뜻한 밤을 위한 특별한 이불을 소개합니다.\n천연 소재로만 선별하여 만든 프리미엄 침구예요.\n\n부드러운 촉감과 적당한 무게감이 깊은 잠을 도와줍니다.\n계절에 관계없이 쾌적한 온도를 유지해주는 것이 특징이에요.\n\n꼼꼼한 퀼팅 작업으로 오랜 시간 사용해도 형태가 변하지 않아요.\n가족 모두가 안심하고 사용할 수 있는 건강한 소재입니다.\n\n매일 밤이 더욱 소중해질 것 같은 특별한 이불이에요.\n\n#천연이불 #프리미엄침구 #포근함 #깊은잠 #건강한잠자리 #퀼팅 #가족용 #침실인테리어 #안심소재 #편안한밤 #품질보장 #따뜻한집",
+        
+        "소중한 사람을 위한 마음을 담은 자수 파우치입니다.\n하나씩 정성스럽게 놓인 자수가 특별한 의미를 전해드려요.\n\n작지만 실용적인 크기로 언제 어디서나 유용하게 사용하실 수 있어요.\n화장품부터 작은 소품까지 깔끔하게 정리할 수 있습니다.\n\n전통 자수 기법으로 완성된 아름다운 패턴이 시선을 사로잡아요.\n오래 사용할수록 더욱 애착이 가는 특별한 아이템입니다.\n\n소중한 분께 마음을 전하는 의미 있는 선물이 될 거예요.\n\n#자수파우치 #핸드메이드 #전통자수 #소품정리 #실용적선물 #정성스런손길 #의미있는선물 #전통기법 #아름다운패턴 #감성소품 #수공예품 #특별한마음",
+        
+        "자연스러운 비즈의 아름다움을 담은 감성 액세서리예요.\n하나하나 선별한 비즈로 완성한 세상에 하나뿐인 작품입니다.\n\n은은한 광택과 부드러운 색감이 어떤 스타일에도 잘 어울려요.\n일상 속에서도 특별함을 연출할 수 있는 포인트 아이템이에요.\n\n섬세한 손끝의 감각으로 완성된 정교한 마무리가 돋보입니다.\n착용할 때마다 기분 좋은 하루를 만들어줄 것 같아요.\n\n나만의 개성을 표현할 수 있는 유니크한 액세서리입니다.\n\n#비즈액세서리 #감성액세서리 #핸드메이드쥬얼리 #유니크디자인 #개성표현 #일상포인트 #은은한광택 #섬세한마무리 #특별한하루 #나만의스타일 #수제액세서리 #감성소품",
+        
+        "마음을 담아 뜨개질한 따뜻한 울 스카프입니다.\n부드러운 천연 울 실로 정성스럽게 완성한 겨울 필수템이에요.\n\n목과 어깨를 포근하게 감싸주는 적당한 길이와 두께예요.\n추운 바람으로부터 소중한 분을 지켜줄 든든한 동반자입니다.\n\n클래식한 패턴으로 오래도록 사랑받을 수 있는 디자인이에요.\n세월이 지나도 변하지 않는 따뜻함을 선사해드릴게요.\n\n겨울이 기다려지는 특별한 스카프로 함께해보세요.\n\n#울스카프 #뜨개질 #겨울필수템 #포근함 #천연울실 #따뜻함 #클래식디자인 #정성스런손길 #겨울패션 #목도리 #핸드니팅 #오래도록사랑"
+      ];
+      
+      const randomCaption = mockCaptions[Math.floor(Math.random() * mockCaptions.length)];
+      setGeneratedCaption(randomCaption);
+      setFeedCaptionGenerating(false);
+      setFeedStep('complete');
+      console.log('Mock 인스타 피드 캡션 생성 완료');
+
+    } catch (error) {
+      console.error('인스타 피드 캡션 생성 실패:', error);
+      alert('인스타 피드 캡션 생성 중 오류가 발생했습니다.');
+      setFeedCaptionGenerating(false);
+      setFeedStep('image');
+    }
   };
 
   // 인스타 피드 이미지 인스타그램 업로드 함수 (Mock)
@@ -664,9 +862,17 @@ const AssetStudioPage = () => {
                   key={type.id}
                   variant="outline"
                   onClick={() => handleContentGeneration(type.id)}
-                  className="h-auto flex-col p-4 space-y-2"
-                  disabled={!selectedProduct || (type.id === 'detail' && detailImageGenerating) || (type.id === 'feed' && feedImageGenerating)}
+                  className="h-auto flex-col p-4 space-y-2 relative"
+                  disabled={!selectedProduct || (type.id === 'detail' && detailImageGenerating) || (type.id === 'feed' && feedImageGenerating) || (type.id !== 'detail' && type.id !== 'feed')}
                 >
+                  {/* 생성 완료 체크 표시 */}
+                  {((type.id === 'detail' && generatedDetailImage) || 
+                    (type.id === 'feed' && generatedFeedImage)) && (
+                    <div className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-background">
+                      <Check className="h-4 w-4 text-white font-bold" />
+                    </div>
+                  )}
+                  
                   <div className="flex flex-col items-center space-y-1">
                     {type.icon}
                     <span className="font-bold text-lg">{type.title}</span>
@@ -804,32 +1010,31 @@ const AssetStudioPage = () => {
         <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>
-              {feedImageGenerating ? "인스타 피드 이미지 생성 중..." : "인스타 피드 이미지 생성 완료"}
+              {feedStep === 'image' && feedImageGenerating ? "인스타 피드 이미지 생성 중..." : 
+               feedStep === 'caption' && feedCaptionGenerating ? "인스타 피드 캡션 생성 중..." :
+               feedStep === 'complete' ? "인스타 피드 콘텐츠 생성 완료" :
+               "인스타 피드 이미지 생성 완료"}
             </DialogTitle>
             <DialogDescription>
-              {feedImageGenerating
-                ? "올인움 AI가 멋진 인스타 피드 이미지를 만들고 있어요!"
-                : "올인움 AI가 생성한 인스타 피드 이미지입니다. 다운로드하거나 인스타그램에 업로드할 수 있습니다."}
+              {feedStep === 'image' && feedImageGenerating ? "올인움 AI가 멋진 인스타 피드 이미지를 만들고 있어요!" :
+               feedStep === 'caption' && feedCaptionGenerating ? "올인움 AI가 매력적인 캡션을 작성하고 있어요!" :
+               feedStep === 'complete' ? "이미지와 캡션이 모두 준비되었습니다. 인스타그램에 바로 업로드하세요!" :
+               "생성된 이미지를 확인하고 캡션을 생성해보세요."}
             </DialogDescription>
           </DialogHeader>
 
           <div className="mt-4">
             {feedImageGenerating ? (
-              // 로딩 상태
+              // 이미지 생성 로딩 상태
               <div className="flex flex-col items-center justify-center py-12 space-y-6">
-                {/* 애니메이션 로더 */}
                 <div className="relative">
                   <Loader2 className="h-16 w-16 animate-spin text-primary" />
                   <Sparkles className="absolute top-0 right-0 h-6 w-6 text-yellow-500 animate-pulse" />
                 </div>
-
-                {/* 진행 상태 메시지 */}
                 <div className="text-center space-y-2">
                   <p className="text-lg font-medium">잠시만 기다려주세요...</p>
                   <p className="text-sm text-gray-500">보통 30-45초 정도 소요됩니다</p>
                 </div>
-
-                {/* 마케팅 팁 */}
                 <div className="w-full max-w-md p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
                   <p className="text-sm text-center text-gray-700 transition-all duration-500">
                     {marketingTips[currentTipIndex]}
@@ -837,26 +1042,74 @@ const AssetStudioPage = () => {
                 </div>
               </div>
             ) : generatedFeedImage ? (
-              <div className="relative w-full max-h-[60vh] overflow-auto border rounded-lg bg-gray-50 p-4">
-                <img
-                  src={generatedFeedImage}
-                  alt="Generated Instagram Feed"
-                  className="w-[50%] h-auto mx-auto"
-                />
+              // 이미지 생성 완료 상태
+              <div className={feedStep === 'image' ? 'flex justify-center' : 'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
+                {/* 왼쪽: 생성된 이미지 */}
+                <div className="relative w-full max-h-[60vh] overflow-auto border rounded-lg bg-gray-50 p-4">
+                  <img
+                    src={generatedFeedImage}
+                    alt="Generated Instagram Feed"
+                    className={feedStep === 'image' ? 'w-[50%] h-auto mx-auto' : 'w-full h-auto mx-auto'}
+                  />
+                </div>
+                
+                {/* 오른쪽: 캡션 영역 - feedStep이 'caption' 또는 'complete'일 때만 표시 */}
+                {feedStep !== 'image' && (
+                  <div className="space-y-4">
+                    {feedCaptionGenerating ? (
+                      // 캡션 생성 로딩
+                      <div className="flex flex-col items-center justify-center h-full space-y-6">
+                        <div className="relative">
+                          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                          <Sparkles className="absolute top-0 right-0 h-4 w-4 text-yellow-500 animate-pulse" />
+                        </div>
+                        <div className="text-center space-y-2">
+                          <p className="text-lg font-medium">캡션 생성 중...</p>
+                          <p className="text-sm text-gray-500">보통 15-20초 정도 소요됩니다</p>
+                        </div>
+                        <div className="w-full p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+                          <p className="text-sm text-center text-gray-700 transition-all duration-500">
+                            {marketingTips[currentTipIndex]}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      // 캡션 입력 필드
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="generated-caption" className="text-gray-700 font-medium">캡션</Label>
+                          <Textarea
+                            id="generated-caption"
+                            placeholder="생성된 캡션이 여기에 표시됩니다..."
+                            value={generatedCaption || ""}
+                            onChange={(e) => setGeneratedCaption(e.target.value)}
+                            className="mt-2 min-h-[300px] resize-none !border-gray-300 focus:!border-gray-400 focus:!ring-gray-400 focus:!ring-2"
+                            maxLength={2200}
+                          />
+                          <div className="flex justify-end text-xs text-gray-500 mt-2">
+                            <span className={(generatedCaption?.length || 0) > 2000 ? 'text-red-500 font-medium' : ''}>
+                              {generatedCaption?.length || 0}/2200
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ) : null}
           </div>
 
           <DialogFooter className="mt-6">
-            {feedImageGenerating ? (
+            {feedImageGenerating || feedCaptionGenerating ? (
               <Button
                 variant="outline"
                 onClick={() => setFeedImageModalOpen(false)}
               >
                 백그라운드에서 진행
               </Button>
-            ) : (
-              // 완료 후 버튼
+            ) : feedStep === 'complete' ? (
+              // 최종 완료 상태 버튼들
               <>
                 <Button
                   variant="outline"
@@ -870,14 +1123,40 @@ const AssetStudioPage = () => {
                   className="flex items-center gap-2"
                 >
                   <Download className="h-4 w-4" />
-                  다운로드
+                  이미지 다운로드
                 </Button>
                 <Button
                   onClick={handleUploadToInstagram}
                   className="flex items-center gap-2"
                 >
-                  <Upload className="h-4 w-4" />
+                  <Send className="h-4 w-4" />
                   인스타그램에 업로드
+                </Button>
+              </>
+            ) : (
+              // 이미지만 생성된 상태 버튼들
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setFeedImageModalOpen(false)}
+                >
+                  닫기
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadFeedImage}
+                  className="flex items-center gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  이미지 다운로드
+                </Button>
+                <Button
+                  onClick={handleGenerateCaption}
+                  className="flex items-center gap-2"
+                  disabled={feedCaptionGenerating}
+                >
+                  <PenTool className="h-4 w-4" />
+                  캡션 생성하기
                 </Button>
               </>
             )}
