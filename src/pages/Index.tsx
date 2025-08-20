@@ -76,7 +76,7 @@ const Index = () => {
     <div className="pg-container">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-4xl mx-auto mb-16">
+        <div className="text-center max-w-6xl mx-auto mb-16">
           <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/10">
             <Sparkles className="mr-2 h-4 w-4" />
             여성 1인 소상공인 전용 마케팅 솔루션
@@ -88,14 +88,14 @@ const Index = () => {
 
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
             복잡한 온라인 마케팅, 이제 클릭 한 번으로 끝내세요.<br />
-            AI가 당신의 마케팅 전담팀이 되어드립니다.
+            올인움 AI가 당신의 마케팅 전담팀이 되어드립니다.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center max-w-[600px] mx-auto mt-12 mb-12">
             <Button
               size="senior"
               onClick={() => navigate('/onboarding')}
-              className="gradient-primary text-white shadow-lg hover:shadow-xl"
+              className="gradient-primary text-white shadow-lg hover:shadow-xl w-[280px]"
             >
               <Store className="mr-3 h-6 w-6" />
               무료로 시작하기
@@ -105,10 +105,29 @@ const Index = () => {
               variant="outline"
               size="senior"
               onClick={() => navigate('/comparison')}
-              className="border-2"
+              className="border-2 w-[280px]"
             >
               <BarChart3 className="mr-3 h-6 w-6" />
-              효과 먼저 확인하기
+              기존 방식과 비교하기
+            </Button>
+            <Button
+              variant="outline"
+              size="senior"
+              onClick={() => navigate('/store')}
+              className="border-2 w-[280px]"
+            >
+              <Store className="mr-3 h-6 w-6" />
+              내 쇼핑몰 미리보기
+              <ArrowRight className="ml-3 h-6 w-6" />
+            </Button>
+            <Button
+              variant="outline"
+              size="senior"
+              onClick={() => navigate('/dashboard')}
+              className="border-2 w-[280px]"
+            >
+              <BarChart3 className="mr-3 h-6 w-6" />
+              실제 홍보 효과 미리보기
             </Button>
           </div>
 
@@ -123,8 +142,105 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Social Proof */}
+        <Card className="card-soft max-w-6xl mx-auto mb-16">
+          <CardContent className="p-8 text-center">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <Users className="h-6 w-6 text-primary" />
+              <span className="text-lg font-semibold">이미 많은 사업자들이 올인움과 성공하고 계십니다!</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div>
+                <h3 className="text-3xl font-bold text-primary mb-2">200+</h3>
+                <p className="text-muted-foreground">활성 사용자</p>
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-success mb-2">1,500+</h3>
+                <p className="text-muted-foreground">생성된 마케팅 자료</p>
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-warning mb-2">95%</h3>
+                <p className="text-muted-foreground">만족도</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 실제 사용 후기 섹션 */}
+        <div className="container mx-auto px-4 py-12">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">실제 사용자 후기</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="card-soft">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                    <span className="text-lg font-bold text-blue-600">김</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">김○○님</h4>
+                    <p className="text-sm text-muted-foreground">침구용품 사업 · 3년차</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 mb-4">
+                  "딸이 하는 것만 봤지, 인스타 할 줄을 몰랐는데 올인움으로 하니까 너무 쉬워요.
+                  매출도 30%나 늘었어요."
+                </p>
+                <div className="flex text-yellow-400">
+                  {"★".repeat(5)}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="card-soft">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                    <span className="text-lg font-bold text-green-600">박</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">박○○님</h4>
+                    <p className="text-sm text-muted-foreground">수공예품 공방 · 5년차</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 mb-4">
+                  "컴퓨터 잘 몰라도 쉽게 사용할 수 있어요.
+                  예쁜 상품 사진이 자동으로 만들어져서 너무 만족해요."
+                </p>
+                <div className="flex text-yellow-400">
+                  {"★".repeat(5)}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="card-soft">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                    <span className="text-lg font-bold text-purple-600">이</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">이○○님</h4>
+                    <p className="text-sm text-muted-foreground">온라인 쇼핑몰 · 2년차</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 mb-4">
+                  "처음엔 반신반의했는데, 정말 손님들이 늘었어요.
+                  이제 올인움 없이는 못 해요!"
+                </p>
+                <div className="flex text-yellow-400">
+                  {"★".repeat(5)}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         {/* Demo Section */}
-        <Card className="card-soft max-w-5xl mx-auto mb-16">
+        <Card className="card-soft max-w-6xl mx-auto mb-16">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl md:text-3xl mb-4">
               복잡한 사용법을 익혀야 하는 여타 툴과는 다릅니다!
@@ -175,106 +291,84 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               모든 마케팅 업무를 하나로
             </h2>
-            <p className="text-lg text-muted-foreground">
-              여러 업체에 의뢰하던 일을 이제 한 곳에서 해결하세요
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
               <Card key={index} className="card-soft hover:shadow-lg transition-all duration-300 cursor-pointer">
-                <CardContent className="p-8">
-                  <div className={`${feature.color} mb-4`}>
+                <CardContent className="p-6">
+                  <div className={`${feature.color} mb-3`}>
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
 
-        {/* Social Proof */}
-        <Card className="card-soft max-w-4xl mx-auto mb-16">
-          <CardContent className="p-8 text-center">
-            <div className="flex items-center justify-center space-x-2 mb-6">
-              <Users className="h-6 w-6 text-primary" />
-              <span className="text-lg font-semibold">이미 많은 사업자들이 선택했어요</span>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="text-3xl font-bold text-primary mb-2">200+</h3>
-                <p className="text-muted-foreground">활성 사용자</p>
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold text-success mb-2">1,500+</h3>
-                <p className="text-muted-foreground">생성된 마케팅 자료</p>
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold text-warning mb-2">95%</h3>
-                <p className="text-muted-foreground">만족도</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <Card className="card-soft max-w-3xl mx-auto">
-            <CardContent className="p-12">
-              <div className="flex items-center justify-center space-x-2 mb-6">
-                <Heart className="h-6 w-6 text-red-500" />
-                <span className="text-lg font-semibold">사업자를 위해 만들어진 특별한 솔루션</span>
-              </div>
-
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                오늘부터 마케팅 걱정 끝!
-              </h2>
-
-              <p className="text-xl text-muted-foreground mb-8">
-                복잡했던 온라인 마케팅이 이렇게 쉬울 줄 몰랐어요.<br />
-                지금 시작해서 첫 번째 마케팅 자료를 만들어보세요.
+        {/* 안심 요소 섹션 */}
+        <div className="bg-gray-50 py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">궁금한 점이 있으시면 언제든 연락주세요.</h2>
+              <p className="text-xl text-muted-foreground">
+                친절한 상담으로 도와드리겠습니다.
               </p>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="senior"
-                  onClick={() => navigate('/onboarding')}
-                  className="gradient-primary text-white shadow-lg hover:shadow-xl"
-                >
-                  <Zap className="mr-3 h-6 w-6" />
-                  지금 무료로 시작하기
-                  <ArrowRight className="ml-3 h-6 w-6" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="senior"
-                  onClick={() => navigate('/dashboard')}
-                  className="border-2"
-                >
-                  <BarChart3 className="mr-3 h-6 w-6" />
-                  데모 먼저 보기
-                </Button>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <Card className="card-soft text-center">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">📞</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">전화 상담</h3>
+                  <p className="text-lg font-bold text-blue-600 mb-2">1588-0000</p>
+                  <p className="text-muted-foreground">
+                    평일 9:00~18:00<br />
+                    토요일 9:00~15:00
+                  </p>
+                </CardContent>
+              </Card>
 
-              <div className="flex items-center justify-center space-x-4 mt-8 text-sm text-muted-foreground">
-                <div className="flex items-center space-x-1">
-                  <CheckCircle2 className="h-4 w-4 text-success" />
-                  <span>신용카드 불필요</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <CheckCircle2 className="h-4 w-4 text-success" />
-                  <span>30일 무료 체험</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <CheckCircle2 className="h-4 w-4 text-success" />
-                  <span>언제든 취소 가능</span>
+              <Card className="card-soft text-center">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">💬</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">카카오톡 상담</h3>
+                  <p className="text-lg font-bold text-yellow-600 mb-2">@올인움</p>
+                  <p className="text-muted-foreground">
+                    24시간 언제든지<br />
+                    빠른 답변 드려요
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="text-center mt-12">
+              <div className="bg-white rounded-lg p-6 max-w-4xl mx-auto shadow-sm">
+                <h3 className="text-lg font-semibold mb-2 text-green-600">✅ 안심하고 시작하세요</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <strong>30일 무료 체험</strong><br />
+                    부담 없이 먼저 써보세요
+                  </div>
+                  <div>
+                    <strong>언제든 해지 가능</strong><br />
+                    복잡한 절차 없이 간단히
+                  </div>
+                  <div>
+                    <strong>개인정보 보호</strong><br />
+                    안전하게 관리됩니다
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>
