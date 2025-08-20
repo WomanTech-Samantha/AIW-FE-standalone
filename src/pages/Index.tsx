@@ -293,7 +293,7 @@ const Index = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {features.map((feature, index) => (
               <Card key={index} className="card-soft hover:shadow-lg transition-all duration-300 cursor-pointer">
                 <CardContent className="p-6">
