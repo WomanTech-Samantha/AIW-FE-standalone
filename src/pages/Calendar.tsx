@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "@/context/MockAuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +27,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Coffee,
-  Moon
+  Moon,
+  Play
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -47,6 +49,7 @@ interface CalendarEvent {
   status: 'scheduled' | 'published' | 'draft';
   content?: string;
   imageUrl?: string;
+  date?: string;
 }
 
 interface PostingSchedule {
@@ -60,12 +63,32 @@ interface PostingSchedule {
 
 const CalendarPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [draggedContent, setDraggedContent] = useState<any>(null);
-  const [businessType, setCurrentBusinessType] = useState<BusinessType>(getCurrentBusinessType());
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [pendingEvent, setPendingEvent] = useState<{content: any, day: number} | null>(null);
+  const [selectedTime, setSelectedTime] = useState('10:00');
+  const [selectedType, setSelectedType] = useState<'post' | 'story' | 'reel'>('post');
+  const [customEvents, setCustomEvents] = useState<CalendarEvent[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragScrollInterval, setDragScrollInterval] = useState<NodeJS.Timeout | null>(null);
+  const [lastMouseY, setLastMouseY] = useState(0);
+  
+  // user.business 정보를 기반으로 업종 자동 결정
+  const getBusinessTypeFromUser = (): BusinessType => {
+    if (user?.business?.includes('침구') || user?.business?.includes('bedding')) {
+      return 'bedding';
+    } else if (user?.business?.includes('수공예') || user?.business?.includes('handcraft') || user?.business?.includes('액세서리')) {
+      return 'handcraft';
+    }
+    return getCurrentBusinessType();
+  };
+  
+  const [businessType, setCurrentBusinessType] = useState<BusinessType>(getBusinessTypeFromUser());
   
   // 업종별 캘린더 이벤트
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>(
@@ -98,6 +121,41 @@ const CalendarPage = () => {
     setCalendarEvents(calendarEventsByType[businessType]);
     setGeneratedContent(generatedContentByType[businessType]);
   }, [businessType]);
+  
+  
+  // 간단한 스크롤 체크
+  useEffect(() => {
+    let animationFrame: number;
+    
+    const checkScroll = () => {
+      if (isDragging) {
+        const scrollThreshold = 100;
+        const scrollSpeed = 8;
+        const viewportHeight = window.innerHeight;
+        
+        // 하단 스크롤
+        if (lastMouseY > viewportHeight - scrollThreshold) {
+          window.scrollBy(0, scrollSpeed);
+        }
+        // 상단 스크롤
+        else if (lastMouseY < scrollThreshold) {
+          window.scrollBy(0, -scrollSpeed);
+        }
+        
+        animationFrame = requestAnimationFrame(checkScroll);
+      }
+    };
+    
+    if (isDragging) {
+      checkScroll();
+    }
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isDragging, lastMouseY]);
 
   const handleBusinessTypeChange = (type: BusinessType) => {
     setCurrentBusinessType(type);
@@ -147,44 +205,137 @@ const CalendarPage = () => {
   };
 
   const getEventsForDay = (day: number) => {
-    // 데모용: 특정 날짜에 이벤트 표시
     const dayEvents = [];
-    if (day === 15) dayEvents.push(calendarEvents[0]);
-    if (day === 18 && calendarEvents[1]) dayEvents.push(calendarEvents[1]);
-    if (day === 22 && calendarEvents[2]) dayEvents.push(calendarEvents[2]);
-    if (day === 25 && calendarEvents[3]) dayEvents.push(calendarEvents[3]);
+    const today = new Date();
+    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const daysDiff = Math.floor((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const isPastDate = daysDiff < 0;
+    
+    // 오늘 기준으로 동적 이벤트 배치
+    if (daysDiff === -5 && calendarEvents[0]) {
+      // 5일 전: 게시 완료
+      dayEvents.push({...calendarEvents[0], status: 'published'});
+    }
+    if (daysDiff === -2 && calendarEvents[1]) {
+      // 2일 전: 게시 완료
+      dayEvents.push({...calendarEvents[1], status: 'published'});
+    }
+    if (daysDiff === -1 && businessType === 'handcraft' && calendarEvents[1]) {
+      // 어제: 게시 완료 (수공예품만)
+      dayEvents.push({...calendarEvents[1], status: 'published'});
+    }
+    if (daysDiff === 2 && calendarEvents[2]) {
+      // 2일 후: 예약됨 또는 과거면 게시완료
+      dayEvents.push({...calendarEvents[2], status: isPastDate ? 'published' : 'scheduled'});
+    }
+    if (daysDiff === 3 && businessType === 'handcraft' && calendarEvents[2]) {
+      // 3일 후: 예약됨 또는 과거면 게시완료 (수공예품만)
+      dayEvents.push({...calendarEvents[2], status: isPastDate ? 'published' : 'scheduled'});
+    }
+    if (daysDiff === 5 && calendarEvents[3]) {
+      // 5일 후: 예약됨 또는 과거면 게시완료
+      dayEvents.push({...calendarEvents[3], status: isPastDate ? 'published' : 'scheduled'});
+    }
+    if (daysDiff === 6 && businessType === 'handcraft' && calendarEvents[3]) {
+      // 6일 후: 예약됨 또는 과거면 게시완료 (수공예품만)
+      dayEvents.push({...calendarEvents[3], status: isPastDate ? 'published' : 'scheduled'});
+    }
+    if (daysDiff === 7 && calendarEvents[4]) {
+      // 7일 후: 임시저장 또는 과거면 예약상태로
+      dayEvents.push({...calendarEvents[4], status: isPastDate ? 'scheduled' : 'draft'});
+    }
+    if (daysDiff === 8 && businessType === 'handcraft' && calendarEvents[4]) {
+      // 8일 후: 임시저장 또는 과거면 예약상태로 (수공예품만)
+      dayEvents.push({...calendarEvents[4], status: isPastDate ? 'scheduled' : 'draft'});
+    }
+    
+    // 커스텀 이벤트 (드래그로 추가된 이벤트들)
+    const dateKey = formatDateKey(day);
+    const customEventsForDay = customEvents.filter(event => event.date === dateKey);
+    dayEvents.push(...customEventsForDay.map(event => ({
+      ...event,
+      status: isPastDate ? 'published' : event.status
+    })));
+    
     return dayEvents;
   };
 
   const handleDragStart = (content: any) => {
     setDraggedContent(content);
+    setIsDragging(true);
+  };
+  
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    setDraggedContent(null);
+    setLastMouseY(0);
+  };
+  
+  const handleDragMove = (e: React.DragEvent) => {
+    if (isDragging) {
+      setLastMouseY(e.clientY);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    if (isDragging) {
+      setLastMouseY(e.clientY);
+    }
   };
 
   const handleDrop = (e: React.DragEvent, day: number) => {
     e.preventDefault();
+    
+    // 과거 날짜에는 드래그 방지
+    const today = new Date();
+    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    const isPastDate = targetDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    if (isPastDate) {
+      // 과거 날짜에 드롭 시도 시 조용히 무시
+      setDraggedContent(null);
+      return;
+    }
+    
     if (draggedContent) {
-      const dateKey = formatDateKey(day);
+      // 모달 열고 시간 설정 대기
+      setPendingEvent({content: draggedContent, day});
+      setShowTimeModal(true);
+      setDraggedContent(null);
+    }
+  };
+  
+  const handleTimeModalConfirm = () => {
+    if (pendingEvent) {
+      const dateKey = formatDateKey(pendingEvent.day);
       const newEvent: CalendarEvent = {
         id: Date.now(),
-        title: draggedContent.copy.title,
-        time: "10:00",
-        type: "post",
+        title: pendingEvent.content.copy.title,
+        time: selectedTime,
+        type: selectedType,
         platform: "both",
         status: "scheduled",
-        content: draggedContent.copy.description,
-        imageUrl: draggedContent.image
+        content: pendingEvent.content.copy.description,
+        imageUrl: pendingEvent.content.image,
+        date: dateKey
       };
-      setCalendarEvents(prev => [...prev, newEvent]);
-      setDraggedContent(null);
       
-      // 피드백 메시지
+      setCustomEvents(prev => [...prev, newEvent]);
+      setShowTimeModal(false);
+      setPendingEvent(null);
+      
+      // 성공 피드백
       setSelectedDate(dateKey);
       setTimeout(() => setSelectedDate(null), 3000);
     }
+  };
+  
+  const handleTimeModalCancel = () => {
+    setShowTimeModal(false);
+    setPendingEvent(null);
+    setSelectedTime('10:00');
+    setSelectedType('post');
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -219,8 +370,38 @@ const CalendarPage = () => {
     switch(type) {
       case 'post': return <ImageIcon className="h-3 w-3" />;
       case 'story': return <FileText className="h-3 w-3" />;
-      case 'reel': return <Video className="h-3 w-3" />;
+      case 'reel': return (
+        <div className="relative">
+          <Video className="h-3 w-3" />
+          <Play className="h-2 w-2 absolute -top-0.5 -right-0.5 text-white bg-black rounded-full p-0.5" />
+        </div>
+      );
       default: return <ImageIcon className="h-3 w-3" />;
+    }
+  };
+  
+  const getContentTypeLabel = (type: string) => {
+    switch(type) {
+      case 'post': return '피드';
+      case 'story': return '스토리';
+      case 'reel': return '릴스';
+      default: return '피드';
+    }
+  };
+  
+  const getProductName = (businessType: BusinessType, contentId: number) => {
+    if (businessType === 'bedding') {
+      switch(contentId) {
+        case 1: return '구스 이불';
+        case 2: return '호텔 침구세트';
+        default: return '침구 제품';
+      }
+    } else {
+      switch(contentId) {
+        case 1: return '이니셜 목걸이';
+        case 2: return '플라워 귀걸이';
+        default: return '수공예 제품';
+      }
     }
   };
 
@@ -230,6 +411,16 @@ const CalendarPage = () => {
       case 'published': return 'bg-green-500';
       case 'draft': return 'bg-gray-400';
       default: return 'bg-gray-400';
+    }
+  };
+  
+  // 상태별 한글 라벨
+  const getStatusLabel = (status: string) => {
+    switch(status) {
+      case 'scheduled': return '예약됨';
+      case 'published': return '게시완료';
+      case 'draft': return '임시저장';
+      default: return '알 수 없음';
     }
   };
 
@@ -242,31 +433,10 @@ const CalendarPage = () => {
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">SNS 콘텐츠 캘린더</h1>
               <p className="text-lg text-muted-foreground">
-                전략적인 콘텐츠 일정 관리로 효과적인 마케팅을 실현하세요
+                콘텐츠 일정 관리로 효과적인 마케팅을 실현하세요
               </p>
             </div>
             <div className="flex items-center gap-4">
-              {/* 업종 선택 */}
-              <Select value={businessType} onValueChange={handleBusinessTypeChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bedding">
-                    <div className="flex items-center gap-2">
-                      <Moon className="h-4 w-4" />
-                      침구 전문점
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="handcraft">
-                    <div className="flex items-center gap-2">
-                      <Coffee className="h-4 w-4" />
-                      수공예 작품샵
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/studio')}
@@ -276,41 +446,17 @@ const CalendarPage = () => {
               </Button>
             </div>
           </div>
-
-          {/* 업종 정보 표시 */}
-          <Card className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">{businessPersonas[businessType].name}</h3>
-                  <p className="text-sm text-muted-foreground">{businessPersonas[businessType].description}</p>
-                  <div className="flex gap-2 mt-2">
-                    <Badge variant="secondary">타겟: {businessPersonas[businessType].target}</Badge>
-                    <Badge variant="outline">{businessPersonas[businessType].style}</Badge>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium mb-1">추천 해시태그</p>
-                  <div className="flex flex-wrap gap-1 justify-end">
-                    {businessPersonas[businessType].keywords.slice(0, 3).map(keyword => (
-                      <span key={keyword} className="text-xs text-blue-600">#{keyword}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6" onDragOver={handleDragOver}>
           {/* 왼쪽 사이드바 */}
           <div className="xl:col-span-1 space-y-6">
             {/* 생성된 콘텐츠 */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-yellow-500" />
-                  준비된 콘텐츠
+                  <ImageIcon className="h-5 w-5" />
+                  생성된 콘텐츠
                 </CardTitle>
                 <CardDescription>
                   드래그하여 캘린더에 배치하세요
@@ -322,22 +468,45 @@ const CalendarPage = () => {
                     key={content.id}
                     draggable
                     onDragStart={() => handleDragStart(content)}
+                    onDragEnd={handleDragEnd}
+                    onDrag={handleDragMove}
                     className="p-3 border rounded-lg cursor-move hover:shadow-md transition-all bg-card hover:border-purple-300"
                   >
-                    <div className="aspect-video bg-gray-100 rounded mb-2 overflow-hidden">
+                    <div className="aspect-video bg-gray-100 rounded mb-3 overflow-hidden relative">
                       <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                        <ImageIcon className="h-8 w-8 text-gray-400" />
+                        {/* 콘텐츠 유형에 따른 아이콘 */}
+                        {content.id === 1 ? (
+                          <ImageIcon className="h-8 w-8 text-gray-400" />
+                        ) : content.id === 2 ? (
+                          <div className="relative">
+                            <Video className="h-8 w-8 text-gray-400" />
+                            <Play className="h-4 w-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white bg-black bg-opacity-60 rounded-full p-1" />
+                          </div>
+                        ) : (
+                          <FileText className="h-8 w-8 text-gray-400" />
+                        )}
                       </div>
                     </div>
-                    <p className="text-sm font-medium line-clamp-2 mb-2">
+                    <p className="text-sm font-medium mb-2">
+                      {getProductName(businessType, content.id)}
+                    </p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                       {content.copy.title}
                     </p>
-                    <div className="flex flex-wrap gap-1">
-                      {content.features.slice(0, 2).map((feature) => (
-                        <Badge key={feature} variant="secondary" className="text-xs">
-                          {feature}
-                        </Badge>
-                      ))}
+                    <div className="flex items-center justify-between">
+                      <Badge 
+                        variant={content.id === 1 ? 'default' : content.id === 2 ? 'destructive' : 'secondary'} 
+                        className="text-xs"
+                      >
+                        {content.id === 1 ? '피드' : content.id === 2 ? '릴스' : '스토리'}
+                      </Badge>
+                      <div className="flex gap-1">
+                        {content.features.slice(0, 1).map((feature) => (
+                          <Badge key={feature} variant="outline" className="text-xs">
+                            {feature}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -347,50 +516,8 @@ const CalendarPage = () => {
                   onClick={() => navigate('/studio')}
                   className="w-full"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  콘텐츠 생성하기
+                  <Plus className="h-4 w-4" />
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* 최적 게시 시간 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-green-500" />
-                  최적 게시 시간
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm font-medium mb-2">골든 타임</p>
-                    <div className="space-y-1">
-                      {postingSchedule.bestTimes.map((time, idx) => (
-                        <div key={idx} className="flex items-center gap-2">
-                          <Clock className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm">{time}</span>
-                          {idx === 0 && <Badge variant="default" className="text-xs">최고</Badge>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="pt-3 border-t">
-                    <p className="text-sm font-medium mb-2">타겟 고객 활동 시간</p>
-                    <div className="text-xs text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-3 w-3" />
-                        <span>{businessPersonas[businessType].target}</span>
-                      </div>
-                      <p className="pl-5">
-                        {businessType === 'bedding' 
-                          ? '아침 준비시간, 점심시간, 저녁 휴식시간'
-                          : '출퇴근 시간, 점심시간, 저녁 여가시간'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
           </div>
@@ -419,13 +546,6 @@ const CalendarPage = () => {
                           onClick={() => navigateMonth('prev')}
                         >
                           <ChevronLeft className="h-5 w-5" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setCurrentDate(new Date())}
-                        >
-                          오늘
                         </Button>
                         <Button
                           variant="outline"
@@ -463,18 +583,41 @@ const CalendarPage = () => {
                             key={index}
                             className={`min-h-[120px] p-2 border rounded-lg transition-all ${
                               day
-                                ? isToday 
-                                  ? "bg-purple-50 border-purple-300 hover:bg-purple-100"
-                                  : "bg-card hover:bg-accent/50 cursor-pointer"
+                                ? (() => {
+                                    const today = new Date();
+                                    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                                    const isPastDate = targetDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                                    
+                                    if (isToday) {
+                                      return "bg-purple-50 border-purple-300 hover:bg-purple-100";
+                                    } else if (isPastDate) {
+                                      return "bg-gray-100 border-gray-200";
+                                    } else {
+                                      return "bg-card hover:bg-accent/50";
+                                    }
+                                  })()
                                 : "bg-muted/20"
                             } ${selectedDate === formatDateKey(day!) ? 'ring-2 ring-green-500' : ''}`}
-                            onDragOver={day ? handleDragOver : undefined}
-                            onDrop={day ? (e) => handleDrop(e, day) : undefined}
+                            onDragOver={day && !(() => {
+                              const today = new Date();
+                              const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                              return targetDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                            })() ? handleDragOver : undefined}
+                            onDrop={day && !(() => {
+                              const today = new Date();
+                              const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+                              return targetDate < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                            })() ? (e) => handleDrop(e, day) : undefined}
+                            onDragEnter={(e) => handleDragMove(e)}
                           >
                             {day && (
                               <>
                                 <div className="flex justify-between items-start mb-2">
-                                  <span className={`text-sm font-semibold ${isToday ? 'text-purple-700' : ''}`}>
+                                  <span className={`text-sm font-semibold ${
+                                    isToday 
+                                      ? 'text-purple-700' 
+                                      : ''
+                                  }`}>
                                     {day}
                                   </span>
                                   {events.length > 0 && (
@@ -523,13 +666,7 @@ const CalendarPage = () => {
                         >
                           <ChevronLeft className="h-5 w-5" />
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setCurrentDate(new Date())}
-                        >
-                          오늘
-                        </Button>
+                        
                         <Button
                           variant="outline"
                           size="icon"
@@ -544,18 +681,50 @@ const CalendarPage = () => {
                     <div className="grid grid-cols-7 gap-2">
                       {getWeekDays().map((date, idx) => {
                         const isToday = date.toDateString() === new Date().toDateString();
+                        const day = date.getDate();
+                        const events = getEventsForDay(day);
+                        const isPastDate = date < new Date(new Date().setHours(0,0,0,0));
+                        
                         return (
-                          <div key={idx} className={`border rounded-lg p-3 min-h-[200px] ${
-                            isToday ? 'bg-purple-50 border-purple-300' : 'bg-card'
-                          }`}>
-                            <div className="text-center mb-2">
+                          <div 
+                            key={idx} 
+                            className={`border rounded-lg p-3 min-h-[200px] ${
+                              isToday 
+                                ? 'bg-purple-50 border-purple-300' 
+                                : isPastDate 
+                                ? 'bg-gray-100 border-gray-200'
+                                : 'bg-card hover:bg-accent/50'
+                            }`}
+                            onDragOver={!isPastDate ? handleDragOver : undefined}
+                            onDrop={!isPastDate ? (e) => handleDrop(e, day) : undefined}
+                          >
+                            <div className="text-center mb-3">
                               <p className="text-xs text-muted-foreground">{dayNames[date.getDay()]}</p>
                               <p className={`text-lg font-semibold ${isToday ? 'text-purple-700' : ''}`}>
                                 {date.getDate()}
                               </p>
+                              {events.length > 0 && (
+                                <Badge variant="secondary" className="text-xs mt-1">
+                                  {events.length}개
+                                </Badge>
+                              )}
                             </div>
-                            <div className="space-y-1">
-                              {/* 주간 뷰 이벤트 표시 */}
+                            <div className="space-y-2">
+                              {events.map((event) => (
+                                <div
+                                  key={event.id}
+                                  onClick={() => setSelectedEvent(event)}
+                                  className={`text-xs p-2 rounded text-white cursor-pointer hover:opacity-80 ${getStatusColor(event.status)}`}
+                                >
+                                  <div className="flex items-center gap-1 mb-1">
+                                    {getContentTypeIcon(event.type)}
+                                    <span className="truncate font-medium">{event.time}</span>
+                                  </div>
+                                  <div className="line-clamp-2">
+                                    {event.title}
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         );
@@ -622,33 +791,6 @@ const CalendarPage = () => {
                 </CardContent>
               </Card>
             </div>
-
-            {/* 빠른 작업 */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">빠른 작업</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <Button variant="outline" className="justify-start" onClick={() => navigate('/instagram')}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    새 게시물
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Edit className="mr-2 h-4 w-4" />
-                    일정 수정
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Hash className="mr-2 h-4 w-4" />
-                    해시태그 관리
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    성과 분석
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
@@ -693,6 +835,75 @@ const CalendarPage = () => {
                   </Button>
                 </div>
               </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* 시간 설정 모달 */}
+        {showTimeModal && pendingEvent && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <Card className="max-w-md w-full">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  게시 일정 설정
+                </CardTitle>
+                <CardDescription>
+                  {pendingEvent.content.copy.title}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">게시 시간</label>
+                  <Select value={selectedTime} onValueChange={setSelectedTime}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'].map(time => (
+                        <SelectItem key={time} value={time}>{time}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block">콘텐츠 유형</label>
+                  <Select value={selectedType} onValueChange={(value) => setSelectedType(value as 'post' | 'story' | 'reel')}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="post">
+                        <div className="flex items-center gap-2">
+                          <ImageIcon className="h-4 w-4" />
+                          일반 게시물
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="story">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          스토리
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="reel">
+                        <div className="flex items-center gap-2">
+                          <Video className="h-4 w-4" />
+                          릴스
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+              <div className="flex gap-2 p-6 pt-0">
+                <Button variant="outline" onClick={handleTimeModalCancel} className="flex-1">
+                  취소
+                </Button>
+                <Button onClick={handleTimeModalConfirm} className="flex-1">
+                  예약 하기
+                </Button>
+              </div>
             </Card>
           </div>
         )}

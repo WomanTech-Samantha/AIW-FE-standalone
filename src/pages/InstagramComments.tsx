@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/MockAuthContext";
 import { Button } from "@/components/ui/button";
 import { checkInstagramConnection } from "@/utils/instagramAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -157,8 +158,19 @@ const getPriority = (comment: Comment): 'high' | 'medium' | 'low' => {
 
 const InstagramCommentsPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   
-  const [businessType, setCurrentBusinessType] = useState<BusinessType>(getCurrentBusinessType());
+  // user.business 정보를 기반으로 업종 자동 결정
+  const getBusinessTypeFromUser = (): BusinessType => {
+    if (user?.business?.includes('침구') || user?.business?.includes('bedding')) {
+      return 'bedding';
+    } else if (user?.business?.includes('수공예') || user?.business?.includes('handcraft') || user?.business?.includes('액세서리')) {
+      return 'handcraft';
+    }
+    return getCurrentBusinessType();
+  };
+  
+  const [businessType, setCurrentBusinessType] = useState<BusinessType>(getBusinessTypeFromUser());
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -197,13 +209,28 @@ const InstagramCommentsPage = () => {
         replied: false
       }));
       
-      // 우선순위 설정
-      const commentsWithPriority = mockComments.map(comment => ({
-        ...comment,
-        priority: getPriority(comment)
-      }));
+      // 우선순위 설정 및 AI 추천 답변을 답글칸에 미리 입력
+      const commentsWithPriority = mockComments.map(comment => {
+        const autoReply = getAutoReplyS(comment.text, businessType);
+        return {
+          ...comment,
+          priority: getPriority(comment)
+        };
+      });
       
       setComments(commentsWithPriority);
+      
+      // AI 추천 답변을 답글칸에 미리 입력
+      const newReplyText: { [key: string]: string } = {};
+      commentsWithPriority.forEach(comment => {
+        if (!comment.replied) {
+          const autoReply = getAutoReplyS(comment.text, businessType);
+          if (autoReply) {
+            newReplyText[comment.id] = autoReply;
+          }
+        }
+      });
+      setReplyText(newReplyText);
       
     } catch (error: any) {
       console.error('댓글 로드 실패:', error);
@@ -333,7 +360,7 @@ const InstagramCommentsPage = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-3">
-                <MessageCircle className="h-8 w-8 text-purple-500" />
+                <MessageCircle className="h-8 w-8" />
                 댓글 관리 센터
               </h1>
               <p className="text-lg text-muted-foreground mt-2">
@@ -342,25 +369,7 @@ const InstagramCommentsPage = () => {
             </div>
             <div className="flex items-center gap-4">
               {/* 업종 선택 */}
-              <Select value={businessType} onValueChange={handleBusinessTypeChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="bedding">
-                    <div className="flex items-center gap-2">
-                      <Moon className="h-4 w-4" />
-                      침구 전문점
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="handcraft">
-                    <div className="flex items-center gap-2">
-                      <Coffee className="h-4 w-4" />
-                      수공예 작품샵
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              
               
               <Button
                 onClick={loadComments}
@@ -373,86 +382,55 @@ const InstagramCommentsPage = () => {
           </div>
 
           {/* 업종 정보 */}
-          <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-lg">{businessPersonas[businessType].name}</h3>
-                  <p className="text-sm text-muted-foreground">주요 고객: {businessPersonas[businessType].target}</p>
-                </div>
-                <div className="flex gap-4">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-purple-600">{stats.responseRate}%</p>
-                    <p className="text-xs text-muted-foreground">응답률</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-blue-600">{stats.avgResponseTime}</p>
-                    <p className="text-xs text-muted-foreground">평균 응답시간</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          
         </div>
 
-        {/* 통계 카드 */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-          <Card className="hover:shadow-md transition-shadow">
+        {/* 간소화된 통계 카드 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">총 댓글</p>
                   <p className="text-2xl font-bold">{stats.total}</p>
                 </div>
-                <MessageCircle className="h-8 w-8 text-purple-500" />
+                <MessageCircle className="h-6 w-6" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">미답변</p>
                   <p className="text-2xl font-bold text-red-600">{stats.unanswered}</p>
                 </div>
-                <AlertTriangle className="h-8 w-8 text-red-500" />
+                <AlertTriangle className="h-6 w-6 text-red-500" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">질문</p>
                   <p className="text-2xl font-bold text-blue-600">{stats.questions}</p>
                 </div>
-                <MessageSquare className="h-8 w-8 text-blue-500" />
+                <MessageSquare className="h-6 w-6 text-blue-500" />
               </div>
             </CardContent>
           </Card>
           
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">긍정적</p>
-                  <p className="text-2xl font-bold text-green-600">{stats.positive}</p>
-                </div>
-                <ThumbsUp className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">총 좋아요</p>
+                  <p className="text-sm text-muted-foreground">좋아요</p>
                   <p className="text-2xl font-bold">{stats.totalLikes}</p>
                 </div>
-                <Heart className="h-8 w-8 text-pink-500" />
+                <Heart className="h-6 w-6" />
               </div>
             </CardContent>
           </Card>
@@ -497,21 +475,8 @@ const InstagramCommentsPage = () => {
           </CardContent>
         </Card>
 
-        {/* 메인 콘텐츠 */}
-        <Tabs value={selectedTab} onValueChange={(v) => setSelectedTab(v as any)}>
-          <TabsList className="mb-4">
-            <TabsTrigger value="all">
-              전체 댓글 ({filteredComments.length})
-            </TabsTrigger>
-            <TabsTrigger value="priority">
-              우선 답변 ({priorityComments.length})
-            </TabsTrigger>
-            <TabsTrigger value="insights">
-              인사이트
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="space-y-4">
+        {/* 간소화된 메인 콘텐츠 */}
+        <div className="space-y-4">
             {filteredComments.length === 0 ? (
               <Card>
                 <CardContent className="p-8 text-center">
@@ -550,11 +515,6 @@ const InstagramCommentsPage = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          {comment.priority && (
-                            <Badge className={`text-xs ${getPriorityColor(comment.priority)}`}>
-                              {comment.priority === 'high' ? '높음' : comment.priority === 'medium' ? '보통' : '낮음'}
-                            </Badge>
-                          )}
                           <Badge variant="outline" className="text-xs">
                             <Heart className="h-3 w-3 mr-1" />
                             {comment.like_count}
@@ -578,49 +538,12 @@ const InstagramCommentsPage = () => {
                         </div>
                       </div>
 
-                      {/* AI 추천 답변 */}
-                      {autoReply && !comment.replied && (
-                        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Sparkles className="h-4 w-4 text-purple-600" />
-                            <span className="text-sm font-medium text-purple-900">AI 추천 답변</span>
-                          </div>
-                          <p className="text-sm text-purple-800 mb-2">{autoReply}</p>
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleAutoReply(comment.id, autoReply)}
-                              className="text-xs"
-                            >
-                              답변 사용하기
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => copyTemplate(autoReply)}
-                              className="text-xs"
-                            >
-                              {copiedTemplate === autoReply ? (
-                                <>
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />
-                                  복사됨
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="h-3 w-3 mr-1" />
-                                  복사
-                                </>
-                              )}
-                            </Button>
-                          </div>
-                        </div>
-                      )}
 
                       {/* 답글 영역 */}
                       {!comment.replied && (
                         <div className="border-t pt-4 space-y-3">
-                          <div className="flex gap-2">
+                          <div className="space-y-2">
+                            
                             <Textarea
                               placeholder="답글을 작성하세요..."
                               value={replyText[comment.id] || ''}
@@ -632,24 +555,7 @@ const InstagramCommentsPage = () => {
                             />
                           </div>
                           
-                          <div className="flex justify-between">
-                            <div className="flex gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const template = businessType === 'bedding' 
-                                    ? "안녕하세요! 문의 감사합니다 😊 "
-                                    : "안녕하세요! 관심 가져주셔서 감사합니다 ✨ ";
-                                  setReplyText(prev => ({
-                                    ...prev,
-                                    [comment.id]: template + (prev[comment.id] || '')
-                                  }));
-                                }}
-                              >
-                                인사말 추가
-                              </Button>
-                            </div>
+                          <div className="flex justify-end">
                             
                             <Button
                               size="sm"
@@ -676,290 +582,7 @@ const InstagramCommentsPage = () => {
                 );
               })
             )}
-          </TabsContent>
-
-          <TabsContent value="priority" className="space-y-4">
-            {priorityComments.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <Star className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-medium mb-2">우선 답변이 필요한 댓글이 없습니다</h3>
-                  <p className="text-muted-foreground">
-                    모든 중요한 댓글에 답변을 완료했습니다!
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                <Alert className="border-yellow-200 bg-yellow-50">
-                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                  <AlertDescription className="text-yellow-800">
-                    <strong>{priorityComments.length}개</strong>의 댓글이 즉시 답변이 필요합니다.
-                    질문이나 부정적인 피드백을 우선적으로 처리해주세요.
-                  </AlertDescription>
-                </Alert>
-                
-                {priorityComments.map((comment) => {
-                  const autoReply = getAutoReplyS(comment.text, businessType);
-                  
-                  return (
-                    <Card key={comment.id} className="border-red-200">
-                      <CardContent className="p-6">
-                        {/* 동일한 댓글 카드 컴포넌트 */}
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold">
-                              {comment.username.charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="font-medium">@{comment.username}</p>
-                                {getSentimentIcon(comment.sentiment!)}
-                              </div>
-                              <p className="text-sm text-muted-foreground">{getTimeAgo(comment.timestamp)}</p>
-                            </div>
-                          </div>
-                          <Badge className="text-xs bg-red-100 text-red-700 border-red-300">
-                            우선 답변 필요
-                          </Badge>
-                        </div>
-
-                        <div className="mb-4">
-                          <p className="text-sm mb-3">{comment.text}</p>
-                        </div>
-
-                        {autoReply && (
-                          <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Sparkles className="h-4 w-4 text-purple-600" />
-                              <span className="text-sm font-medium text-purple-900">AI 추천 답변</span>
-                            </div>
-                            <p className="text-sm text-purple-800 mb-2">{autoReply}</p>
-                            <Button
-                              size="sm"
-                              onClick={() => handleAutoReply(comment.id, autoReply)}
-                            >
-                              이 답변 사용하기
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="insights" className="space-y-6">
-            {/* 인사이트 대시보드 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* 감정 분석 */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <BarChart className="h-5 w-5" />
-                    댓글 감정 분석
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ThumbsUp className="h-4 w-4 text-green-500" />
-                        <span className="text-sm">긍정적</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{stats.positive}</span>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-green-500" 
-                            style={{ width: `${(stats.positive / stats.total) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm">질문</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">{stats.questions}</span>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-blue-500" 
-                            style={{ width: `${(stats.questions / stats.total) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MessageCircle className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">중립</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">
-                          {comments.filter(c => c.sentiment === 'neutral').length}
-                        </span>
-                        <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-gray-500" 
-                            style={{ width: `${(comments.filter(c => c.sentiment === 'neutral').length / stats.total) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 자주 묻는 질문 */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MessageSquare className="h-5 w-5" />
-                    자주 묻는 질문 TOP 5
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {businessType === 'bedding' ? (
-                      <>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">사이즈 문의</span>
-                          <Badge variant="secondary">15회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">가격 문의</span>
-                          <Badge variant="secondary">12회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">세탁 방법</span>
-                          <Badge variant="secondary">8회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">배송 기간</span>
-                          <Badge variant="secondary">7회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">색상 옵션</span>
-                          <Badge variant="secondary">5회</Badge>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">맞춤 제작</span>
-                          <Badge variant="secondary">18회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">선물 포장</span>
-                          <Badge variant="secondary">14회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">알레르기 소재</span>
-                          <Badge variant="secondary">10회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">사이즈 조절</span>
-                          <Badge variant="secondary">8회</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                          <span className="text-sm">오프라인 매장</span>
-                          <Badge variant="secondary">6회</Badge>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 응답 템플릿 */}
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Copy className="h-5 w-5" />
-                    빠른 응답 템플릿
-                  </CardTitle>
-                  <CardDescription>
-                    자주 사용하는 답변을 클릭하여 복사하세요
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Object.entries(replyTemplates[businessType]).map(([key, template]) => (
-                      <div key={key} className="p-3 bg-gray-50 rounded-lg">
-                        <p className="text-sm mb-2">{template}</p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => copyTemplate(template)}
-                        >
-                          {copiedTemplate === template ? (
-                            <>
-                              <CheckCircle2 className="h-3 w-3 mr-1" />
-                              복사됨
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="h-3 w-3 mr-1" />
-                              템플릿 복사
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 개선 제안 */}
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    고객 응대 개선 제안
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <Alert>
-                      <Info className="h-4 w-4" />
-                      <AlertDescription>
-                        <strong>빠른 응답이 중요합니다!</strong> 1시간 이내 답변 시 구매 전환율이 23% 증가합니다.
-                      </AlertDescription>
-                    </Alert>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="p-3 bg-blue-50 rounded-lg">
-                        <h4 className="font-medium text-sm mb-1">자주 묻는 질문 FAQ 작성</h4>
-                        <p className="text-xs text-muted-foreground">
-                          반복되는 질문은 프로필이나 하이라이트에 정리해두세요
-                        </p>
-                      </div>
-                      <div className="p-3 bg-green-50 rounded-lg">
-                        <h4 className="font-medium text-sm mb-1">긍정 댓글 활용</h4>
-                        <p className="text-xs text-muted-foreground">
-                          만족한 고객의 댓글을 리뷰로 활용하세요
-                        </p>
-                      </div>
-                      <div className="p-3 bg-purple-50 rounded-lg">
-                        <h4 className="font-medium text-sm mb-1">개인화된 답변</h4>
-                        <p className="text-xs text-muted-foreground">
-                          고객 이름을 부르며 친근하게 응대하세요
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
+        </div>
       </div>
     </div>
   );

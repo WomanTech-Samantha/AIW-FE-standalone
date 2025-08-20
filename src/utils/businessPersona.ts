@@ -22,90 +22,120 @@ export const businessPersonas = {
   }
 };
 
-// 캘린더 이벤트 데이터
+// 캘린더 이벤트 데이터 (8월 26일까지 데모 기준)
 export const calendarEventsByType = {
   bedding: [
     {
       id: 1,
-      title: "🌙 꿀잠보장! 여름 냉감 이불 신상 출시",
+      title: "🌙 여름 냉감 이불 신상 출시",
       time: "10:00",
       type: "post" as const,
       platform: "both" as const,
-      status: "scheduled" as const,
+      status: "published" as const,
       content: "열대야에도 시원한 밤을 선물하는 프리미엄 냉감 이불",
-      imageUrl: "https://example.com/summer-bedding.jpg"
+      imageUrl: "https://example.com/summer-bedding.jpg",
+      date: "2024-08-15"
     },
     {
       id: 2,
-      title: "🛏️ 매트리스 교체 시기 체크리스트",
+      title: "🛏️ 매트리스 관리법 꿀팁",
       time: "14:00",
       type: "story" as const,
       platform: "instagram" as const,
-      status: "scheduled" as const,
-      content: "당신의 매트리스, 건강하신가요? 교체 시기 확인하기",
-      imageUrl: "https://example.com/mattress-guide.jpg"
+      status: "published" as const,
+      content: "매트리스 수명을 늘리는 올바른 관리법",
+      imageUrl: "https://example.com/mattress-guide.jpg",
+      date: "2024-08-18"
     },
     {
       id: 3,
       title: "💝 신혼부부 침구 세트 특가",
       time: "19:00",
-      type: "reel" as const,
-      platform: "instagram" as const,
-      status: "draft" as const,
-      content: "새 출발을 위한 프리미엄 침구 풀세트",
-      imageUrl: "https://example.com/wedding-set.jpg"
-    },
-    {
-      id: 4,
-      title: "🌸 봄맞이 파스텔톤 베딩 컬렉션",
-      time: "11:00",
       type: "post" as const,
       platform: "both" as const,
       status: "scheduled" as const,
-      content: "화사한 봄 분위기를 담은 신상 컬렉션",
-      imageUrl: "https://example.com/spring-collection.jpg"
+      content: "새 출발을 위한 프리미엄 침구 풀세트",
+      imageUrl: "https://example.com/wedding-set.jpg",
+      date: "2024-08-22"
+    },
+    {
+      id: 4,
+      title: "🍂 가을맞이 따뜻한 베딩 컬렉션",
+      time: "11:00",
+      type: "reel" as const,
+      platform: "instagram" as const,
+      status: "scheduled" as const,
+      content: "선선해지는 날씨에 딱 맞는 포근한 침구",
+      imageUrl: "https://example.com/autumn-collection.jpg",
+      date: "2024-08-25"
+    },
+    {
+      id: 5,
+      title: "🏠 침실 인테리어 팁",
+      time: "15:00",
+      type: "story" as const,
+      platform: "instagram" as const,
+      status: "draft" as const,
+      content: "작은 변화로 만드는 호텔 같은 침실",
+      imageUrl: "https://example.com/bedroom-tips.jpg",
+      date: "2024-08-27"
     }
   ],
   handcraft: [
     {
       id: 1,
-      title: "✨ 일상을 특별하게! 신상 귀걸이 컬렉션",
+      title: "✨ 여름 한정 쉘 귀걸이 컬렉션",
       time: "11:00",
       type: "post" as const,
       platform: "both" as const,
-      status: "scheduled" as const,
-      content: "하나뿐인 핸드메이드 귀걸이로 당신만의 스타일을",
-      imageUrl: "https://example.com/earring-collection.jpg"
+      status: "published" as const,
+      content: "바다의 감성을 담은 여름 한정 귀걸이",
+      imageUrl: "https://example.com/shell-earring.jpg",
+      date: "2024-08-16"
     },
     {
       id: 2,
-      title: "🎁 발렌타인데이 선물 추천",
+      title: "🎨 핸드메이드 제작 과정 공개",
       time: "15:00",
-      type: "story" as const,
+      type: "reel" as const,
       platform: "instagram" as const,
-      status: "scheduled" as const,
-      content: "마음을 전하는 특별한 핸드메이드 선물",
-      imageUrl: "https://example.com/valentine-gift.jpg"
+      status: "published" as const,
+      content: "정성 가득한 수작업 과정을 공개합니다",
+      imageUrl: "https://example.com/making-process.jpg",
+      date: "2024-08-19"
     },
     {
       id: 3,
-      title: "📿 원석 팔찌 제작 과정 공개",
+      title: "📿 원석 팔찌 신상 출시",
       time: "18:00",
-      type: "reel" as const,
-      platform: "instagram" as const,
-      status: "draft" as const,
-      content: "정성 가득한 핸드메이드 제작 과정",
-      imageUrl: "https://example.com/making-process.jpg"
-    },
-    {
-      id: 4,
-      title: "🌺 봄 신상 플라워 키링 출시",
-      time: "13:00",
       type: "post" as const,
       platform: "both" as const,
       status: "scheduled" as const,
-      content: "가방에 달면 기분 좋아지는 플라워 키링",
-      imageUrl: "https://example.com/flower-keyring.jpg"
+      content: "자연의 에너지를 담은 원석 팔찌",
+      imageUrl: "https://example.com/gemstone-bracelet.jpg",
+      date: "2024-08-23"
+    },
+    {
+      id: 4,
+      title: "🍂 가을 감성 액세서리 미리보기",
+      time: "13:00",
+      type: "story" as const,
+      platform: "instagram" as const,
+      status: "scheduled" as const,
+      content: "따뜻한 가을 톤의 새로운 컬렉션",
+      imageUrl: "https://example.com/autumn-accessories.jpg",
+      date: "2024-08-26"
+    },
+    {
+      id: 5,
+      title: "💌 주문제작 서비스 안내",
+      time: "14:00",
+      type: "post" as const,
+      platform: "both" as const,
+      status: "draft" as const,
+      content: "당신만을 위한 특별한 맞춤 제작 서비스",
+      imageUrl: "https://example.com/custom-service.jpg",
+      date: "2024-08-28"
     }
   ]
 };
@@ -166,110 +196,110 @@ export const generatedContentByType = {
   ]
 };
 
-// 댓글 데이터
+// 댓글 데이터 (8월 20일 기준)
 export const commentsByType = {
   bedding: [
     {
       id: "comment_1",
-      text: "이불 너무 포근해 보여요! 사이즈는 어떻게 되나요? 퀸사이즈도 있을까요?",
+      text: "냉감 이불 정말 시원해요! 사이즈는 어떻게 되나요? 퀸사이즈도 있을까요?",
       username: "cozy_home_lover",
-      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+      timestamp: new Date(2024, 7, 20, 10, 30).toISOString(), // 8월 20일 10:30
       like_count: 12,
       media_id: "media_1",
       media_permalink: "https://instagram.com/p/bedding1",
-      media_caption: "☁️ 구름처럼 포근한 신상 구스이불 출시!"
+      media_caption: "🌙 여름 냉감 이불 신상 출시"
     },
     {
       id: "comment_2",
       text: "알레르기가 있는데 사용해도 괜찮을까요? 먼지 날림은 없나요?",
       username: "health_first_mom",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+      timestamp: new Date(2024, 7, 20, 14, 15).toISOString(), // 8월 20일 14:15
       like_count: 8,
       media_id: "media_1",
       media_permalink: "https://instagram.com/p/bedding1",
-      media_caption: "☁️ 구름처럼 포근한 신상 구스이불 출시!"
+      media_caption: "🌙 여름 냉감 이불 신상 출시"
     },
     {
       id: "comment_3",
-      text: "세탁은 집에서 가능한가요? 관리법이 궁금해요 💭",
+      text: "매트리스 관리법 정말 유용해요! 세탁은 집에서 가능한가요? 💭",
       username: "clean_house_daily",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+      timestamp: new Date(2024, 7, 19, 16, 45).toISOString(), // 8월 19일 16:45
       like_count: 15,
       media_id: "media_2",
       media_permalink: "https://instagram.com/p/bedding2",
-      media_caption: "🏨 호텔 부럽지 않은 프리미엄 침구세트"
+      media_caption: "🛏️ 매트리스 관리법 꿀팁"
     },
     {
       id: "comment_4",
       text: "색상이 정말 고급스러워요! 베이지색도 있나요? 가격 DM 부탁드려요 🙏",
       username: "interior_design_kr",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+      timestamp: new Date(2024, 7, 20, 11, 20).toISOString(), // 8월 20일 11:20
       like_count: 20,
-      media_id: "media_3",
-      media_permalink: "https://instagram.com/p/bedding3",
-      media_caption: "✨ 신혼부부 필수템! 프리미엄 침구 풀세트"
+      media_id: "media_1",
+      media_permalink: "https://instagram.com/p/bedding1",
+      media_caption: "🌙 여름 냉감 이불 신상 출시"
     },
     {
       id: "comment_5",
-      text: "배송은 얼마나 걸리나요? 이번 주말까지 받아볼 수 있을까요?",
-      username: "urgent_shopper",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
+      text: "신혼부부 세트 언제 출시되나요? 미리 예약하고 싶어요!",
+      username: "newlywed_2024",
+      timestamp: new Date(2024, 7, 20, 18, 30).toISOString(), // 8월 20일 18:30
       like_count: 5,
-      media_id: "media_2",
-      media_permalink: "https://instagram.com/p/bedding2",
-      media_caption: "🏨 호텔 부럽지 않은 프리미엄 침구세트"
+      media_id: "media_3",
+      media_permalink: "https://instagram.com/p/bedding3",
+      media_caption: "💝 신혼부부 침구 세트 특가 (예약)"
     }
   ],
   handcraft: [
     {
       id: "comment_1",
-      text: "너무 예뻐요!! 귀걸이 알레르기 있는데 착용 가능할까요? 😍",
+      text: "쉘 귀걸이 너무 예뻐요!! 알레르기 있는데 착용 가능할까요? 😍",
       username: "jewelry_collector",
-      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+      timestamp: new Date(2024, 7, 20, 12, 15).toISOString(), // 8월 20일 12:15
       like_count: 25,
       media_id: "media_1",
       media_permalink: "https://instagram.com/p/handcraft1",
-      media_caption: "✨ 봄 신상 플라워 귀걸이 컬렉션"
+      media_caption: "✨ 여름 한정 쉘 귀걸이 컬렉션"
     },
     {
       id: "comment_2",
-      text: "선물용으로 구매하고 싶은데 포장도 해주시나요? 💝",
+      text: "제작 과정 영상 너무 힐링이에요! 선물용 포장도 해주시나요? 💝",
       username: "gift_for_friend",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+      timestamp: new Date(2024, 7, 19, 20, 30).toISOString(), // 8월 19일 20:30
       like_count: 18,
-      media_id: "media_1",
-      media_permalink: "https://instagram.com/p/handcraft1",
-      media_caption: "✨ 봄 신상 플라워 귀걸이 컬렉션"
+      media_id: "media_2",
+      media_permalink: "https://instagram.com/p/handcraft2",
+      media_caption: "🎨 핸드메이드 제작 과정 공개"
     },
     {
       id: "comment_3",
-      text: "이니셜 각인 가능한가요? 영문 말고 한글도 되나요?",
+      text: "원석 팔찌 언제 출시되나요? 이니셜 각인도 가능한가요?",
       username: "custom_lover_22",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
+      timestamp: new Date(2024, 7, 20, 15, 45).toISOString(), // 8월 20일 15:45
       like_count: 10,
-      media_id: "media_2",
-      media_permalink: "https://instagram.com/p/handcraft2",
-      media_caption: "💎 당신만을 위한 맞춤 주얼리"
+      media_id: "media_3",
+      media_permalink: "https://instagram.com/p/handcraft3",
+      media_caption: "📿 원석 팔찌 신상 출시 (예약)"
     },
     {
       id: "comment_4",
-      text: "작가님 작품 정말 유니크하고 예뻐요! 오프라인 매장도 있나요? 직접 보고 싶어요 🥰",
+      text: "작가님 작품 정말 유니크하고 예뻐요! 오프라인 매장도 있나요? 🥰",
       username: "handmade_fan",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+      timestamp: new Date(2024, 7, 20, 9, 30).toISOString(), // 8월 20일 9:30
       like_count: 30,
-      media_id: "media_3",
-      media_permalink: "https://instagram.com/p/handcraft3",
-      media_caption: "🌸 하나뿐인 핸드메이드 작품들"
+      media_id: "media_1",
+      media_permalink: "https://instagram.com/p/handcraft1",
+      media_caption: "✨ 여름 한정 쉘 귀걸이 컬렉션"
     },
     {
       id: "comment_5",
-      text: "팔찌 사이즈 조절 가능한가요? 손목이 가는 편이라 걱정이에요 ㅠㅠ",
-      username: "small_wrist_girl",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
+      text: "가을 감성 액세서리 기대돼요! 사이즈 조절 가능한가요?",
+      username: "autumn_lover",
+      timestamp: new Date(2024, 7, 20, 16, 20).toISOString(), // 8월 20일 16:20
       like_count: 7,
       media_id: "media_4",
       media_permalink: "https://instagram.com/p/handcraft4",
-      media_caption: "📿 천연 원석 팔찌 신상 입고"
+      media_caption: "🍂 가을 감성 액세서리 미리보기 (예약)"
     }
   ]
 };
