@@ -13,7 +13,8 @@ import {
   Sparkles,
   CheckCircle2,
   Users,
-  Palette
+  Palette,
+  Eye
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -91,44 +92,55 @@ const Index = () => {
             올인움 AI가 당신의 마케팅 전담팀이 되어드립니다.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center max-w-[600px] mx-auto mt-12 mb-12">
-            <Button
-              size="senior"
-              onClick={() => navigate('/onboarding')}
-              className="gradient-primary text-white shadow-lg hover:shadow-xl w-[280px]"
-            >
-              <Store className="mr-3 h-6 w-6" />
-              무료로 시작하기
-              <ArrowRight className="ml-3 h-6 w-6" />
-            </Button>
-            <Button
-              variant="outline"
-              size="senior"
-              onClick={() => navigate('/comparison')}
-              className="border-2 w-[280px]"
-            >
-              <BarChart3 className="mr-3 h-6 w-6" />
-              기존 방식과 비교하기
-            </Button>
-            <Button
-              variant="outline"
-              size="senior"
-              onClick={() => navigate('/store')}
-              className="border-2 w-[280px]"
-            >
-              <Store className="mr-3 h-6 w-6" />
-              내 쇼핑몰 미리보기
-              <ArrowRight className="ml-3 h-6 w-6" />
-            </Button>
-            <Button
-              variant="outline"
-              size="senior"
-              onClick={() => navigate('/dashboard')}
-              className="border-2 w-[280px]"
-            >
-              <BarChart3 className="mr-3 h-6 w-6" />
-              실제 홍보 효과 미리보기
-            </Button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-items-center max-w-[672px] mx-auto mt-12 mb-12">
+            <div className="relative group">
+              <Button
+                size="senior"
+                onClick={() => navigate('/onboarding')}
+                className="bg-orange-500 hover:bg-orange-600 text-white shadow-lg hover:shadow-xl w-[315px] h-[67px] text-xl font-semibold transition-all duration-300 group-hover:scale-105"
+              >
+                <Zap className="mr-3 h-6 w-6" />
+                무료로 시작하기
+                <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+            
+            <div className="relative group">
+              <Button
+                variant="outline"
+                size="senior"
+                onClick={() => navigate('/comparison')}
+                className="border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-800 hover:text-orange-900 w-[315px] h-[67px] text-xl font-semibold transition-all duration-300 group-hover:scale-105 hover:border-orange-300"
+              >
+                <Eye className="mr-3 h-6 w-6" />
+                기존 방식과 비교하기
+              </Button>
+            </div>
+            
+            <div className="relative group">
+              <Button
+                variant="outline"
+                size="senior"
+                onClick={() => navigate('/store')}
+                className="border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-800 hover:text-orange-900 w-[315px] h-[67px] text-xl font-semibold transition-all duration-300 group-hover:scale-105 hover:border-orange-300"
+              >
+                <Store className="mr-3 h-6 w-6" />
+                내 쇼핑몰 미리보기
+                <ArrowRight className="ml-3 h-6 w-6 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+            
+            <div className="relative group">
+              <Button
+                variant="outline"
+                size="senior"
+                onClick={() => navigate('/dashboard')}
+                className="border-2 border-orange-200 bg-orange-50 hover:bg-orange-100 text-orange-800 hover:text-orange-900 w-[315px] h-[67px] text-xl font-semibold transition-all duration-300 group-hover:scale-105 hover:border-orange-300"
+              >
+                <BarChart3 className="mr-3 h-6 w-6" />
+                실제 홍보 효과 미리보기
+              </Button>
+            </div>
           </div>
 
           {/* Benefits */}
