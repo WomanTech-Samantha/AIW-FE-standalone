@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  CheckCircle2, 
-  X, 
-  Clock, 
+import {
+  CheckCircle2,
+  X,
+  Clock,
   DollarSign,
   Users,
   TrendingUp,
@@ -210,10 +210,10 @@ const ComparisonPage = () => {
             뒤로가기
           </Button>
         </div>
-        
+
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">기존 방식 vs 올인원 자동화</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">기존 방식 vs 올인움 자동화</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             전통적인 마케팅 방식과 올인원 자동화 솔루션을 비교해보세요.<br />
             시간과 비용을 얼마나 절약할 수 있는지 확인해보세요.
@@ -263,7 +263,7 @@ const ComparisonPage = () => {
                   <tr className="border-b">
                     <th className="text-left py-4 px-4 font-semibold">기능</th>
                     <th className="text-center py-4 px-4 font-semibold">기존 방식</th>
-                    <th className="text-center py-4 px-4 font-semibold">올인원 자동화</th>
+                    <th className="text-center py-4 px-4 font-semibold">올인움 자동화</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -448,8 +448,8 @@ const ComparisonPage = () => {
                 더 많은 시간을 사업 운영에 집중하세요
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   onClick={() => navigate('/studio')}
                   className="btn-large bg-primary text-primary-foreground"
                 >

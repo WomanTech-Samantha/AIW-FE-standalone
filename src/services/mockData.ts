@@ -13,9 +13,9 @@ export const mockProducts = [
   },
   {
     id: '2',
-    name: '아로마 캔들',
-    description: '라벤더 향의 편안한 아로마 캔들',
-    price: 25000,
+    name: '퀼트 러그 매트',
+    description: '부드럽고 아늑한 퀼트 러그 매트',
+    price: 35000,
     category: 'lifestyle',
     images: ['/placeholder.svg'],
     stock: 50,
@@ -24,10 +24,10 @@ export const mockProducts = [
   },
   {
     id: '3',
-    name: '오가닉 립밤',
-    description: '촉촉하고 부드러운 유기농 립밤',
-    price: 8000,
-    category: 'beauty',
+    name: '마크라메 벽걸이',
+    description: '보헤미안 스타일의 마크라메 벽걸이',
+    price: 28000,
+    category: 'lifestyle',
     images: ['/placeholder.svg', '/placeholder.svg', '/placeholder.svg'],
     stock: 200,
     featured: true,
@@ -38,21 +38,21 @@ export const mockProducts = [
 // Mock 스토어 데이터
 export const mockStore = {
   id: '1',
-  name: '뷰티 & 라이프',
-  url: 'beauty-life',
-  subdomain: 'beauty-life',
-  description: '천연 뷰티 제품과 라이프스타일 아이템을 판매하는 온라인 스토어',
+  name: '수공예 & 라이프',
+  url: 'craft-life',
+  subdomain: 'craft-life',
+  description: '따뜻한 손길로 만든 수공예품과 라이프스타일 아이템을 판매하는 온라인 스토어',
   theme: 'Beauty',
   color: '#E91E63',
   logo: '/placeholder.svg',
   bannerImage: '/placeholder.svg',
-  tagline: '자연이 주는 아름다움',
-  contactEmail: 'contact@beauty-life.com',
+  tagline: '손으로 전하는 따뜻함',
+  contactEmail: 'contact@craft-life.com',
   contactPhone: '010-1234-5678',
   address: '서울시 강남구 테헤란로 123',
   socialMedia: {
-    instagram: '@beauty_life_official',
-    facebook: 'beauty.life.official'
+    instagram: '@craft_life_official',
+    facebook: 'craft.life.official',
   },
   settings: {
     allowGuests: true,
@@ -66,19 +66,19 @@ export const mockInstagramData = {
   connected: true,
   accountInfo: {
     id: 'mock-insta-123',
-    username: 'beauty_life_official',
+    username: 'craft_life_official',
     followersCount: 12450,
     followingCount: 890,
     postsCount: 234,
     profilePictureUrl: '/placeholder.svg',
-    biography: '천연 뷰티 브랜드 🌿 | 자연이 주는 아름다움 ✨'
+    biography: '수공예 브랜드 🧵 | 손으로 전하는 따뜻함 ✨'
   },
   recentPosts: [
     {
       id: 'post1',
       mediaType: 'IMAGE',
       mediaUrl: '/placeholder.svg',
-      caption: '새로운 핸드크림이 출시되었습니다! #핸드크림 #천연화장품',
+      caption: '새로운 패치워크 쿠션이 출시되었습니다! #패치워크 #수공예',
       timestamp: '2024-08-18T10:00:00Z',
       likesCount: 156,
       commentsCount: 23,
@@ -88,7 +88,7 @@ export const mockInstagramData = {
       id: 'post2',
       mediaType: 'IMAGE',
       mediaUrl: '/placeholder.svg',
-      caption: '라벤더 아로마 캔들로 편안한 하루 되세요 🕯️ #아로마캔들 #힐링',
+      caption: '마크라메 벽걸이로 공간을 더욱 아름답게 🌿 #마크라메 #인테리어',
       timestamp: '2024-08-17T15:30:00Z',
       likesCount: 203,
       commentsCount: 34,
@@ -114,7 +114,7 @@ export const mockComments = [
     replies: [
       {
         id: 'reply1',
-        username: 'beauty_life_official',
+        username: 'craft_life_official',
         text: '감사합니다! 앞으로도 좋은 제품으로 찾아뵙겠습니다 😊',
         timestamp: '2024-08-18T12:30:00Z',
         likeCount: 2

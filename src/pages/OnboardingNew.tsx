@@ -46,7 +46,7 @@ export default function OnboardingPage() {
   const [brandImagePreview, setBrandImagePreview] = useState<string>("");
   const [tagline, setTagline] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // AI 이미지 생성 상태
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
@@ -57,19 +57,19 @@ export default function OnboardingPage() {
   // 상호명을 서브도메인으로 변환
   const convertToSubdomain = (name: string) => {
     if (!name.trim()) return '';
-    
+
     const converted = name
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
-    
-    
+
+
     // 변환 결과가 너무 짧으면 빈 문자열 반환 (자동 설정하지 않음)
     if (converted.length < 3) {
       return '';
     }
-    
+
     return converted;
   };
 
@@ -93,48 +93,27 @@ export default function OnboardingPage() {
   // AI 이미지 생성 함수
   const generateAIImage = () => {
     setIsGeneratingImage(true);
-    
-    // 10초 후 이미지 생성
-    setTimeout(() => {
-      // 업종에 따른 이미지 URL 설정
-      let imageUrl = "";
-      
-      if (business.includes("침구")) {
-        // 침구 업종용 이미지 URL
-        imageUrl = "https://drive.google.com/uc?export=view&id=1n1chKjFGQWHCNyCrF0JNO1oOppizqs0B";
-      } else if (business.includes("수공예")) {
-        // 수공예 업종용 이미지 URL 
-        imageUrl = "https://drive.google.com/uc?export=view&id=1YJmNCDhU2iRCCRI_Zu1Sqy7zwZxmXhwU";
-      } else {
-        // 기본 이미지 (SVG)
-        const colors = {
-          "침구": "#9B7EBD",
-          "수공예": "#7189A6"
-        };
-        
-        const businessType = Object.keys(colors).find(key => business.includes(key));
-        const color = colors[businessType] || "#9B7EBD";
-        const initials = storeName.slice(0, 2).toUpperCase() || "AI";
 
-        imageUrl = `data:image/svg+xml;base64,${btoa(`
-          <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="200" fill="#FAFAFA"/>
-            <circle cx="100" cy="100" r="70" fill="${color}"/>
-            <text x="100" y="115" font-family="Arial" font-size="40" font-weight="bold" fill="white" text-anchor="middle">${initials}</text>
-          </svg>
-        `)}`;
-      }
-      
+    // 이미 이미지가 생성된 상태인지 확인 (다시 생성인지)
+    const isRegeneration = brandImagePreview !== "";
+    const delay = isRegeneration ? 4000 : 3000; // 다시 생성이면 4초, 처음 생성이면 3초
+
+    setTimeout(() => {
+      // 처음 생성(3초): 아이콘 로고, 재생성(4초): 텍스트 포함 로고
+      const imageUrl = isRegeneration 
+        ? "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755602804/ALL-IN-WOM_Logo_jle1ek.svg"
+        : "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755602804/ALL-IN-WOM_Logo_Icon_ev8uoz.svg";
+
       setBrandImagePreview(imageUrl);
       setBrandImageUrl(imageUrl);
       setIsGeneratingImage(false);
-    }, 8000); // 10초로 변경
+    }, delay);
   };
 
   const themeOptions = [
-    { 
-      id: "warm-rose", 
-      name: "웜 로즈", 
+    {
+      id: "warm-rose",
+      name: "웜 로즈",
       color: "#D4526E",
       palette: {
         primary: '#D4526E',
@@ -147,9 +126,9 @@ export default function OnboardingPage() {
         border: '#E5E5E5'
       }
     },
-    { 
-      id: "sage-green", 
-      name: "세이지 그린", 
+    {
+      id: "sage-green",
+      name: "세이지 그린",
       color: "#6B8E65",
       palette: {
         primary: '#6B8E65',
@@ -162,9 +141,9 @@ export default function OnboardingPage() {
         border: '#E5E5E5'
       }
     },
-    { 
-      id: "dusty-blue", 
-      name: "더스티 블루", 
+    {
+      id: "dusty-blue",
+      name: "더스티 블루",
       color: "#7189A6",
       palette: {
         primary: '#7189A6',
@@ -177,9 +156,9 @@ export default function OnboardingPage() {
         border: '#E5E5E5'
       }
     },
-    { 
-      id: "terracotta", 
-      name: "테라코타", 
+    {
+      id: "terracotta",
+      name: "테라코타",
       color: "#C67B5C",
       palette: {
         primary: '#C67B5C',
@@ -192,9 +171,9 @@ export default function OnboardingPage() {
         border: '#E5E5E5'
       }
     },
-    { 
-      id: "lavender", 
-      name: "라벤더", 
+    {
+      id: "lavender",
+      name: "라벤더",
       color: "#9B7EBD",
       palette: {
         primary: '#9B7EBD',
@@ -217,14 +196,14 @@ export default function OnboardingPage() {
       mockupImage: "🏠"
     },
     {
-      id: "chic", 
+      id: "chic",
       name: "시크한",
       description: "세련되고 우아한 미니멀 템플릿",
       mockupImage: "✨"
     },
     {
       id: "beauty",
-      name: "자연스러운", 
+      name: "자연스러운",
       description: "부드러운 감성의 템플릿",
       mockupImage: "🌿"
     }
@@ -246,23 +225,19 @@ export default function OnboardingPage() {
       setCurrentStep(currentStep + 1);
     } else {
       setIsCreating(true);
-      
+
       try {
-        // 온보딩 완료 API 호출 및 최소 대기시간 보장
-        await Promise.all([
-          completeOnboarding({ 
-            business, 
-            storeName,
-            theme: selectedTheme,
-            template: selectedTemplate,
-            subdomain,
-            brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
-            tagline
-          }),
-          // 최소 3초 대기
-          new Promise(resolve => setTimeout(resolve, 3000))
-        ]);
-        
+        // 온보딩 완료 API 호출
+        await completeOnboarding({
+          business,
+          storeName,
+          theme: selectedTheme,
+          template: selectedTemplate,
+          subdomain,
+          brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
+          tagline
+        });
+
         localStorage.setItem('has_online_store', 'true');
         nav("/studio", { replace: true });
       } catch (error) {
@@ -419,7 +394,7 @@ export default function OnboardingPage() {
                     <CardTitle>브랜드 기본 정보</CardTitle>
                     <CardDescription>사업장의 기본 정보를 입력해주세요</CardDescription>
                   </CardHeader>
-                  
+
                   <div className="space-y-6">
                     <div>
                       <Label className="text-lg mb-4 block">업종 선택</Label>
@@ -436,14 +411,14 @@ export default function OnboardingPage() {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="storeName" className="text-lg mb-2 block">상호명</Label>
-                      <Input 
-                        id="storeName" 
-                        value={storeName} 
-                        onChange={(e) => setStoreName(e.target.value)} 
-                        placeholder=" 예: 지숙커튼 & 침구"
+                      <Input
+                        id="storeName"
+                        value={storeName}
+                        onChange={(e) => setStoreName(e.target.value)}
+                        placeholder={business === "침구·이불" ? " 예: 지숙커튼 & 침구" : " 예: 감성 수공예"}
                         className="text-lg"
                       />
                     </div>
@@ -492,7 +467,7 @@ export default function OnboardingPage() {
                     <CardDescription>생성할 쇼핑몰 홈페이지의 분위기와 주요 색상을 선택할 수 있어요.</CardDescription>
                     <CardDescription>하단에서 쇼핑몰 미리보기가 가능합니다.</CardDescription>
                   </CardHeader>
-                  
+
                   <div className="space-y-8">
                     {/* 템플릿 선택 */}
                     <div>
@@ -536,8 +511,8 @@ export default function OnboardingPage() {
                               key={theme.id}
                               variant={selectedTheme === theme.id ? "default" : "outline"}
                               className="h-auto p-3 flex items-center gap-3"
-                              style={selectedTheme === theme.id ? { 
-                                backgroundColor: theme.color, 
+                              style={selectedTheme === theme.id ? {
+                                backgroundColor: theme.color,
                                 borderColor: theme.color,
                                 color: 'white'
                               } : {}}
@@ -546,7 +521,7 @@ export default function OnboardingPage() {
                               {selectedTheme === theme.id ? (
                                 <CheckCircle2 className="h-5 w-5 text-white" />
                               ) : (
-                                <div 
+                                <div
                                   className="w-5 h-5 rounded-full"
                                   style={{ backgroundColor: theme.color }}
                                 />
@@ -572,7 +547,7 @@ export default function OnboardingPage() {
                                 ...(() => {
                                   const selectedPalette = themeOptions.find(t => t.id === selectedTheme)?.palette;
                                   if (!selectedPalette) return {};
-                                  
+
                                   return {
                                     '--color-primary': selectedPalette.primary,
                                     '--color-secondary': selectedPalette.secondary,
@@ -605,13 +580,13 @@ export default function OnboardingPage() {
                     <CardTitle>브랜드 이미지 (선택사항)</CardTitle>
                     <CardDescription>로고나 대표 이미지를 추가하거나 나중에 설정할 수 있어요</CardDescription>
                   </CardHeader>
-                  
+
                   <div className="space-y-6">
                     <div>
                       <Label>브랜드 대표 이미지</Label>
                       {!brandImagePreview ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                          <Card 
+                          <Card
                             className="cursor-pointer hover:shadow-md transition-shadow"
                             onClick={() => fileInputRef.current?.click()}
                           >
@@ -623,11 +598,10 @@ export default function OnboardingPage() {
                               </p>
                             </CardContent>
                           </Card>
-                          
-                          <Card 
-                            className={`cursor-pointer hover:shadow-md transition-shadow ${
-                              isGeneratingImage ? 'opacity-50 cursor-wait' : ''
-                            }`}
+
+                          <Card
+                            className={`cursor-pointer hover:shadow-md transition-shadow ${isGeneratingImage ? 'opacity-50 cursor-wait' : ''
+                              }`}
                             onClick={() => !isGeneratingImage && generateAIImage()}
                           >
                             <CardContent className="p-6 text-center">
@@ -691,7 +665,7 @@ export default function OnboardingPage() {
                           </div>
                         </div>
                       )}
-                      
+
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -705,15 +679,15 @@ export default function OnboardingPage() {
                               alert('이미지 파일 크기는 5MB 이하여야 합니다.');
                               return;
                             }
-                            
+
                             setBrandImageFile(file);
                             const reader = new FileReader();
-                            
+
                             reader.onerror = () => {
                               console.error('파일 읽기 오류');
                               alert('이미지를 읽는 중 오류가 발생했습니다.');
                             };
-                            
+
                             reader.onloadend = () => {
                               setBrandImagePreview(reader.result as string);
                               // Data URL은 미리보기용으로만 사용
@@ -724,14 +698,14 @@ export default function OnboardingPage() {
                         }}
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="tagline">브랜드를 대표하는 한 문장 (선택)</Label>
-                      <Input 
-                        id="tagline" 
-                        placeholder="예: 더 따뜻한 밤, 더 편안한 아침" 
-                        value={tagline} 
-                        onChange={(e) => setTagline(e.target.value)} 
+                      <Input
+                        id="tagline"
+                        placeholder="예: 더 따뜻한 밤, 더 편안한 아침"
+                        value={tagline}
+                        onChange={(e) => setTagline(e.target.value)}
                         className="text-lg mt-2"
                       />
                     </div>
