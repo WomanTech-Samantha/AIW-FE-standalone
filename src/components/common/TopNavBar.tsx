@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { checkInstagramConnection } from "@/utils/instagramAuth";
 
 export default function TopNavBar() {
-  const { user, logout } = useAuth();
+  const { user, logout, resetDemo } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [isInstagramConnected, setIsInstagramConnected] = useState(false);
@@ -71,7 +71,7 @@ export default function TopNavBar() {
       <header className="bg-background border-b border-border/40 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/studio" className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center border-[2.5px] border-black">
                 <span className="text-black font-bold text-lg leading-none flex items-center justify-center transform translate-x-[0.5px] -translate-y-[0.5px]">A</span>
               </div>
@@ -155,7 +155,10 @@ export default function TopNavBar() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={logout}
+                        onClick={() => {
+                          resetDemo();
+                          logout();
+                        }}
                         className="text-muted-foreground hover:text-foreground hover:bg-accent"
                       >
                         <LogOut className="h-4 w-4" />
