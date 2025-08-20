@@ -158,6 +158,7 @@ export default function TopNavBar() {
                         onClick={() => {
                           resetDemo();
                           logout();
+                          navigate('/');
                         }}
                         className="text-muted-foreground hover:text-foreground hover:bg-accent"
                       >

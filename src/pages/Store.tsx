@@ -271,8 +271,8 @@ const StorePage = () => {
               </Button>
               <Button 
                 variant="outline" 
-                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-blue-50/50 border-blue-200 hover:bg-blue-100/50 text-blue-900 hover:text-blue-900"
-                onClick={() => navigate('/orders')}
+                className="justify-between px-4 py-4 h-auto text-lg font-semibold bg-blue-50/50 border-blue-200 hover:bg-blue-100/50 text-blue-900 hover:text-blue-900 cursor-pointer"
+                onClick={() => {}}
               >
                 주문 관리
                 <ShoppingCart className="h-10 w-10 text-blue-600" />
