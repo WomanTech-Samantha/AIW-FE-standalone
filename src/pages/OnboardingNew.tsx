@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, ArrowRight, Upload, Sparkles } from "lucide-react";
+import { CheckCircle2, ArrowRight, ArrowLeft, Upload, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/MockAuthContext";
 import CozyHome from "@/templates/Cozy/CozyHome";
@@ -11,7 +11,12 @@ import ChicFashion from "@/templates/Chic/ChicHome";
 import BeautyShop from "@/templates/Beauty/BeautyHome";
 import "@/templates/base.css";
 
-const steps = [1, 2, 3, 4];
+const steps = [
+  { num: 1, label: "기본 정보" },
+  { num: 2, label: "주소 설정" },
+  { num: 3, label: "테마 선택" },
+  { num: 4, label: "로고와 슬로건" }
+];
 
 interface StoreTemplate {
   id: string;
@@ -24,7 +29,7 @@ export default function OnboardingPage() {
   const nav = useNavigate();
   const { user, completeOnboarding } = useAuth();
 
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
 
   // 브랜드 기본 정보 (사용자 정보와 직결)
@@ -227,6 +232,7 @@ export default function OnboardingPage() {
 
   const canProceed = () => {
     switch (currentStep) {
+      case 0: return true;
       case 1: return business !== "" && storeName.trim().length > 0;
       case 2: return subdomain && isSubdomainValid;
       case 3: return selectedTheme !== "" && selectedTemplate !== "";
@@ -242,16 +248,20 @@ export default function OnboardingPage() {
       setIsCreating(true);
       
       try {
-        // 온보딩 완료 API 호출
-        await completeOnboarding({ 
-          business, 
-          storeName,
-          theme: selectedTheme,
-          template: selectedTemplate,
-          subdomain,
-          brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
-          tagline
-        });
+        // 온보딩 완료 API 호출 및 최소 대기시간 보장
+        await Promise.all([
+          completeOnboarding({ 
+            business, 
+            storeName,
+            theme: selectedTheme,
+            template: selectedTemplate,
+            subdomain,
+            brandImageUrl: brandImageFile ? brandImagePreview : brandImageUrl,
+            tagline
+          }),
+          // 최소 3초 대기
+          new Promise(resolve => setTimeout(resolve, 3000))
+        ]);
         
         localStorage.setItem('has_online_store', 'true');
         nav("/studio", { replace: true });
@@ -264,7 +274,22 @@ export default function OnboardingPage() {
     }
   };
 
-  const progress = Math.round((currentStep / steps.length) * 100);
+  const handleBack = () => {
+    // 작성한 내용이 있는지 확인
+    const hasData = business || storeName || subdomain || selectedTemplate || selectedTheme || brandImageUrl || tagline;
+    
+    if (hasData) {
+      const confirmed = window.confirm('작성중인 내용이 있습니다. 정말로 나가시겠습니까?');
+      if (confirmed) {
+        nav(-1);
+      }
+    } else {
+      nav(-1);
+    }
+  };
+
+  // 0단계와 1단계는 0%, 2단계는 33%, 3단계는 67%, 4단계는 100%
+  const progress = currentStep <= 1 ? 0 : Math.round(((currentStep - 1) / 3) * 100);
 
   if (isCreating) {
     return (
@@ -275,7 +300,7 @@ export default function OnboardingPage() {
             <h2 className="text-2xl font-bold mb-4">설정 완료 중...</h2>
             <p className="text-muted-foreground">
               사용자 정보를 저장하고<br />
-              온라인 스토어를 준비하고 있어요!
+              온라인 쇼핑몰을 준비하고 있어요!
             </p>
           </CardContent>
         </Card>
@@ -286,27 +311,106 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">사업장 정보 입력</h1>
-          <div className="flex justify-center items-center space-x-2 text-lg">
-            <span className="font-medium">{storeName ? `${storeName}의 온라인 스토어를 만들어보세요` : "온라인 스토어를 만들어보세요 🏠"}</span>
+        {/* 제목 - 0단계에서는 숨김 */}
+        {currentStep > 0 && (
+          <div className="text-center mb-8 relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute left-0 top-0"
+              onClick={handleBack}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">사업장 정보 입력</h1>
+            <div className="flex justify-center items-center space-x-2 text-lg text-gray-600">
+              <span className="font-medium">
+                {storeName ? (
+                  <>
+                    {storeName}의 온라인 쇼핑몰 만드는 중
+                    <span className="animate-typing"></span>
+                  </>
+                ) : (
+                  "온라인 쇼핑몰을 만들어보세요 🏠"
+                )}
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Progress */}
-        <div className="max-w-md mx-auto mb-8">
-          <div className="flex justify-between text-sm font-medium mb-2">
-            <span>진행상황</span>
-            <span>{currentStep}/{steps.length}</span>
+          <div className="max-w-md mx-auto mb-8">
+            <div className="relative">
+              {/* 배경 바 */}
+              <div className="absolute top-2 left-8 right-8 h-0.5 bg-gray-300"></div>
+              
+              {/* 진행 바 */}
+              <div 
+                className="absolute top-2 left-8 h-0.5 bg-orange-500 transition-all duration-300"
+                style={{ 
+                  width: progress === 0 ? '0' : `calc((100% - 64px) * ${progress} / 100)` 
+                }}
+              ></div>
+              
+              {/* 노드와 라벨 */}
+              <div className="relative flex justify-between">
+                {steps.map((step, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div 
+                      className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
+                        step.num < currentStep 
+                          ? 'bg-orange-500 border-orange-500' 
+                          : step.num === currentStep 
+                            ? 'bg-orange-400 border-orange-400 ring-4 ring-orange-100' 
+                            : 'bg-white border-gray-300'
+                      }`}
+                    >
+                    </div>
+                    <span className={`mt-2 text-sm font-medium ${
+                      step.num <= currentStep ? 'text-orange-600' : 'text-gray-500'
+                    }`}>
+                      {step.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="w-full bg-muted rounded-full h-3">
-            <div className="bg-primary h-3 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
-          </div>
-        </div>
 
         <div className="max-w-4xl mx-auto">
           <Card className="card-soft">
             <CardContent className="p-8 space-y-6">
+              
+              {/* Step 0: 인사말 */}
+              {currentStep === 0 && (
+                <>
+                  <div className="text-center space-y-6 py-8">
+                    <div className="space-y-4">
+                      <h2 className="text-2xl font-bold text-gray-800">
+                        안녕하세요 사장님! 👋
+                      </h2>
+                      <div className="space-y-3 text-lg text-gray-600">
+                        <p>
+                         언제나 소상공인과 함께하는 서비스 올인움입니다.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 rounded-lg p-4 mt-8 mx-auto">
+                      <p className="text-lg text-gray-700">
+                        운영하시는 업장에 대한 정보를 입력하시면<br/>
+                        <span className="font-semibold text-orange-600">사업 브랜딩과 쇼핑몰 사이트 생성</span>을 바로 도와드릴게요!
+                      </p>
+                    </div>
+                    
+                    <div className="pt-8">
+                      <p className="text-base text-gray-500">
+                        약 3분 정도 소요됩니다.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              )}
               
               {/* Step 1: 브랜드 기본 정보 */}
               {currentStep === 1 && (
@@ -325,7 +429,7 @@ export default function OnboardingPage() {
                             key={label}
                             variant={business === label ? "default" : "outline"}
                             onClick={() => setBusiness(label)}
-                            className="h-auto p-4"
+                            className="h-auto py-3 px-4"
                           >
                             {label} {business === label && <CheckCircle2 className="ml-2 h-4 w-4" />}
                           </Button>
@@ -352,27 +456,27 @@ export default function OnboardingPage() {
                 <>
                   <CardHeader className="p-0">
                     <CardTitle>사이트 주소 설정</CardTitle>
-                    <CardDescription>새로 개설할 온라인 스토어의 주소를 설정하세요</CardDescription>
+                    <CardDescription>새로 개설할 온라인 쇼핑몰의 주소를 설정하세요</CardDescription>
                   </CardHeader>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <div>
                       <Label htmlFor="subdomain" className="text-lg mb-4 block">사이트 주소</Label>
-                      <div className="flex items-center gap-2 text-lg">
+                      <div className="flex items-center gap-2 text-lg max-w-md">
                         <span className="text-muted-foreground">https://</span>
                         <Input
                           id="subdomain"
                           value={subdomain}
                           onChange={(e) => setSubdomain(e.target.value.toLowerCase())}
-                          className={`font-mono ${!isSubdomainValid ? 'border-destructive' : ''}`}
+                          className={`font-mono w-64 ${!isSubdomainValid ? 'border-destructive' : ''}`}
                           autoComplete="off"
                           placeholder="mystore"
                         />
                         <span className="text-muted-foreground">.allinwom.com</span>
                       </div>
                       {!isSubdomainValid && (
-                        <p className="text-sm text-destructive mt-2">
-                          영문 소문자, 숫자, 하이픈(-)만 사용 가능하며 3자 이상이어야 합니다
+                        <p className="text-base text-destructive mt-2">
+                          영문 소문자, 숫자, 하이픈(-)만 사용 가능하며 4자 이상 30자 이내여야 합니다
                         </p>
                       )}
                     </div>
@@ -394,18 +498,25 @@ export default function OnboardingPage() {
                     <div>
                       <Label className="text-lg mb-4 block">템플릿 선택</Label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {templates.map((template) => (
+                        {templates.map((template, index) => (
                           <Card 
                             key={template.id}
-                            className={`cursor-pointer transition-all hover:shadow-lg ${
+                            tabIndex={0}
+                            className={`cursor-pointer transition-all hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                               selectedTemplate === template.id ? 'border-primary shadow-md' : ''
                             }`}
                             onClick={() => setSelectedTemplate(template.id)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedTemplate(template.id);
+                              }
+                            }}
                           >
                             <CardContent className="p-4 text-center">
                               <div className="text-4xl mb-3">{template.mockupImage}</div>
                               <h3 className="font-semibold text-lg mb-2">{template.name}</h3>
-                              <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
+                              <p className="text-base text-muted-foreground mb-3">{template.description}</p>
                               {selectedTemplate === template.id && (
                                 <CheckCircle2 className="h-6 w-6 text-primary mx-auto" />
                               )}
@@ -440,7 +551,7 @@ export default function OnboardingPage() {
                                   style={{ backgroundColor: theme.color }}
                                 />
                               )}
-                              <span className="text-sm">{theme.name}</span>
+                              <span className="text-base">{theme.name}</span>
                             </Button>
                           ))}
                         </div>
@@ -452,7 +563,7 @@ export default function OnboardingPage() {
                       <div>
                         <Label className="text-lg mb-4 block">미리보기</Label>
                         <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
-                          <div className="h-[400px] overflow-auto">
+                          <div className="h-[400px] overflow-y-auto overflow-x-hidden">
                             <div 
                               className="transform scale-50 origin-top-left"
                               style={{
@@ -507,7 +618,7 @@ export default function OnboardingPage() {
                             <CardContent className="p-6 text-center">
                               <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                               <h4 className="font-medium text-lg mb-2">이미지 업로드</h4>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-base text-muted-foreground">
                                 가지고 계신 로고나 대표 이미지 파일을 업로드하세요
                               </p>
                             </CardContent>
@@ -524,7 +635,7 @@ export default function OnboardingPage() {
                                 <>
                                   <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
                                   <h4 className="font-medium text-lg mb-2">이미지 생성 중...</h4>
-                                  <p className="text-sm text-muted-foreground">
+                                  <p className="text-base text-muted-foreground">
                                     AI가 열심히 만들고 있어요. 시간이 걸려도 잠시만 기다려 주세요.
                                   </p>
                                 </>
@@ -532,7 +643,7 @@ export default function OnboardingPage() {
                                 <>
                                   <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
                                   <h4 className="font-medium text-lg mb-2">AI로 생성하기</h4>
-                                  <p className="text-sm text-muted-foreground">
+                                  <p className="text-base text-muted-foreground">
                                     업종과 상호명을 바탕으로 이미지를 자동 생성해드려요
                                   </p>
                                 </>
@@ -632,14 +743,14 @@ export default function OnboardingPage() {
               <div className="flex justify-between pt-8 mt-8 border-t">
                 <Button
                   variant="outline"
-                  onClick={() => setCurrentStep(Math.max(1, currentStep - 1))}
-                  disabled={currentStep === 1}
+                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                  disabled={currentStep === 0}
                   className="btn-large"
                 >
                   이전
                 </Button>
                 <Button onClick={handleNext} disabled={!canProceed()} className="btn-large">
-                  {currentStep === steps.length ? "설정 완료" : "다음"}
+                  {currentStep === 0 ? "시작하기" : currentStep === steps.length ? "설정 완료" : "다음"}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>

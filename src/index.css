@@ -8,9 +8,23 @@
   100% { transform: translateX(100%); }
 }
 
+/* 타이핑 애니메이션 */
+@keyframes typing {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+  100% { content: ""; }
+}
+
 @layer utilities {
   .animate-shimmer {
     animation: shimmer 2s ease-in-out infinite;
+  }
+  
+  .animate-typing::after {
+    content: "";
+    animation: typing 5s steps(1, end) infinite;
   }
 }
 

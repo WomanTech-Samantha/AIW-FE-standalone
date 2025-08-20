@@ -75,7 +75,8 @@ export default function TopNavBar() {
               <div className="w-8 h-8 rounded-lg flex items-center justify-center border-[2.5px] border-black">
                 <span className="text-black font-bold text-lg leading-none flex items-center justify-center transform translate-x-[0.5px] -translate-y-[0.5px]">A</span>
               </div>
-              <span className="font-bold text-xl text-foreground">ALL IN WOM</span>
+              <span className="font-bold text-xl text-foreground hidden sm:block">ALL IN WOM</span>
+              <span className="font-bold text-lg text-foreground block sm:hidden">AIW</span>
             </Link>
             
             <nav className="flex-1 flex justify-center">
