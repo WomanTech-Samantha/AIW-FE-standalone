@@ -236,30 +236,22 @@ const ProductAddPage = () => {
 
   // 데모 상품 로드
   const loadDemoProduct = async (demo: typeof demoProducts[0]) => {
+    // 즉시 UI 업데이트 (이미지 미리보기 포함)
+    setSelectedDemo(demo.id);
+    setProductName(demo.name);
+    setProductPrice(demo.price);
+    setKeywords(demo.keywords);
+    setImagePreview(demo.imageUrl); // 이미지를 즉시 표시
+
+    // 백그라운드에서 File 객체 생성 (비동기)
     try {
-      // 선택된 데모 설정
-      setSelectedDemo(demo.id);
-
-      // 상품 정보 설정
-      setProductName(demo.name);
-      setProductPrice(demo.price);
-      setKeywords(demo.keywords);
-
-      // 이미지 다운로드 및 File 객체로 변환
       const response = await fetch(demo.imageUrl);
       const blob = await response.blob();
       const file = new File([blob], `${demo.name}.jpg`, { type: blob.type });
-
       setProductImage(file);
-      setImagePreview(demo.imageUrl);
-
     } catch (error) {
-      console.error('데모 상품 로드 실패:', error);
-      // 에러 시에도 텍스트 정보는 설정
-      setSelectedDemo(demo.id);
-      setProductName(demo.name);
-      setProductPrice(demo.price);
-      setKeywords(demo.keywords);
+      console.error('데모 상품 이미지 로드 실패:', error);
+      // File 객체 생성 실패 시에도 계속 진행
     }
   };
 
@@ -315,11 +307,10 @@ const ProductAddPage = () => {
         keywords: keywords
       });
 
-      // Mock 이미지 생성 시뮬레이션 (10-15초 사이 랜덤)
-      const delay = Math.floor(Math.random() * 5000) + 10000; // 10-15초
-      await new Promise(resolve => setTimeout(resolve, delay));
+      // 화면 전환을 먼저 수행
+      setCurrentStep("preview");
 
-      // Mock 생성된 이미지 URL - 각 데모 상품별 개별 이미지 사용
+      // Mock 생성된 이미지 URL을 즉시 설정 - 각 데모 상품별 개별 이미지 사용
       const selectedDemoProduct = demoProducts.find(d => d.id === selectedDemo);
       if (selectedDemoProduct?.enhancedImageUrl) {
         setEnhancedImage(selectedDemoProduct.enhancedImageUrl);
@@ -327,13 +318,16 @@ const ProductAddPage = () => {
         setEnhancedImage("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%234F46E5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='sans-serif'%3EEnhanced Product%3C/text%3E%3C/svg%3E");
       }
 
-      // Mock 상품 특징 생성 (키워드 기반)
+      // Mock 상품 특징도 즉시 생성 (키워드 기반)
       const mockFeatures = generateMockFeatures(keywords);
       setGeneratedFeatures(mockFeatures);
       setSelectedFeatures(mockFeatures);
 
+      // 이미지와 특징이 모두 설정된 후 지연 시뮬레이션 (10-15초 사이 랜덤)
+      const delay = Math.floor(Math.random() * 5000) + 10000; // 10-15초
+      await new Promise(resolve => setTimeout(resolve, delay));
+
       setHasProcessed(true);
-      setCurrentStep("preview");
 
       console.log('Mock AI 처리 완료');
 
