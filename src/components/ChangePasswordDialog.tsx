@@ -115,7 +115,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* 현재 비밀번호 */}
+          
           <div className="space-y-2">
             <Label htmlFor="currentPassword">현재 비밀번호</Label>
             <div className="relative">
@@ -146,7 +146,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
             </div>
           </div>
 
-          {/* 새 비밀번호 */}
+          
           <div className="space-y-2">
             <Label htmlFor="newPassword">새 비밀번호</Label>
             <div className="relative">
@@ -177,7 +177,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
             </div>
           </div>
 
-          {/* 새 비밀번호 확인 */}
+          
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">새 비밀번호 확인</Label>
             <div className="relative">
@@ -208,7 +208,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSuccess }: ChangePa
             </div>
           </div>
 
-          {/* 에러 메시지 */}
+          
           {error && (
             <div className="text-red-700 text-sm bg-red-50 border border-red-200 p-3 rounded-lg flex items-center gap-2">
               <div className="w-4 h-4 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">

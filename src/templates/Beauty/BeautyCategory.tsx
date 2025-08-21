@@ -285,7 +285,7 @@ const BeautyCategory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -334,7 +334,7 @@ const BeautyCategory = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-white py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -345,7 +345,7 @@ const BeautyCategory = () => {
         </div>
       </div>
 
-      {/* 카테고리 헤더 */}
+      
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -357,7 +357,7 @@ const BeautyCategory = () => {
         </div>
       </section>
 
-      {/* 필터 및 정렬 */}
+      
       <div className="bg-white border-b border-gray-200 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -391,7 +391,7 @@ const BeautyCategory = () => {
         </div>
       </div>
 
-      {/* 상품 목록 */}
+      
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
@@ -458,7 +458,7 @@ const BeautyCategory = () => {
             </div>
           )}
 
-          {/* 페이지네이션 */}
+          
           {!loading && !error && products.length > 0 && (
           <div className="flex justify-center mt-16">
             <div className="flex space-x-2">
@@ -473,7 +473,7 @@ const BeautyCategory = () => {
         </div>
       </section>
 
-      {/* 성분 정보 */}
+      
       <section className="py-16 bg-beauty-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
@@ -556,7 +556,7 @@ const BeautyCategory = () => {
         </div>
       </section>
 
-      {/* 스킨케어 팁 */}
+      
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
@@ -631,7 +631,7 @@ const BeautyCategory = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="bg-beauty-primary text-beauty-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

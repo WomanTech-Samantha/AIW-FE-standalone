@@ -44,7 +44,7 @@ const App = () => (
           }}
         >
           <Routes>
-            {/* 메인 랜딩 페이지 */}
+            
             <Route path="/" element={<Index />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route path="/comparison" element={<ComparisonPage />} />
@@ -52,7 +52,7 @@ const App = () => (
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/instagram/callback" element={<InstagramCallbackPage />} />
 
-            {/* 모든 페이지를 공개로 변경 */}
+            
             <Route element={<AppLayout />}>
               <Route path="/store" element={<StorePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
@@ -70,11 +70,11 @@ const App = () => (
             </Route>
 
 
-            {/* PublicStore 라우팅 - store 쿼리 파라미터가 있을 때만 */}
+            
             <Route path="/category/*" element={<PublicStore />} />
             <Route path="/product/*" element={<PublicStore />} />
 
-            {/* 최하단 */}
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -373,7 +373,7 @@ const CozyCategory = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -408,7 +408,7 @@ const CozyCategory = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-cozy-muted py-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -419,7 +419,7 @@ const CozyCategory = () => {
         </div>
       </div>
 
-      {/* 카테고리 헤더 */}
+      
       <section className="py-8 bg-cozy-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-primary)' }}>{currentCategory.name}</h1>
@@ -427,7 +427,7 @@ const CozyCategory = () => {
         </div>
       </section>
 
-      {/* 필터 및 정렬 */}
+      
       <div className="bg-cozy-card border-b border-cozy-border py-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -454,7 +454,7 @@ const CozyCategory = () => {
         </div>
       </div>
 
-      {/* 상품 목록 */}
+      
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
@@ -517,7 +517,7 @@ const CozyCategory = () => {
             </div>
           )}
 
-          {/* 페이지네이션 */}
+          
           {!loading && !error && products.length > 0 && (
             <div className="flex justify-center mt-12">
             <div className="flex space-x-2">
@@ -532,7 +532,7 @@ const CozyCategory = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="px-2 py-1 rounded text-sm font-semibold text-white font-medium-foreground" style={{ backgroundColor: 'var(--color-secondary)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

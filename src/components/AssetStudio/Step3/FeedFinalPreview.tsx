@@ -27,7 +27,7 @@ export const FeedFinalPreview = ({
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg p-6 bg-white max-h-[600px] overflow-y-auto">
-            {/* 상품 이미지 */}
+            
             <div className="mb-6">
               <img
                 src={selectedImage}
@@ -36,14 +36,14 @@ export const FeedFinalPreview = ({
               />
             </div>
             
-            {/* 메인 텍스트 */}
+            
             <div className="text-center mb-6">
               <p className="text-lg leading-relaxed">
                 {editableCopy?.description || "새로운 상품을 소개합니다! 놓치지 마세요 ✨"}
               </p>
             </div>
             
-            {/* 해시태그 */}
+            
             <div className="text-center">
               <p className="text-sm text-primary">
                 {editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #인스타그램 #피드`}

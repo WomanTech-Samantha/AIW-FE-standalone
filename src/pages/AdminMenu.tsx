@@ -138,7 +138,7 @@ const AdminMenuPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        {/* Header */}
+        
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             관리 메뉴
@@ -150,7 +150,7 @@ const AdminMenuPage = () => {
           </p>
         </div>
 
-        {/* Menu Grid */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {menuItems.map((item) => (
             <Card 
@@ -209,7 +209,7 @@ const AdminMenuPage = () => {
           ))}
         </div>
 
-        {/* Help Section */}
+        
         <div className="mt-12 text-center">
           <Card className="card-soft max-w-2xl mx-auto">
             <CardContent className="py-8">

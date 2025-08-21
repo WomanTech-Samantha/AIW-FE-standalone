@@ -169,7 +169,7 @@ const StorePage = () => {
   // 스토어가 있는 경우
   return (
     <div className="page-container">
-      {/* Header */}
+      
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2">온라인 스토어</h1>
@@ -179,9 +179,9 @@ const StorePage = () => {
         </div>
       </div>
 
-      {/* 스토어 정보 & 빠른 작업 카드 */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* 스토어 정보 & 최근 활동 카드 */}
+        
         <Card className="card-soft">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -251,7 +251,7 @@ const StorePage = () => {
           </CardContent>
         </Card>
 
-        {/* 빠른 작업 카드 */}
+        
         <Card className="card-soft">
           <CardHeader>
             <CardTitle>빠른 작업</CardTitle>
@@ -298,7 +298,7 @@ const StorePage = () => {
         </Card>
       </div>
 
-      {/* 통계 대시보드 */}
+      
       <Card className="card-soft mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

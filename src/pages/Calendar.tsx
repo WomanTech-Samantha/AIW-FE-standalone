@@ -427,7 +427,7 @@ const CalendarPage = () => {
   return (
     <div className="page-container">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
+        
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -449,9 +449,9 @@ const CalendarPage = () => {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-6" onDragOver={handleDragOver}>
-          {/* 왼쪽 사이드바 */}
+          
           <div className="xl:col-span-1 space-y-6">
-            {/* 생성된 콘텐츠 */}
+            
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
@@ -474,7 +474,7 @@ const CalendarPage = () => {
                   >
                     <div className="aspect-video bg-gray-100 rounded mb-3 overflow-hidden relative">
                       <div className="w-full h-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
-                        {/* 콘텐츠 유형에 따른 아이콘 */}
+                        
                         {content.id === 1 ? (
                           <ImageIcon className="h-8 w-8 text-gray-400" />
                         ) : content.id === 2 ? (
@@ -522,9 +522,9 @@ const CalendarPage = () => {
             </Card>
           </div>
 
-          {/* 메인 캘린더 영역 */}
+          
           <div className="xl:col-span-3 space-y-6">
-            {/* 뷰 모드 탭 */}
+            
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'month' | 'week')}>
               <TabsList className="grid w-full max-w-[200px] grid-cols-2">
                 <TabsTrigger value="month">월간</TabsTrigger>
@@ -558,7 +558,7 @@ const CalendarPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    {/* 요일 헤더 */}
+                    
                     <div className="grid grid-cols-7 gap-2 mb-4">
                       {dayNames.map((day) => (
                         <div
@@ -570,7 +570,7 @@ const CalendarPage = () => {
                       ))}
                     </div>
 
-                    {/* 달력 그리드 */}
+                    
                     <div className="grid grid-cols-7 gap-2">
                       {getDaysInMonth(currentDate).map((day, index) => {
                         const isToday = day === new Date().getDate() && 
@@ -735,7 +735,7 @@ const CalendarPage = () => {
               </TabsContent>
             </Tabs>
 
-            {/* 통계 카드 */}
+            
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Card className="hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
@@ -794,7 +794,7 @@ const CalendarPage = () => {
           </div>
         </div>
 
-        {/* 선택된 이벤트 상세 모달 */}
+        
         {selectedEvent && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setSelectedEvent(null)}>
             <Card className="max-w-lg w-full" onClick={(e) => e.stopPropagation()}>
@@ -839,7 +839,7 @@ const CalendarPage = () => {
           </div>
         )}
 
-        {/* 시간 설정 모달 */}
+        
         {showTimeModal && pendingEvent && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
             <Card className="max-w-md w-full">
@@ -908,7 +908,7 @@ const CalendarPage = () => {
           </div>
         )}
 
-        {/* 드래그 성공 피드백 */}
+        
         {selectedDate && (
           <div className="fixed bottom-4 right-4 z-50">
             <Card className="bg-green-50 border-green-200">

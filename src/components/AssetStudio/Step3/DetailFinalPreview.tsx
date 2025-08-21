@@ -31,7 +31,7 @@ export const DetailFinalPreview = ({
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg p-6 bg-white max-h-[600px] overflow-y-auto">
-            {/* 상품 이미지 */}
+            
             <div className="mb-6">
               <img
                 src={selectedImage}
@@ -40,17 +40,17 @@ export const DetailFinalPreview = ({
               />
             </div>
 
-            {/* 제목 */}
+            
             <h2 className="text-2xl font-bold mb-4 text-center">
               {editableCopy?.title || `✨ ${productName || "상품"} 상세 정보`}
             </h2>
 
-            {/* 설명 */}
+            
             <p className="text-gray-600 mb-6 text-center">
               {editableCopy?.description || "품질과 디자인을 모두 갖춘 프리미엄 제품입니다"}
             </p>
 
-            {/* Features */}
+            
             <div className="space-y-4 mb-6">
               {keywords.filter(k => k.trim()).map((keyword, index) => (
                 <div key={index} className="flex items-start">
@@ -62,14 +62,14 @@ export const DetailFinalPreview = ({
               ))}
             </div>
 
-            {/* CTA */}
+            
             <div className="bg-primary text-white p-4 rounded-lg text-center">
               <p className="font-bold text-lg">
                 {editableCopy?.cta || "📞 지금 주문하고 만족스러운 경험을 해보세요!"}
               </p>
             </div>
 
-            {/* 해시태그 */}
+            
             <div className="mt-4 text-center">
               <p className="text-sm text-primary">
                 {editableCopy?.hashtags || `#${productName?.replace(/\s/g, '') || "프리미엄제품"} #품질보장 #고객만족`}

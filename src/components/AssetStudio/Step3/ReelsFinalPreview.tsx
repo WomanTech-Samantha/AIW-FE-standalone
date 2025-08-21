@@ -27,7 +27,7 @@ export const ReelsFinalPreview = ({
         </CardHeader>
         <CardContent>
           <div className="border rounded-lg p-6 bg-white max-h-[600px] overflow-y-auto">
-            {/* 상품 이미지 - 세로형 */}
+            
             <div className="mb-6 flex justify-center">
               <div className="w-48 h-64">
                 <img
@@ -38,14 +38,14 @@ export const ReelsFinalPreview = ({
               </div>
             </div>
             
-            {/* 메인 텍스트 */}
+            
             <div className="text-center mb-6">
               <p className="text-lg leading-relaxed font-bold">
                 {editableCopy?.description || "이것만 알면 당신도 전문가! 🔥 지금 바로 확인해보세요"}
               </p>
             </div>
             
-            {/* 해시태그 */}
+            
             <div className="text-center">
               <p className="text-sm text-primary">
                 {editableCopy?.hashtags || `#${productName.replace(/\s+/g, '')} #릴스 #인스타그램 #트렌드`}

@@ -174,7 +174,7 @@ function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 소셜 로그인 버튼들 */}
+          
           <div className="space-y-2">
             <SocialLoginButton
               provider="google"
@@ -204,7 +204,7 @@ function LoginForm() {
             </div>
           </div>
 
-          {/* 이메일 로그인 폼 */}
+          
           <form className="space-y-4" onSubmit={onSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">이메일</Label>

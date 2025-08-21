@@ -75,7 +75,7 @@ const Index = () => {
 
   return (
     <div className="pg-container">
-      {/* Hero Section */}
+      
       <div className="container mx-auto px-4 py-16">
         <div className="text-center max-w-6xl mx-auto mb-16">
           <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 hover:bg-primary/10">
@@ -143,7 +143,7 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Benefits */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-center justify-center space-x-2 text-success font-medium">
@@ -154,7 +154,7 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Social Proof */}
+        
         <Card className="card-soft max-w-6xl mx-auto mb-16">
           <CardContent className="p-8 text-center">
             <div className="flex items-center justify-center space-x-2 mb-6">
@@ -179,7 +179,7 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        {/* 실제 사용 후기 섹션 */}
+        
         <div className="container mx-auto px-4 py-12">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">실제 사용자 후기</h2>
@@ -251,7 +251,7 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Demo Section */}
+        
         <Card className="card-soft max-w-6xl mx-auto mb-16">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl md:text-3xl mb-4">
@@ -297,7 +297,7 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        {/* Features Grid */}
+        
         <div className="mb-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -321,7 +321,7 @@ const Index = () => {
         </div>
 
 
-        {/* 안심 요소 섹션 */}
+        
         <div className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">

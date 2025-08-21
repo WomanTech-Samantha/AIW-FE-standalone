@@ -36,10 +36,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-// Mock data
 import { mockProducts } from "@/services/mockData";
-
-// 업종별 목데이터 생성 함수
 const getBusinessMockProducts = () => {
   try {
     const demoUserData = JSON.parse(localStorage.getItem('demo_user_data') || '{}');
@@ -85,7 +82,6 @@ const getBusinessMockProducts = () => {
         }
       ];
     } else {
-      // 수공예 업종
       return [
         {
           id: 'craft-1',
@@ -127,7 +123,7 @@ const getBusinessMockProducts = () => {
     }
   } catch (error) {
     console.error('Error getting business mock products:', error);
-    return mockProducts; // 기본값
+    return mockProducts;
   }
 };
 
@@ -140,22 +136,17 @@ const AssetStudioPage = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 상품 상세 이미지 생성 상태
   const [detailImageGenerating, setDetailImageGenerating] = useState(false);
   const [generatedDetailImage, setGeneratedDetailImage] = useState<string | null>(null);
   const [generatedImageModalOpen, setGeneratedImageModalOpen] = useState(false);
 
-  // 인스타 피드 이미지 생성 상태
   const [feedImageGenerating, setFeedImageGenerating] = useState(false);
   const [generatedFeedImage, setGeneratedFeedImage] = useState<string | null>(null);
   const [feedImageModalOpen, setFeedImageModalOpen] = useState(false);
   
-  // 피드 캡션 생성 상태
   const [feedCaptionGenerating, setFeedCaptionGenerating] = useState(false);
   const [generatedCaption, setGeneratedCaption] = useState<string | null>(null);
   const [feedStep, setFeedStep] = useState<'image' | 'caption' | 'complete'>('image');
-  
-  // 백그라운드 생성 추적 상태
   const [backgroundDetailGeneration, setBackgroundDetailGeneration] = useState<{
     isGenerating: boolean;
     productId: string | null;
@@ -171,15 +162,11 @@ const AssetStudioPage = () => {
     captionGenerating: boolean;
   }>({ isGenerating: false, productId: null, startTime: null, expectedDuration: null, captionGenerating: false });
 
-  // 삭제 모달 상태
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<any>(null);
   const [deleting, setDeleting] = useState(false);
 
-  // 팁 상태
   const [currentTipIndex, setCurrentTipIndex] = useState(0);
-
-  // 마케팅 팁 목록
   const marketingTips = [
     "💡 상품 상세 이미지는 구매 전환율을 최대 30% 높일 수 있어요!",
     "🎨 깔끔한 디자인의 상품 이미지는 브랜드 신뢰도를 높여줍니다.",
@@ -191,18 +178,13 @@ const AssetStudioPage = () => {
     "🏆 경쟁사와 차별화된 이미지로 고객의 선택을 받으세요."
   ];
 
-  // 상품 목록 조회 (Mock)
   const fetchProducts = async (page = 1) => {
     try {
       setLoading(true);
 
-      // Mock API 호출 시뮬레이션
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // localStorage에서 사용자가 추가한 상품들 가져오기
       const savedProducts = JSON.parse(localStorage.getItem('demo_products') || '[]');
-
-      // 업종별 Mock 상품들과 사용자 추가 상품들 합치기
       const businessMockProducts = getBusinessMockProducts();
       const allProducts = [...businessMockProducts, ...savedProducts].map((p, index) => ({
         ...p,
@@ -211,7 +193,6 @@ const AssetStudioPage = () => {
         price: p.price || 0
       }));
 
-      // 페이징 처리
       const itemsPerPage = 4;
       const startIndex = (page - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
@@ -229,12 +210,9 @@ const AssetStudioPage = () => {
     }
   };
 
-  // 컴포넌트 마운트 시 상품 목록 조회
   useEffect(() => {
     fetchProducts(currentPage);
   }, [currentPage]);
-
-  // 팁 순환 효과
   useEffect(() => {
     if (detailImageGenerating || feedImageGenerating || feedCaptionGenerating) {
       const interval = setInterval(() => {
@@ -245,15 +223,12 @@ const AssetStudioPage = () => {
     }
   }, [detailImageGenerating, feedImageGenerating, feedCaptionGenerating, marketingTips.length]);
 
-  // 백그라운드 생성 상태 확인
   useEffect(() => {
     const checkBackgroundGeneration = () => {
-      // 상세 이미지 백그라운드 생성 확인
       if (backgroundDetailGeneration.isGenerating && backgroundDetailGeneration.startTime && backgroundDetailGeneration.expectedDuration) {
         const elapsed = Date.now() - backgroundDetailGeneration.startTime;
         
         if (elapsed >= backgroundDetailGeneration.expectedDuration) {
-          // 생성 완료
           setGeneratedDetailImage('/placeholder.svg');
           setDetailImageGenerating(false);
           setBackgroundDetailGeneration({ isGenerating: false, productId: null, startTime: null, expectedDuration: null });
@@ -280,7 +255,6 @@ const AssetStudioPage = () => {
 
   const currentProducts = products;
 
-  // 캡션에서 해시태그와 멘션을 파란색으로 렌더링하는 함수
   const formatCaption = (text: string) => {
     if (!text) return text;
     
@@ -615,7 +589,7 @@ const AssetStudioPage = () => {
 
   return (
     <div className="page-container">
-      {/* Header */}
+      
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold mb-2">마케팅 에셋 생성하기</h1>
@@ -625,7 +599,7 @@ const AssetStudioPage = () => {
         </div>
       </div>
 
-      {/* Product Selection */}
+      
       <div className="mb-8">
         <Card className="card-soft">
           <CardHeader>
@@ -633,7 +607,7 @@ const AssetStudioPage = () => {
               <div>
                 <CardTitle className="text-2xl">STEP 1. 홍보할 제품 선택하기</CardTitle>
               </div>
-              {/* 상품이 있을 때만 상단 추가 버튼 표시 */}
+              
               {currentProducts.length > 0 && !loading && (
                 <div className="flex gap-2">
                   <Button
@@ -650,7 +624,7 @@ const AssetStudioPage = () => {
           </CardHeader>
           <CardContent>
             <div className="relative">
-              {/* 좌측 넘기기 버튼 - 페이지가 2개 이상일 때만 표시 */}
+              
               {currentProducts.length > 0 && !loading && totalPages > 1 && (
                 <Button
                   variant="ghost"
@@ -662,7 +636,7 @@ const AssetStudioPage = () => {
                 </Button>
               )}
 
-              {/* 우측 넘기기 버튼 - 페이지가 2개 이상일 때만 표시 */}
+              
               {currentProducts.length > 0 && !loading && totalPages > 1 && (
                 <Button
                   variant="ghost"
@@ -674,7 +648,7 @@ const AssetStudioPage = () => {
                 </Button>
               )}
 
-              {/* 상품 카드들 */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {loading ? (
                   Array.from({ length: 4 }).map((_, index) => (
@@ -714,7 +688,7 @@ const AssetStudioPage = () => {
                             ) : (
                               <Package className="h-10 w-10 text-gray-400" />
                             )}
-                            {/* 편집/삭제 버튼 - 호버 시에만 표시 */}
+                            
                             {hoveredProduct === product.id && (
                               <div className="absolute top-1 right-1 flex gap-1">
                                 <Button
@@ -774,10 +748,10 @@ const AssetStudioPage = () => {
                 )}
               </div>
 
-              {/* 페이지 인디케이터 - 상품이 있고 페이지가 여러 개일 때만 표시 */}
+              
               {currentProducts.length > 0 && !loading && totalPages > 1 && (
                 <div className="flex justify-center items-center mt-4 space-x-1">
-                  {/* 처음 페이지로 */}
+                  
                   <Button
                     variant="ghost"
                     size="sm"
@@ -788,7 +762,7 @@ const AssetStudioPage = () => {
                     <ChevronsLeft className="h-4 w-4" />
                   </Button>
 
-                  {/* 이전 페이지 */}
+                  
                   <Button
                     variant="ghost"
                     size="sm"
@@ -799,7 +773,7 @@ const AssetStudioPage = () => {
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
 
-                  {/* 페이지 번호들 */}
+                  
                   <div className="flex space-x-1">
                     {Array.from({ length: totalPages }).map((_, index) => (
                       <Button
@@ -817,7 +791,7 @@ const AssetStudioPage = () => {
                     ))}
                   </div>
 
-                  {/* 다음 페이지 */}
+                  
                   <Button
                     variant="ghost"
                     size="sm"
@@ -828,7 +802,7 @@ const AssetStudioPage = () => {
                     <ChevronRight className="h-4 w-4" />
                   </Button>
 
-                  {/* 마지막 페이지로 */}
+                  
                   <Button
                     variant="ghost"
                     size="sm"
@@ -846,7 +820,7 @@ const AssetStudioPage = () => {
       </div>
 
 
-      {/* Content Type Selection */}
+      
       <div className="mb-8">
         <Card className="card-soft">
           <CardHeader>
@@ -865,7 +839,7 @@ const AssetStudioPage = () => {
                   className="h-auto flex-col p-4 space-y-2 relative"
                   disabled={!selectedProduct || (type.id === 'detail' && detailImageGenerating) || (type.id === 'feed' && feedImageGenerating) || (type.id !== 'detail' && type.id !== 'feed')}
                 >
-                  {/* 생성 완료 체크 표시 */}
+                  
                   {((type.id === 'detail' && generatedDetailImage) || 
                     (type.id === 'feed' && generatedFeedImage)) && (
                     <div className="absolute -top-1 -right-1 w-7 h-7 bg-green-500 rounded-full flex items-center justify-center shadow-lg border-2 border-background">
@@ -889,7 +863,7 @@ const AssetStudioPage = () => {
         </Card>
       </div>
 
-      {/* 삭제 확인 모달 */}
+      
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -919,7 +893,7 @@ const AssetStudioPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* 상품 상세 이미지 생성 모달 */}
+      
       <Dialog open={generatedImageModalOpen} onOpenChange={setGeneratedImageModalOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
@@ -937,19 +911,19 @@ const AssetStudioPage = () => {
             {detailImageGenerating ? (
               // 로딩 상태
               <div className="flex flex-col items-center justify-center py-12 space-y-6">
-                {/* 애니메이션 로더 */}
+                
                 <div className="relative">
                   <Loader2 className="h-16 w-16 animate-spin text-primary" />
                   <Sparkles className="absolute top-0 right-0 h-6 w-6 text-yellow-500 animate-pulse" />
                 </div>
 
-                {/* 진행 상태 메시지 */}
+                
                 <div className="text-center space-y-2">
                   <p className="text-lg font-medium">잠시만 기다려주세요...</p>
                   <p className="text-sm text-gray-500">보통 30-45초 정도 소요됩니다</p>
                 </div>
 
-                {/* 마케팅 팁 */}
+                
                 <div className="w-full max-w-md p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
                   <p className="text-sm text-center text-gray-700 transition-all duration-500">
                     {marketingTips[currentTipIndex]}
@@ -1005,7 +979,7 @@ const AssetStudioPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* \uc778\uc2a4\ud0c0 \ud53c\ub4dc \uc774\ubbf8\uc9c0 \uc0dd\uc131 \ubaa8\ub2ec */}
+      
       <Dialog open={feedImageModalOpen} onOpenChange={setFeedImageModalOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
@@ -1044,7 +1018,7 @@ const AssetStudioPage = () => {
             ) : generatedFeedImage ? (
               // 이미지 생성 완료 상태
               <div className={feedStep === 'image' ? 'flex justify-center' : 'grid grid-cols-1 lg:grid-cols-2 gap-6'}>
-                {/* 왼쪽: 생성된 이미지 */}
+                
                 <div className="relative w-full max-h-[60vh] overflow-auto border rounded-lg bg-gray-50 p-4">
                   <img
                     src={generatedFeedImage}
@@ -1053,7 +1027,7 @@ const AssetStudioPage = () => {
                   />
                 </div>
                 
-                {/* 오른쪽: 캡션 영역 - feedStep이 'caption' 또는 'complete'일 때만 표시 */}
+                
                 {feedStep !== 'image' && (
                   <div className="space-y-4">
                     {feedCaptionGenerating ? (

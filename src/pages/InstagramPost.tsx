@@ -294,7 +294,7 @@ const InstagramPostPage = () => {
   return (
     <div className="page-container">
       <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
+        
         <div className="mb-6">
           <div className="mb-4">
             <Button
@@ -321,10 +321,10 @@ const InstagramPostPage = () => {
           {showTipSection && (
           <div className="flex justify-end">
             <div className="relative border-pink-300 rounded-lg border-2 p-3 max-w-md text-right bg-gradient-to-br from-pink-100 to-purple-100 overflow-hidden group">
-              {/* shimmer 효과 - hover 안했을 때만 */}
+              
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:hidden animate-shimmer"></div>
               
-                {/* X 버튼 */}
+                
                 <button
                   onClick={() => setShowTipSection(false)}
                   className="absolute top-1 right-1 rounded-full bg-gray-100 hover:bg-gray-300 z-20"
@@ -351,7 +351,7 @@ const InstagramPostPage = () => {
         </div>
 
         <div className="space-y-6">
-          {/* 이미지 업로드 */}
+          
           <Card className="shadow-sm border border-gray-200">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-gray-900">
@@ -384,7 +384,7 @@ const InstagramPostPage = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* 메인 이미지 뷰어 */}
+                  
                   <div className="flex items-center gap-4">
                     <div className="w-10 flex justify-center">
                       {currentImageIndex > 0 && (
@@ -406,14 +406,14 @@ const InstagramPostPage = () => {
                         />
                       </div>
                       
-                      {/* 이미지 인디케이터 */}
+                      
                       {imagePreviews.length > 1 && (
                         <div className="absolute top-3 left-3 bg-black/60 text-white px-2 py-1 rounded-full text-xs">
                           {currentImageIndex + 1} / {imagePreviews.length}
                         </div>
                       )}
                       
-                      {/* 삭제 버튼 */}
+                      
                       <button
                         onClick={() => removeImage(currentImageIndex)}
                         className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition-all shadow-sm"
@@ -434,9 +434,9 @@ const InstagramPostPage = () => {
                     </div>
                   </div>
                   
-                  {/* 썸네일 리스트 - 5칸씩 고정 */}
+                  
                   <div className="w-full space-y-3">
-                    {/* 현재 페이지 계산 */}
+                    
                     {(() => {
                       // totalItems는 실제 이미지 + 추가 버튼(+1칸)을 포함하되, 최대 10장까지만
                       const totalItems = Math.min(selectedImages.length + (selectedImages.length < 10 ? 1 : 0), 10);
@@ -446,7 +446,7 @@ const InstagramPostPage = () => {
                       return (
                         <>
                           <div className="flex items-center justify-center gap-2">
-                            {/* 왼쪽 화살표 - 자리 고정 */}
+                            
                             <div className="w-6 flex justify-center">
                               {thumbnailPage > 0 && (
                                 <button
@@ -463,7 +463,7 @@ const InstagramPostPage = () => {
                               )}
                             </div>
                             
-                            {/* 5칸 썸네일 그리드 */}
+                            
                             <div className="flex gap-2">
                               {Array.from({ length: 5 }, (_, i) => {
                                 const index = startIndex + i;
@@ -489,7 +489,7 @@ const InstagramPostPage = () => {
                                           className="w-full h-full object-cover"
                                         />
                                       </button>
-                                      {/* 썸네일 삭제 버튼 - hover 시에만 표시 */}
+                                      
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -524,7 +524,7 @@ const InstagramPostPage = () => {
                               })}
                             </div>
                             
-                            {/* 오른쪽 화살표 - 자리 고정 */}
+                            
                             <div className="w-6 flex justify-center">
                               {thumbnailPage < totalPages - 1 && (
                                 <button
@@ -548,7 +548,7 @@ const InstagramPostPage = () => {
                             </div>
                           </div>
                           
-                          {/* 페이지 도트 표시 */}
+                          
                           {totalPages > 1 && (
                             <div className="flex justify-center gap-1">
                               {Array.from({ length: totalPages }, (_, i) => (
@@ -566,7 +566,7 @@ const InstagramPostPage = () => {
                     })()}
                   </div>
                   
-                  {/* 전체 삭제 버튼 */}
+                  
                   <div className="flex justify-end">
                     <Button
                       variant="outline"
@@ -591,7 +591,7 @@ const InstagramPostPage = () => {
             </CardContent>
           </Card>
 
-          {/* 캡션 및 게시 */}
+          
           <div className="space-y-4">
             <Card className="shadow-sm border border-gray-200">
               <CardHeader className="pb-4">
@@ -618,7 +618,7 @@ const InstagramPostPage = () => {
                   </div>
                 </div>
 
-                {/* 마케팅 팁 박스 - 아코디언 스타일 */}
+                
                 <div className="bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
                   <button
                     onClick={() => setShowInstagramGuide(!showInstagramGuide)}
@@ -645,7 +645,7 @@ const InstagramPostPage = () => {
               </CardContent>
             </Card>
 
-            {/* 상태 메시지 */}
+            
             {uploadStatus.type && (
               <Alert 
                 variant={uploadStatus.type === 'error' ? 'destructive' : 'default'}
@@ -660,7 +660,7 @@ const InstagramPostPage = () => {
               </Alert>
             )}
 
-            {/* 미리보기 */}
+            
             {imagePreviews.length > 0 && caption && (
               <Card className="border border-gray-200 shadow-sm">
                 <CardHeader className="pb-3">
@@ -688,7 +688,7 @@ const InstagramPostPage = () => {
                         className="w-full h-full object-cover" 
                       />
                       
-                      {/* 왼쪽 화살표 */}
+                      
                       {imagePreviews.length > 1 && previewImageIndex > 0 && (
                         <button
                           onClick={prevPreviewImage}
@@ -698,7 +698,7 @@ const InstagramPostPage = () => {
                         </button>
                       )}
                       
-                      {/* 오른쪽 화살표 */}
+                      
                       {imagePreviews.length > 1 && previewImageIndex < imagePreviews.length - 1 && (
                         <button
                           onClick={nextPreviewImage}
@@ -722,7 +722,7 @@ const InstagramPostPage = () => {
               </Card>
             )}
 
-            {/* 게시 버튼 */}
+            
             <Card className="shadow-sm border border-gray-200">
               <CardContent className="pt-6">
                 <div className="flex gap-3 items-stretch">

@@ -102,7 +102,7 @@ const BeautyProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -132,7 +132,7 @@ const BeautyProduct = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-beauty-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -145,11 +145,11 @@ const BeautyProduct = () => {
         </div>
       </div>
 
-      {/* 상품 상세 */}
+      
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* 상품 이미지 */}
+            
             <div className="space-y-6">
               <div className="aspect-square overflow-hidden rounded-lg bg-beauty-card shadow-beauty">
                 <img 
@@ -171,7 +171,7 @@ const BeautyProduct = () => {
               </div>
             </div>
 
-            {/* 상품 정보 */}
+            
             <div className="space-y-8">
               <div>
                 <div className="flex items-center mb-4">
@@ -221,7 +221,7 @@ const BeautyProduct = () => {
                   피부 노화를 방지합니다. 파라벤, 실리콘, 인공향료 무첨가로 민감한 피부에도 안전합니다.
                 </p>
 
-                {/* 용량 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Size</h3>
                   <div className="flex space-x-3">
@@ -242,7 +242,7 @@ const BeautyProduct = () => {
                   <p className="text-sm text-gray-600 mt-2">권장: 하루 2-3방울, 약 3개월 사용 가능 (30ml 기준)</p>
                 </div>
 
-                {/* 수량 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Quantity</h3>
                   <div className="flex items-center space-x-4">
@@ -266,7 +266,7 @@ const BeautyProduct = () => {
                   </div>
                 </div>
 
-                {/* 구매 버튼 */}
+                
                 <div className="space-y-4 pt-8">
                   <Button className="w-full bg-beauty-primary hover:bg-beauty-primary/90 text-beauty-primary-foreground py-4 text-lg font-semibold transition-smooth">
                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -281,7 +281,7 @@ const BeautyProduct = () => {
                   </Button>
                 </div>
 
-                {/* 서비스 정보 */}
+                
                 <div className="bg-beauty-muted p-8 rounded-lg space-y-4">
                   <div className="flex items-center space-x-4">
                     <Truck className="h-6 w-6 text-beauty-primary" />
@@ -306,7 +306,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 상품 상세 정보 */}
+      
       <section className="py-16 bg-beauty-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-b border-beauty-border mb-12">
@@ -362,7 +362,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 사용법 */}
+      
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold mb-12 text-center text-beauty-primary">How to Use</h3>
@@ -392,7 +392,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 관련 상품 */}
+      
       <section className="py-20 bg-beauty-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold mb-12 text-center">함께 사용하면 좋은 제품</h3>
@@ -424,7 +424,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="bg-beauty-primary text-beauty-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

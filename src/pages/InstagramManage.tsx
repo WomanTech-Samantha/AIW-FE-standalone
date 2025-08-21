@@ -96,7 +96,7 @@ const InstagramManagePage = () => {
 
   return (
     <div className="page-container">
-      {/* Header */}
+      
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div>
@@ -122,7 +122,7 @@ const InstagramManagePage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 계정 정보 */}
+        
         <div className="lg:col-span-1">
           <Card>
             <CardHeader className="mt-4">
@@ -166,7 +166,7 @@ const InstagramManagePage = () => {
 
               <Separator className="my-4" />
 
-              {/* 빠른 액션 */}
+              
               <div className="grid grid-cols-3 gap-3 py-2">
                 <button
                   className="flex flex-col items-center gap-3 p-5 text-sm font-medium bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:from-blue-100 hover:to-blue-200 transition-all"
@@ -202,7 +202,7 @@ const InstagramManagePage = () => {
           </Card>
         </div>
 
-        {/* 계정 현황 및 인사이트 */}
+        
         <div className="lg:col-span-2">
           <Card>
             <CardHeader className="mt-4">
@@ -215,7 +215,7 @@ const InstagramManagePage = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8 mb-8">
-              {/* 성과 지표 */}
+              
               <div className="bg-gray-50 rounded-lg p-4 mb-20 border">
                 <div className="grid grid-cols-4 gap-4">
                   <div className="text-center">
@@ -254,11 +254,11 @@ const InstagramManagePage = () => {
 
               <Separator className="my-4" />
 
-              {/* 최근 게시물 */}
+              
               <div>
                 <h3 className="font-semibold mb-3">최근 게시물</h3>
                 <div className="flex gap-3 overflow-x-auto pb-4 my-8">
-                  {/* 오늘: 피드 게시물 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '200px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 relative" style={{ height: '200px' }}>
                       <div className="absolute top-3 left-3">
@@ -280,7 +280,7 @@ const InstagramManagePage = () => {
                     </div>
                   </div>
 
-                  {/* 1일 전: 스토리 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '140px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600 relative" style={{ height: '280px' }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -295,7 +295,7 @@ const InstagramManagePage = () => {
                     </div>
                   </div>
 
-                  {/* 2일 전: 릴스 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '160px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-violet-400 via-purple-600 to-pink-600 relative" style={{ height: '280px' }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
@@ -315,7 +315,7 @@ const InstagramManagePage = () => {
                     </div>
                   </div>
 
-                  {/* 3일 전: 피드 게시물 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '200px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-emerald-400 via-teal-500 to-blue-600 relative" style={{ height: '200px' }}>
                       <div className="absolute top-3 left-3">
@@ -337,7 +337,7 @@ const InstagramManagePage = () => {
                     </div>
                   </div>
 
-                  {/* 4일 전: 릴스 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '160px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-orange-400 via-red-500 to-pink-600 relative" style={{ height: '280px' }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30"></div>
@@ -357,7 +357,7 @@ const InstagramManagePage = () => {
                     </div>
                   </div>
 
-                  {/* 5일 전: 피드 게시물 */}
+                  
                   <div className="border rounded-lg overflow-hidden flex-shrink-0 shadow-sm relative cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-200" style={{ width: '200px', height: '280px' }}>
                     <div className="bg-gradient-to-br from-indigo-400 via-blue-500 to-cyan-600 relative" style={{ height: '200px' }}>
                       <div className="absolute top-3 left-3">

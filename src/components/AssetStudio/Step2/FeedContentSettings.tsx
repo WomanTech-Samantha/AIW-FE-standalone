@@ -44,7 +44,7 @@ export const FeedContentSettings = ({
   return (
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Panel - Content Settings */}
+        
         <div className="space-y-6">
           <Card className="card-soft">
             <CardHeader>
@@ -103,7 +103,7 @@ export const FeedContentSettings = ({
           </Card>
         </div>
 
-        {/* Right Panel - Generated Content */}
+        
         <div className="space-y-6">
           {showCopyGeneration && (
             <Card className="card-soft">
@@ -121,7 +121,7 @@ export const FeedContentSettings = ({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Style Selection */}
+                
                 <div>
                   <label className="text-sm font-medium text-muted-foreground mb-3 block">문구 스타일 선택</label>
                   <div className="grid grid-cols-2 gap-3">
@@ -142,7 +142,7 @@ export const FeedContentSettings = ({
                   </div>
                 </div>
 
-                {/* Feed Post Content */}
+                
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">피드 본문</label>
                   {isEditing ? (
@@ -169,7 +169,7 @@ export const FeedContentSettings = ({
                   )}
                 </div>
 
-                {/* Hashtags */}
+                
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">해시태그</label>
                   {isEditing ? (
@@ -200,7 +200,7 @@ export const FeedContentSettings = ({
           )}
         </div>
 
-        {/* Navigation Buttons */}
+        
         <div className="col-span-1 lg:col-span-2 flex justify-between pt-4">
           <Button
             variant="outline"

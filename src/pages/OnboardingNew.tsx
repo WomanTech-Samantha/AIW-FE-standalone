@@ -286,7 +286,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
-        {/* 제목 - 0단계에서는 숨김 */}
+        
         {currentStep > 0 && (
           <div className="text-center mb-8 relative">
             <Button
@@ -313,13 +313,13 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Progress */}
+        
           <div className="max-w-md mx-auto mb-8">
             <div className="relative">
-              {/* 배경 바 */}
+              
               <div className="absolute top-2 left-8 right-8 h-0.5 bg-gray-300"></div>
               
-              {/* 진행 바 */}
+              
               <div 
                 className="absolute top-2 left-8 h-0.5 bg-orange-500 transition-all duration-300"
                 style={{ 
@@ -327,7 +327,7 @@ export default function OnboardingPage() {
                 }}
               ></div>
               
-              {/* 노드와 라벨 */}
+              
               <div className="relative flex justify-between">
                 {steps.map((step, index) => (
                   <div key={index} className="flex flex-col items-center">
@@ -356,7 +356,7 @@ export default function OnboardingPage() {
           <Card className="card-soft">
             <CardContent className="p-8 space-y-6">
               
-              {/* Step 0: 인사말 */}
+              
               {currentStep === 0 && (
                 <>
                   <div className="text-center space-y-6 py-8">
@@ -387,7 +387,7 @@ export default function OnboardingPage() {
                 </>
               )}
               
-              {/* Step 1: 브랜드 기본 정보 */}
+              
               {currentStep === 1 && (
                 <>
                   <CardHeader className="p-0">
@@ -426,7 +426,7 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Step 2: 사이트 주소 */}
+              
               {currentStep === 2 && (
                 <>
                   <CardHeader className="p-0">
@@ -459,7 +459,7 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Step 3: 사이트 템플릿 및 테마 */}
+              
               {currentStep === 3 && (
                 <>
                   <CardHeader className="p-0">
@@ -469,7 +469,7 @@ export default function OnboardingPage() {
                   </CardHeader>
 
                   <div className="space-y-8">
-                    {/* 템플릿 선택 */}
+                    
                     <div>
                       <Label className="text-lg mb-4 block">템플릿 선택</Label>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -501,7 +501,7 @@ export default function OnboardingPage() {
                       </div>
                     </div>
 
-                    {/* 테마 색상 선택 */}
+                    
                     {selectedTemplate && (
                       <div>
                         <Label className="text-lg mb-4 block">테마 색상</Label>
@@ -533,7 +533,7 @@ export default function OnboardingPage() {
                       </div>
                     )}
 
-                    {/* 템플릿 미리보기 */}
+                    
                     {selectedTemplate && selectedTheme && (
                       <div>
                         <Label className="text-lg mb-4 block">미리보기</Label>
@@ -573,7 +573,7 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Step 4: 브랜드 이미지 (선택) */}
+              
               {currentStep === 4 && (
                 <>
                   <CardHeader className="p-0">
@@ -713,7 +713,7 @@ export default function OnboardingPage() {
                 </>
               )}
 
-              {/* Navigation Buttons */}
+              
               <div className="flex justify-between pt-8 mt-8 border-t">
                 <Button
                   variant="outline"

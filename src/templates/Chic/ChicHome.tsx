@@ -120,7 +120,7 @@ const ChicFashion = () => {
   const businessContent = getBusinessContent();
   return (
     <div className="min-h-screen bg-white">
-      {/* 헤더 - 미니멀하고 세련된 디자인 */}
+      
       <header className="border-b border-gray-100">
         <div className="container">
           <div className="flex items-center justify-between h-20">
@@ -155,8 +155,8 @@ const ChicFashion = () => {
         </div>
       </header>
 
-      {/* 시크 템플릿 특징: 미니멀하고 세련된 그리드 레이아웃 */}
-      {/* 히어로 섹션 - 대칭적이고 깔끔한 디자인 */}
+      
+      
       <section className="relative">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="order-2 lg:order-1 flex items-center justify-center p-20" style={{ backgroundColor: 'var(--color-background)' }}>
@@ -195,12 +195,12 @@ const ChicFashion = () => {
         </div>
       </section>
 
-      {/* 특별 프로모션 - 심플한 배너 */}
+      
       <section className="py-2 text-center text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
         <p className="text-sm tracking-wider">{businessContent.promoText}</p>
       </section>
 
-      {/* 베스트셀러 - 그리드 갤러리 */}
+      
       <section className="py-20">
         <div className="container">
           <div className="text-center mb-16">
@@ -241,7 +241,7 @@ const ChicFashion = () => {
         </div>
       </section>
 
-      {/* 카테고리 - 미니멀 카드 */}
+      
       <section className="py-20" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="container">
           <h3 className="text-4xl font-light text-center text-gray-800 mb-16">{businessContent.categoryTitle}</h3>
@@ -269,7 +269,7 @@ const ChicFashion = () => {
         </div>
       </section>
 
-      {/* 브랜드 스토리 - 대칭적 레이아웃 */}
+      
       <section className="py-20">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -300,7 +300,7 @@ const ChicFashion = () => {
         </div>
       </section>
 
-      {/* 푸터 - 심플한 디자인 */}
+      
       <footer className="py-16 border-t border-gray-100">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">

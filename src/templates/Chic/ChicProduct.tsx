@@ -127,7 +127,7 @@ const ChicProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -157,7 +157,7 @@ const ChicProduct = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-chic-muted py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -170,11 +170,11 @@ const ChicProduct = () => {
         </div>
       </div>
 
-      {/* 상품 상세 */}
+      
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* 상품 이미지 */}
+            
             <div className="space-y-6">
               <div className="aspect-[3/4] overflow-hidden rounded-lg bg-chic-card shadow-chic">
                 <img 
@@ -196,7 +196,7 @@ const ChicProduct = () => {
               </div>
             </div>
 
-            {/* 상품 정보 */}
+            
             <div className="space-y-8">
               <div>
                 <div className="flex items-center mb-4">
@@ -226,7 +226,7 @@ const ChicProduct = () => {
                   {businessContent.description}
                 </p>
 
-                {/* 색상 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Color</h3>
                   <div className="flex space-x-3">
@@ -246,7 +246,7 @@ const ChicProduct = () => {
                   </div>
                 </div>
 
-                {/* 사이즈 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Size</h3>
                   <div className="flex space-x-3">
@@ -269,7 +269,7 @@ const ChicProduct = () => {
                   </Button>
                 </div>
 
-                {/* 수량 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Quantity</h3>
                   <div className="flex items-center space-x-4">
@@ -293,7 +293,7 @@ const ChicProduct = () => {
                   </div>
                 </div>
 
-                {/* 구매 버튼 */}
+                
                 <div className="space-y-4 pt-8">
                   <Button className="w-full bg-chic-primary hover:bg-chic-primary/90 text-chic-primary-foreground py-4 text-lg font-semibold transition-smooth">
                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -308,7 +308,7 @@ const ChicProduct = () => {
                   </Button>
                 </div>
 
-                {/* 서비스 정보 */}
+                
                 <div className="bg-chic-muted p-8 rounded-lg space-y-4">
                   <div className="flex items-center space-x-4">
                     <Truck className="h-6 w-6 text-chic-primary" />
@@ -333,7 +333,7 @@ const ChicProduct = () => {
         </div>
       </section>
 
-      {/* 상품 상세 정보 */}
+      
       <section className="py-16 bg-chic-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-b border-chic-border mb-12">
@@ -372,7 +372,7 @@ const ChicProduct = () => {
         </div>
       </section>
 
-      {/* 관련 상품 */}
+      
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold mb-12 text-center">Complete the Look</h3>
@@ -404,7 +404,7 @@ const ChicProduct = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="bg-chic-primary text-chic-primary-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
