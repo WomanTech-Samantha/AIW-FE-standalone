@@ -78,7 +78,7 @@ const ProductAddPage = () => {
           price: "119000",
           keywords: ["스프레드", "마이크로파이버", "가벼움", "포근함"],
           imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755744269/asset-studio/rgdtobcxq57gqyjqnprq.png",
-          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755744272/asset-studio/mfwalbpepsstl2dhdsja.png"
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755751672/mfwalbpepsstl2dhdsja_sr37nz.jpg"
         },
         {
           id: 4,
