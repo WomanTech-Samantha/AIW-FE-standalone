@@ -61,32 +61,32 @@ const ProductAddPage = () => {
           name: "시어버터 알로카시아 모달 이불",
           price: "229000",
           keywords: ["모달", "시어버터", "피부 보호", "알로카시아 패턴"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755712735/asset-studio/jbzjhq7dxqpazgrcludw.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755712736/asset-studio/yso7rjacug9e3cwribyh.png"
         },
         {
           id: 2,
           name: "푹자요 극세사 이불",
           price: "139000",
           keywords: ["극세사", "숙면", "정전기 방지", "포근함"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755743611/asset-studio/wmrlylncwaimvvqqovzx.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755743612/asset-studio/wotkmxtbltjpw2qvdkxc.png"
         },
         {
           id: 3,
           name: "구름마시멜로 소프트 스프레드",
           price: "119000",
           keywords: ["스프레드", "마이크로파이버", "가벼움", "포근함"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755744269/asset-studio/rgdtobcxq57gqyjqnprq.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755744272/asset-studio/mfwalbpepsstl2dhdsja.png"
         },
         {
           id: 4,
           name: "숨쉬는 에어폼 경추 베개",
           price: "99000",
-          keywords: ["메모리폼", "경추", "자세 교정", "통기성"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          keywords: ["메모리폼", "경추 건강", "자세 교정", "통기성"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755747861/asset-studio/ubidw0o4j1wwwuqyhjhi.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755747862/asset-studio/rwvruqs9guh7dzipjvb6.png"
         }
       ];
     } else {
