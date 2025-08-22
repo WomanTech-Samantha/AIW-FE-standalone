@@ -4,9 +4,28 @@ import { Link } from 'react-router-dom';
 const BeautyShop = () => {
   const [storeData, setStoreData] = useState<any>(null);
   const [brandData, setBrandData] = useState<any>(null);
+  const [productsData, setProductsData] = useState<any>([]);
   
   // 현재 store 파라미터 가져오기
   const storeParam = new URLSearchParams(window.location.search).get('store');
+
+  // 테마 색상 적용 함수
+  const applyTheme = (templateColor: string) => {
+    const themes = {
+      'warm-rose': { primary: '#D4526E', secondary: '#F5B7B1', accent: '#E8A49C', background: '#FAF3F0', text: '#FFFFFF' },
+      'sage-green': { primary: '#6B8E65', secondary: '#A8C09C', accent: '#8FA885', background: '#F5F7F4', text: '#FFFFFF' },
+      'dusty-blue': { primary: '#7189A6', secondary: '#A8B8CC', accent: '#8DA3C0', background: '#F4F6F8', text: '#FFFFFF' },
+      'lavender': { primary: '#9B7EBD', secondary: '#C4A9D8', accent: '#B195CC', background: '#F7F5F9', text: '#FFFFFF' },
+      'terracotta': { primary: '#C67B5C', secondary: '#E5A985', accent: '#D69373', background: '#FAF6F3', text: '#FFFFFF' }
+    };
+    const theme = themes[templateColor] || themes['sage-green'];
+    const root = document.documentElement;
+    root.style.setProperty('--color-primary', theme.primary);
+    root.style.setProperty('--color-secondary', theme.secondary);
+    root.style.setProperty('--color-accent', theme.accent);
+    root.style.setProperty('--color-background', theme.background);
+    root.style.setProperty('--color-text', theme.text);
+  };
 
   useEffect(() => {
     // 전역 스토어 데이터 가져오기
@@ -14,6 +33,12 @@ const BeautyShop = () => {
     if (globalData) {
       setStoreData(globalData.store);
       setBrandData(globalData.brand);
+      setProductsData(globalData.products || []);
+      
+      // 테마 적용
+      if (globalData.brand?.templateColor) {
+        applyTheme(globalData.brand.templateColor);
+      }
     }
   }, []);
 
@@ -117,7 +142,7 @@ const BeautyShop = () => {
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 - 자연스럽고 부드러운 디자인 */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <h1 className="text-2xl font-medium flex items-center" style={{ color: 'var(--color-primary)' }}>
               <span className="text-3xl mr-2">🌿</span>
@@ -174,7 +199,7 @@ const BeautyShop = () => {
           </div>
         </div>
         
-        <div className="container relative py-responsive">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative py-responsive">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="text-center lg:text-left relative z-10">
               <h2 className="heading-xl-responsive font-light mb-6 text-gray-800 leading-tight">
@@ -205,7 +230,7 @@ const BeautyShop = () => {
         <svg className="absolute top-0 left-0 w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
           <path d="M0,0V60C150,90 350,30 600,60C850,90 1050,30 1200,60V0H0Z" fill="white"></path>
         </svg>
-        <div className="container relative text-center pt-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center pt-32">
           <div className="max-w-6xl mx-auto">
             <div className="text-center">
               <h3 className="heading-responsive font-medium mb-6" style={{ color: 'var(--color-primary)' }}>
@@ -229,7 +254,7 @@ const BeautyShop = () => {
 
       {/* 베스트 상품 - 오가닉 카드 디자인 */}
       <section className="py-20">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="heading-responsive font-medium text-gray-800 mb-4">{businessContent.featuredTitle}</h3>
             <p className="text-responsive text-gray-600">{businessContent.featuredSubtitle}</p>
@@ -272,7 +297,7 @@ const BeautyShop = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Link to={`/product/1?store=${storeParam}`} className="flex-1">
+                      <Link to={`/product/popular-${idx + 1}?store=${storeParam}`} className="flex-1">
                         <button className="btn btn-primary w-full py-3 rounded-lg font-medium">
                           장바구니
                         </button>
@@ -291,7 +316,7 @@ const BeautyShop = () => {
 
       {/* 성분 스토리 - 아이콘 기반 레이아웃 */}
       <section className="py-20 bg-white">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '작품 제작에 대한 우리의 철학' : '천연 제작 소재에 대한 우리 브랜드의 자세'}</h3>
           <div className="responsive-grid responsive-grid-3 gap-12">
             {[
@@ -317,7 +342,7 @@ const BeautyShop = () => {
 
       {/* 고객 후기 - 말풍선 스타일 */}
       <section className="py-20">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '고객님들의 특별한 이야기' : '고객님들의 성원에 보답하는 마음으로 만듭니다'}</h3>
           <div className="responsive-grid responsive-grid-3 gap-8">
             {[
@@ -345,15 +370,15 @@ const BeautyShop = () => {
 
       {/* 푸터 */}
       <footer className="py-responsive text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="responsive-grid responsive-grid-4 gap-8 mb-8">
             <div>
               <h4 className="text-2xl font-medium mb-4 flex items-center">
                 <span className="text-3xl mr-2">🌿</span>
-                <span className="hidden sm:block">내추럴코스뷰</span>
-                <span className="sm:hidden">코스뷰</span>
+                <span className="hidden sm:block">{storeName}</span>
+                <span className="sm:hidden">{storeName.length > 6 ? storeName.slice(0, 6) : storeName}</span>
               </h4>
-              <p className="text-sm opacity-90 mb-4">자연에서 온 순수한<br />아름다움</p>
+              <p className="text-sm opacity-90 mb-4">{description.length > 15 ? description.slice(0, 15) + '...' : description}<br />{slogan}</p>
               <div className="flex space-x-4">
                 <a href="#" className="text-white hover:opacity-80 transition-opacity">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

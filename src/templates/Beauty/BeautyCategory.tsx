@@ -23,14 +23,33 @@ const BeautyCategory = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [storeData, setStoreData] = useState<any>(null);
+  const [brandData, setBrandData] = useState<any>(null);
   
   // 현재 store 파라미터 가져오기
   const storeParam = new URLSearchParams(window.location.search).get('store');
   
+  // 테마 색상 적용 함수
+  const applyTheme = (templateColor: string) => {
+    const themes = {
+      'warm-rose': { primary: '#D4526E', secondary: '#F5B7B1', accent: '#E8A49C', background: '#FAF3F0', text: '#FFFFFF' },
+      'sage-green': { primary: '#6B8E65', secondary: '#A8C09C', accent: '#8FA885', background: '#F5F7F4', text: '#FFFFFF' },
+      'dusty-blue': { primary: '#7189A6', secondary: '#A8B8CC', accent: '#8DA3C0', background: '#F4F6F8', text: '#FFFFFF' },
+      'lavender': { primary: '#9B7EBD', secondary: '#C4A9D8', accent: '#B195CC', background: '#F7F5F9', text: '#FFFFFF' },
+      'terracotta': { primary: '#C67B5C', secondary: '#E5A985', accent: '#D69373', background: '#FAF6F3', text: '#FFFFFF' }
+    };
+    const theme = themes[templateColor] || themes['sage-green'];
+    const root = document.documentElement;
+    root.style.setProperty('--color-primary', theme.primary);
+    root.style.setProperty('--color-secondary', theme.secondary);
+    root.style.setProperty('--color-accent', theme.accent);
+    root.style.setProperty('--color-background', theme.background);
+    root.style.setProperty('--color-text', theme.text);
+  };
+  
   // Store data 가져오기
-  const storeData = (window as any).STORE_DATA;
-  const storeName = storeData?.store?.storeName || '내추럴뷰티';
-  const business = storeData?.store?.business || '';
+  const storeName = storeData?.storeName || '내추럴뷰티';
+  const business = storeData?.business || '';
   
   // 카테고리 제목 반환 함수
   const getCategoryTitle = (categoryName: string, business: string) => {
@@ -111,6 +130,17 @@ const BeautyCategory = () => {
   };
 
   useEffect(() => {
+    // 전역 스토어 데이터 가져오기
+    const globalData = (window as any).STORE_DATA;
+    if (globalData) {
+      setStoreData(globalData.store);
+      setBrandData(globalData.brand);
+      
+      // 테마 적용
+      if (globalData.brand?.templateColor) {
+        applyTheme(globalData.brand.templateColor);
+      }
+    }
     fetchCategoryProducts();
   }, [categoryName]);
 
@@ -126,7 +156,8 @@ const BeautyCategory = () => {
         
         // 카테고리 매핑
         // 업종 정보 가져오기
-        const business = storeData.store?.business || '';
+        const business = storeData?.business || '';
+        console.log('BeautyCategory - business:', business, 'storeData:', storeData);
         
         // 업종에 따른 카테고리 매핑
         const getCategoryMap = () => {
@@ -196,19 +227,101 @@ const BeautyCategory = () => {
       } else {
         console.log('전역 상품 데이터 없음, 기본 데이터 사용');
         // 기본 데이터 사용
-        setProducts(defaultProducts);
+        setProducts(getDefaultProducts());
       }
     } catch (err) {
       console.error('상품 조회 오류:', err);
       // 에러 시에도 기본 데이터 사용
-      setProducts(defaultProducts);
+      setProducts(getDefaultProducts());
     } finally {
       setLoading(false);
     }
   };
 
-  // 기본 더미 데이터 (API 실패 시 사용)
-  const defaultProducts = [
+  // 기본 더미 데이터 (업종별)
+  const getDefaultProducts = () => {
+    const business = storeData?.business || '';
+    
+    if (business.includes('침구') || business.includes('이불')) {
+      return [
+        {
+          id: 1,
+          image: beautySkincareImage,
+          title: "프리미엄 이불 세트",
+          price: "289,000원",
+          originalPrice: "359,000원",
+          discount: "20%",
+          rating: 4.8,
+          reviews: 156,
+          badge: "PREMIUM",
+          benefits: "편안한 수면 & 호텔급 품질"
+        },
+        {
+          id: 2,
+          image: beautyMakeupImage,
+          title: "메모리폼 베개",
+          price: "89,000원",
+          originalPrice: "129,000원",
+          discount: "31%",
+          rating: 4.9,
+          reviews: 203,
+          badge: "BEST",
+          benefits: "목 건강 & 지지력 우수"
+        },
+        {
+          id: 3,
+          image: beautySkincareImage,
+          title: "오가닉 코튼 시트",
+          price: "65,000원",
+          originalPrice: "85,000원",
+          discount: "24%",
+          rating: 4.7,
+          reviews: 128,
+          badge: "ORGANIC",
+          benefits: "피부 친화적 & 통기성 우수"
+        }
+      ];
+    } else if (business.includes('수공예')) {
+      return [
+        {
+          id: 1,
+          image: beautySkincareImage,
+          title: "수제 도자기 차잔 세트",
+          price: "145,000원",
+          originalPrice: "185,000원",
+          discount: "22%",
+          rating: 4.9,
+          reviews: 87,
+          badge: "HANDMADE",
+          benefits: "전통 기법 & 작가 수제작"
+        },
+        {
+          id: 2,
+          image: beautyMakeupImage,
+          title: "자수 쿠션 커버",
+          price: "78,000원",
+          originalPrice: "98,000원",
+          discount: "20%",
+          rating: 4.8,
+          reviews: 64,
+          badge: "ARTIST",
+          benefits: "핸드스티치 & 전통자수"
+        },
+        {
+          id: 3,
+          image: beautySkincareImage,
+          title: "원목 상 트레이",
+          price: "45,000원",
+          originalPrice: "65,000원",
+          discount: "31%",
+          rating: 4.6,
+          reviews: 42,
+          badge: "NATURAL",
+          benefits: "천연 원목 & 친환경 마감"
+        }
+      ];
+    } else {
+      return [
     {
       id: 1,
       image: beautySkincareImage,
@@ -281,13 +394,15 @@ const BeautyCategory = () => {
       badge: "NATURAL",
       benefits: "자연스러운 컬러 & 발색"
     }
-  ];
+      ];
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Menu className="h-6 w-6 mr-4 lg:hidden" />
@@ -336,7 +451,7 @@ const BeautyCategory = () => {
 
       {/* 브레드크럼 */}
       <div className="bg-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
             <Link to={`/?store=${storeParam}`} className="text-gray-600 hover:text-gray-900">홈</Link>
             <span className="mx-2">/</span>
@@ -347,7 +462,7 @@ const BeautyCategory = () => {
 
       {/* 카테고리 헤더 */}
       <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold mb-4 flex items-center justify-center" style={{ color: 'var(--color-primary)' }}>
               {business.includes('수공예') ? '🎨' : '🌿'} {getCategoryTitle(categoryName, business)}
@@ -359,7 +474,7 @@ const BeautyCategory = () => {
 
       {/* 필터 및 정렬 */}
       <div className="bg-white border-b border-gray-200 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
               <button className="btn btn-secondary">
@@ -393,7 +508,7 @@ const BeautyCategory = () => {
 
       {/* 상품 목록 */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {loading ? (
             <div className="text-center py-20">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500 mx-auto"></div>
@@ -430,7 +545,7 @@ const BeautyCategory = () => {
                   <Heart className="absolute bottom-4 right-4 h-7 w-7 text-white hover:text-beauty-accent cursor-pointer transition-smooth bg-black/30 rounded-full p-1" />
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-beauty-primary">{product.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-primary)' }}>{product.title}</h3>
                   <p className="text-sm text-gray-600 mb-3">{product.benefits}</p>
                   <div className="flex items-center mb-3">
                     <div className="flex">
@@ -443,12 +558,12 @@ const BeautyCategory = () => {
                     <span className="text-sm text-gray-600 ml-2">({product.reviews})</span>
                   </div>
                   <div className="flex items-center space-x-3 mb-4">
-                    <span className="text-2xl font-bold text-beauty-primary">{product.price}</span>
+                    <span className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{product.price}</span>
                     {product.originalPrice && (
                       <span className="text-lg text-gray-400 line-through">{product.originalPrice}</span>
                     )}
                   </div>
-                  <div className="w-full bg-beauty-primary hover:bg-beauty-primary/90 text-beauty-primary-foreground text-base font-medium py-3 transition-smooth text-center rounded">
+                  <div className="w-full text-base font-medium py-3 transition-smooth text-center rounded" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}>
                     자세히 보기
                   </div>
                 </CardContent>
@@ -462,11 +577,11 @@ const BeautyCategory = () => {
           {!loading && !error && products.length > 0 && (
           <div className="flex justify-center mt-16">
             <div className="flex space-x-2">
-              <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">이전</Button>
-              <Button className="bg-beauty-primary text-beauty-primary-foreground px-4 py-2">1</Button>
-              <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">2</Button>
-              <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">3</Button>
-              <Button variant="outline" className="border-beauty-border hover:bg-beauty-muted px-4 py-2">다음</Button>
+              <Button variant="outline" className="px-4 py-2 border hover:opacity-80" style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>이전</Button>
+              <Button className="px-4 py-2" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}>1</Button>
+              <Button variant="outline" className="px-4 py-2 border hover:opacity-80" style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>2</Button>
+              <Button variant="outline" className="px-4 py-2 border hover:opacity-80" style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>3</Button>
+              <Button variant="outline" className="px-4 py-2 border hover:opacity-80" style={{ borderColor: 'var(--color-primary)', color: 'var(--color-primary)' }}>다음</Button>
             </div>
           </div>
           )}
@@ -474,9 +589,9 @@ const BeautyCategory = () => {
       </section>
 
       {/* 성분 정보 */}
-      <section className="py-16 bg-beauty-muted">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
+      <section className="py-16" style={{ backgroundColor: 'var(--color-background)' }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-bold text-center mb-12" style={{ color: 'var(--color-primary)' }}>
             {business.includes('수공예') ? '작품 특징' : business.includes('침구') ? '소재 특징' : 'Key Ingredients'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -558,8 +673,8 @@ const BeautyCategory = () => {
 
       {/* 스킨케어 팁 */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-2xl font-bold text-center mb-12 text-beauty-primary">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-2xl font-bold text-center mb-12" style={{ color: 'var(--color-primary)' }}>
             {business.includes('수공예') ? '작품 관리 팁' : business.includes('침구') ? '침구 관리 팁' : 'Skincare Tips'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -632,8 +747,8 @@ const BeautyCategory = () => {
       </section>
 
       {/* 푸터 */}
-      <footer className="bg-beauty-primary text-beauty-primary-foreground py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="py-16 text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h4 className="text-2xl font-bold mb-6 flex items-center">
@@ -641,9 +756,19 @@ const BeautyCategory = () => {
                 {storeName}
               </h4>
               <p className="text-base leading-relaxed">
-                {business.includes('수공예') ? '작가의 정성이 담긴<br />특별한 작품을 만나보세요' : 
-                 business.includes('침구') ? '편안한 수면을 위한<br />프리미엄 침구를 만나보세요' :
-                 '자연에서 온 순수한 아름다움으로<br />건강한 피부를 만들어가세요'}
+                {business.includes('수공예') ? (
+                  <>
+                    작가의 정성이 담긴<br />특별한 작품을 만나보세요
+                  </>
+                ) : business.includes('침구') ? (
+                  <>
+                    편안한 수면을 위한<br />프리미엄 침구를 만나보세요
+                  </>
+                ) : (
+                  <>
+                    자연에서 온 순수한 아름다움으로<br />건강한 피부를 만들어가세요
+                  </>
+                )}
               </p>
             </div>
             <div>

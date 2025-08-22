@@ -4,30 +4,41 @@ import { Link } from 'react-router-dom';
 const ChicFashion = () => {
   const [storeData, setStoreData] = useState<any>(null);
   const [brandData, setBrandData] = useState<any>(null);
+  const [productsData, setProductsData] = useState<any>([]);
   
   // 현재 store 파라미터 가져오기
   const storeParam = new URLSearchParams(window.location.search).get('store');
+  
+  // 테마 색상 적용 함수
+  const applyTheme = (templateColor: string) => {
+    const themes = {
+      'warm-rose': { primary: '#D4526E', secondary: '#F5B7B1', accent: '#E8A49C', background: '#FAF3F0', text: '#333333' },
+      'sage-green': { primary: '#6B8E65', secondary: '#A8C09C', accent: '#8FA885', background: '#F5F7F4', text: '#333333' },
+      'dusty-blue': { primary: '#7189A6', secondary: '#A8B8CC', accent: '#8DA3C0', background: '#F4F6F8', text: '#333333' },
+      'lavender': { primary: '#9B7EBD', secondary: '#C4A9D8', accent: '#B195CC', background: '#F7F5F9', text: '#333333' },
+      'terracotta': { primary: '#C67B5C', secondary: '#E5A985', accent: '#D69373', background: '#FAF6F3', text: '#333333' }
+    };
+    const theme = themes[templateColor] || themes['dusty-blue'];
+    const root = document.documentElement;
+    root.style.setProperty('--color-primary', theme.primary);
+    root.style.setProperty('--color-secondary', theme.secondary);
+    root.style.setProperty('--color-accent', theme.accent);
+    root.style.setProperty('--color-background', theme.background);
+    root.style.setProperty('--color-text', theme.text);
+  };
 
   useEffect(() => {
     // 전역 스토어 데이터 가져오기
     const globalData = (window as any).STORE_DATA;
-    console.log('ChicHome - window.STORE_DATA:', globalData);
     if (globalData) {
-      console.log('ChicHome - Setting store data:', globalData.store);
-      console.log('ChicHome - Setting brand data:', globalData.brand);
       setStoreData(globalData.store);
       setBrandData(globalData.brand);
-    } else {
-      console.log('ChicHome - No STORE_DATA found, trying again...');
-      // 데이터가 없으면 잠시 후 다시 시도
-      setTimeout(() => {
-        const retryData = (window as any).STORE_DATA;
-        if (retryData) {
-          console.log('ChicHome - Retry success:', retryData);
-          setStoreData(retryData.store);
-          setBrandData(retryData.brand);
-        }
-      }, 100);
+      setProductsData(globalData.products || []);
+      
+      // 테마 적용
+      if (globalData.brand?.templateColor) {
+        applyTheme(globalData.brand.templateColor);
+      }
     }
   }, []);
 
@@ -41,25 +52,25 @@ const ChicFashion = () => {
   const getCategories = () => {
     if (business.includes('침구') || business.includes('이불')) {
       return [
-        { path: 'comforters', name: 'COMFORTERS' },
-        { path: 'pillows', name: 'PILLOWS' },
-        { path: 'sheets', name: 'SHEETS' },
-        { path: 'baby', name: 'BABY' }
+        { path: 'comforters', name: '이불' },
+        { path: 'pillows', name: '베개' },
+        { path: 'sheets', name: '침대커버' },
+        { path: 'baby', name: '아기침구' }
       ];
     } else if (business.includes('수공예')) {
       return [
-        { path: 'pottery', name: 'POTTERY' },
-        { path: 'textile', name: 'TEXTILE' },
-        { path: 'woodwork', name: 'WOODWORK' },
-        { path: 'jewelry', name: 'JEWELRY' }
+        { path: 'pottery', name: '도자기' },
+        { path: 'textile', name: '직물공예' },
+        { path: 'woodwork', name: '목공예' },
+        { path: 'jewelry', name: '장신구' }
       ];
     } else {
-      // 기본값 (침구)
+      // 기본값 (패션)
       return [
-        { path: 'comforters', name: 'COMFORTERS' },
-        { path: 'pillows', name: 'PILLOWS' },
-        { path: 'sheets', name: 'SHEETS' },
-        { path: 'baby', name: 'BABY' }
+        { path: 'dresses', name: '원피스' },
+        { path: 'tops', name: '상의' },
+        { path: 'outerwear', name: '외투' },
+        { path: 'accessories', name: '장신구' }
       ];
     }
   };
@@ -70,49 +81,85 @@ const ChicFashion = () => {
   const getBusinessContent = () => {
     if (business.includes('침구') || business.includes('이불')) {
       return {
-        heroTitle1: 'Premium',
-        heroTitle2: 'Bedding',
+        heroTitle1: '프리미엄',
+        heroTitle2: '침구',
         heroSubtext: '고급 침구로 완성하는\n품격 있는 수면 공간',
-        promoText: 'FREE SHIPPING ON ORDERS OVER 100,000원',
-        sectionTitle: 'Best Sellers',
-        sectionSubtitle: '인기 침구 컬렉션',
+        promoText: '10만원 이상 구매 시 무료배송',
+        sectionTitle: '인기 상품',
+        sectionSubtitle: '고객님이 가장 사랑하는 침구',
         products: [
-          { name: '프리미엄 이불 세트', desc: '호텔급 품질', price: '289,000', originalPrice: '359,000', badge: 'NEW' },
-          { name: '메모리폼 베개', desc: '완벽한 지지력', price: '89,000', originalPrice: '129,000', badge: 'BEST' },
-          { name: '실크 베개커버', desc: '부드러운 촉감', price: '59,000', originalPrice: '89,000', badge: 'SALE' }
+          { name: '구스 이불 세트', desc: '호텔급 품질', price: '289,000', originalPrice: '359,000', badge: '신상' },
+          { name: '메모리폼 경추 베개', desc: '완벽한 지지력', price: '89,000', originalPrice: '129,000', badge: '인기' },
+          { name: '대나무 여름 이불', desc: '시원한 촉감', price: '59,000', originalPrice: '89,000', badge: '할인' }
         ],
-        categoryTitle: 'Shop by Category'
+        categoryTitle: '카테고리별 쫼핑',
+        categoryItems: [
+          { name: '이불', count: '45', path: 'comforters' },
+          { name: '베개', count: '32', path: 'pillows' },
+          { name: '침대커버', count: '28', path: 'sheets' },
+          { name: '아기침구', count: '18', path: 'baby' }
+        ],
+        philosophyTitle: '우리의 철학',
+        philosophyText1: '편안한 잠자리는 건강한 삶의 시작입니다.',
+        philosophyText2: '최고급 소재로 만든 침구로 당신의 숙면을 책임집니다.',
+        shopNow: '쫼핑하기',
+        learnMore: '더 알아보기',
+        footerSlogan: '편안한 숙면의 동반자'
       };
     } else if (business.includes('수공예')) {
       return {
-        heroTitle1: 'Handmade',
-        heroTitle2: 'Artisan',
+        heroTitle1: '수공예',
+        heroTitle2: '작품',
         heroSubtext: '정성스런 손길로 완성된\n특별한 수공예 작품들',
-        promoText: 'FREE SHIPPING ON ORDERS OVER 80,000원',
-        sectionTitle: 'Featured Works',
-        sectionSubtitle: '작가 추천 작품',
+        promoText: '8만원 이상 구매 시 무료포장',
+        sectionTitle: '주목 작품',
+        sectionSubtitle: '장인이 추천하는 작품',
         products: [
-          { name: '수제 도자기 볼', desc: '전통 기법', price: '125,000', originalPrice: '165,000', badge: 'NEW' },
-          { name: '자수 쿠션커버', desc: '핸드스티치', price: '78,000', originalPrice: '98,000', badge: 'BEST' },
-          { name: '원목 트레이', desc: '천연 원목', price: '45,000', originalPrice: '65,000', badge: 'SALE' }
+          { name: '수제 도자기 찻잔', desc: '전통 기법', price: '125,000', originalPrice: '165,000', badge: '신상' },
+          { name: '자수 벽걸이', desc: '손 자수', price: '78,000', originalPrice: '98,000', badge: '인기' },
+          { name: '원목 찻상', desc: '천연 원목', price: '45,000', originalPrice: '65,000', badge: '할인' }
         ],
-        categoryTitle: 'Shop by Category'
+        categoryTitle: '작품 둘러보기',
+        categoryItems: [
+          { name: '도자기', count: '38', path: 'pottery' },
+          { name: '직물공예', count: '25', path: 'textile' },
+          { name: '목공예', count: '22', path: 'woodwork' },
+          { name: '장신구', count: '15', path: 'jewelry' }
+        ],
+        philosophyTitle: '장인 정신',
+        philosophyText1: '하나하나 정성을 담아 만드는 작품입니다.',
+        philosophyText2: '전통 기법과 현대적 감각이 조화를 이룹니다.',
+        shopNow: '작품 보기',
+        learnMore: '작가 소개',
+        footerSlogan: '손길이 담긴 작품'
       };
     } else {
-      // 기본값 (침구)
+      // 기본값 (패션)
       return {
-        heroTitle1: 'Premium',
-        heroTitle2: 'Bedding',
-        heroSubtext: '고급 침구로 완성하는\n품격 있는 수면 공간',
-        promoText: 'FREE SHIPPING ON ORDERS OVER 100,000원',
-        sectionTitle: 'Best Sellers',
-        sectionSubtitle: '인기 침구 컬렉션',
+        heroTitle1: '우아한',
+        heroTitle2: '스타일',
+        heroSubtext: '세련된 감각으로 완성하는\n당신만의 특별한 스타일',
+        promoText: '10만원 이상 구매 시 무료배송',
+        sectionTitle: '인기 상품',
+        sectionSubtitle: '이번 시즌 베스트 아이템',
         products: [
-          { name: '프리미엄 이불 세트', desc: '호텔급 품질', price: '289,000', originalPrice: '359,000', badge: 'NEW' },
-          { name: '메모리폼 베개', desc: '완벽한 지지력', price: '89,000', originalPrice: '129,000', badge: 'BEST' },
-          { name: '실크 베개커버', desc: '부드러운 촉감', price: '59,000', originalPrice: '89,000', badge: 'SALE' }
+          { name: '비단 원피스', desc: '우아한 디자인', price: '189,000', originalPrice: '259,000', badge: '신상' },
+          { name: '캐시미어 니트', desc: '부드러운 촉감', price: '125,000', originalPrice: '178,000', badge: '인기' },
+          { name: '금빛 목걸이', desc: '고급 주얼리', price: '89,000', originalPrice: '129,000', badge: '할인' }
         ],
-        categoryTitle: 'Shop by Category'
+        categoryTitle: '카테고리별 쫼핑',
+        categoryItems: [
+          { name: '원피스', count: '45', path: 'dresses' },
+          { name: '상의', count: '32', path: 'tops' },
+          { name: '장신구', count: '28', path: 'accessories' },
+          { name: '외투', count: '18', path: 'outerwear' }
+        ],
+        philosophyTitle: '우리의 철학',
+        philosophyText1: '미니멀리즘과 우아한 스타일을 추구합니다.',
+        philosophyText2: '최고급 소재로 당신만의 개성을 표현하세요.',
+        shopNow: '쫼핑하기',
+        learnMore: '더 알아보기',
+        footerSlogan: '우아함의 정수'
       };
     }
   };
@@ -122,12 +169,12 @@ const ChicFashion = () => {
     <div className="min-h-screen bg-white">
       {/* 헤더 - 미니멀하고 세련된 디자인 */}
       <header className="border-b border-gray-100">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             <h1 className="text-3xl font-light tracking-wider" style={{ color: 'var(--color-primary)' }}>{storeName.toUpperCase()}</h1>
             
             <nav className="hidden lg:flex space-x-12">
-              <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">HOME</Link>
+              <Link to={`/?store=${storeParam}`} className="text-sm font-medium text-gray-700 hover:text-gray-900 tracking-wide">홈</Link>
               {categories.map((category) => (
                 <Link 
                   key={category.path}
@@ -183,7 +230,7 @@ const ChicFashion = () => {
                   (e.target as HTMLElement).style.color = 'var(--color-primary)';
                 }}
               >
-                SHOP NOW
+                {businessContent.shopNow}
               </button>
             </div>
           </div>
@@ -202,7 +249,7 @@ const ChicFashion = () => {
 
       {/* 베스트셀러 - 그리드 갤러리 */}
       <section className="py-20">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h3 className="text-4xl font-light text-gray-800 mb-4">{businessContent.sectionTitle}</h3>
             <p className="text-gray-600 font-light">{businessContent.sectionSubtitle}</p>
@@ -211,7 +258,7 @@ const ChicFashion = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {businessContent.products.map((item, idx) => (
               <div key={idx} className="group">
-                <Link to={`/product/1?store=${storeParam}`}>
+                <Link to={`/product/popular-${idx + 1}?store=${storeParam}`}>
                   <div className="relative overflow-hidden">
                     <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center relative">
                       <svg className="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -243,16 +290,11 @@ const ChicFashion = () => {
 
       {/* 카테고리 - 미니멀 카드 */}
       <section className="py-20" style={{ backgroundColor: 'var(--color-background)' }}>
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-4xl font-light text-center text-gray-800 mb-16">{businessContent.categoryTitle}</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: 'DRESSES', count: '45' },
-              { name: 'BLOUSES', count: '32' },
-              { name: 'ACCESSORIES', count: '28' },
-              { name: 'OUTERWEAR', count: '18' }
-            ].map((cat, idx) => (
-              <Link key={idx} to={`/category/all?store=${storeParam}`}>
+            {businessContent.categoryItems.map((cat, idx) => (
+              <Link key={idx} to={`/category/${cat.path}?store=${storeParam}`}>
                 <div className="group cursor-pointer">
                   <div className="aspect-square bg-gray-100 mb-4 relative overflow-hidden flex items-center justify-center">
                     <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,7 +303,7 @@ const ChicFashion = () => {
                     <div className="absolute inset-0 border group-hover:border-2 transition-all" style={{ borderColor: 'var(--color-primary)' }}></div>
                   </div>
                   <h4 className="text-sm font-medium tracking-wider text-center text-gray-800">{cat.name}</h4>
-                  <p className="text-xs text-center text-gray-500 mt-1">{cat.count} items</p>
+                  <p className="text-xs text-center text-gray-500 mt-1">{cat.count}개 상품</p>
                 </div>
               </Link>
             ))}
@@ -271,15 +313,15 @@ const ChicFashion = () => {
 
       {/* 브랜드 스토리 - 대칭적 레이아웃 */}
       <section className="py-20">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h3 className="text-3xl font-light text-gray-800 mb-6">Our Philosophy</h3>
+              <h3 className="text-3xl font-light text-gray-800 mb-6">{businessContent.philosophyTitle}</h3>
               <p className="text-gray-600 leading-relaxed mb-4 font-light">
-                시크는 미니멀리즘과 우아한 인테리어를 추구하는 현대인들을 위한 브랜드입니다.
+                {businessContent.philosophyText1}
               </p>
               <p className="text-gray-600 leading-relaxed mb-8 font-light">
-                각 상품은 최고급 소재로 제작되어, 당신만의 이상적인 방 안에 녹아듭니다.
+                {businessContent.philosophyText2}
               </p>
               <button 
                 className="text-sm font-medium tracking-wider pb-1 border-b transition-all"
@@ -288,7 +330,7 @@ const ChicFashion = () => {
                   borderColor: 'var(--color-primary)'
                 }}
               >
-                LEARN MORE
+                {businessContent.learnMore}
               </button>
             </div>
             <div className="h-96 bg-gray-100 flex items-center justify-center relative">
@@ -302,27 +344,27 @@ const ChicFashion = () => {
 
       {/* 푸터 - 심플한 디자인 */}
       <footer className="py-16 border-t border-gray-100">
-        <div className="container">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             <div>
-              <h4 className="text-2xl font-light mb-4" style={{ color: 'var(--color-primary)' }}>CHIC</h4>
-              <p className="text-sm text-gray-600 font-light">Timeless Elegance</p>
+              <h4 className="text-2xl font-light mb-4" style={{ color: 'var(--color-primary)' }}>{storeName.toUpperCase()}</h4>
+              <p className="text-sm text-gray-600 font-light">{businessContent.footerSlogan}</p>
             </div>
             <div>
-              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">CUSTOMER CARE</h5>
-              <p className="text-sm text-gray-600 font-light">1588-5678<br />Mon-Fri 10AM-7PM</p>
+              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">고객 센터</h5>
+              <p className="text-sm text-gray-600 font-light">1588-5678<br />평일 10:00-19:00</p>
             </div>
             <div>
-              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">SERVICES</h5>
-              <p className="text-sm text-gray-600 font-light">Free Shipping<br />VIP Membership</p>
+              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">서비스</h5>
+              <p className="text-sm text-gray-600 font-light">무료 배송<br />회원 혜택</p>
             </div>
             <div>
-              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">ABOUT</h5>
-              <p className="text-sm text-gray-600 font-light">Our Story<br />Careers</p>
+              <h5 className="text-sm font-medium tracking-wider mb-4 text-gray-800">소개</h5>
+              <p className="text-sm text-gray-600 font-light">브랜드 이야기<br />채용 정보</p>
             </div>
           </div>
           <div className="text-center pt-8 border-t border-gray-100">
-            <p className="text-xs text-gray-500">&copy; 2025 CHIC. All rights reserved.</p>
+            <p className="text-xs text-gray-500">&copy; 2025 {storeName.toUpperCase()}. 모든 권리 보유.</p>
           </div>
         </div>
       </footer>
