@@ -240,7 +240,7 @@ const InstagramMediaPage = () => {
 
   return (
     <div className="page-container">
-      {/* Header */}
+      
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -283,7 +283,7 @@ const InstagramMediaPage = () => {
         </div>
       </div>
 
-      {/* 필터 및 검색 */}
+      
       <Card className="mb-6">
         <CardContent className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
@@ -322,7 +322,7 @@ const InstagramMediaPage = () => {
         </CardContent>
       </Card>
 
-      {/* 미디어 그리드 */}
+      
       {filteredMedia.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
@@ -448,7 +448,7 @@ const InstagramMediaPage = () => {
         </div>
       )}
 
-      {/* 요약 정보 */}
+      
       <Card className="mt-8">
         <CardHeader>
           <CardTitle className="text-lg">미디어 요약</CardTitle>

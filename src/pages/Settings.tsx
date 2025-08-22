@@ -132,7 +132,7 @@ const SettingsPage = () => {
   return (
     <div className="page-container">
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Header */}
+        
         <div className="mb-8">
           <div className="mb-4">
             <Button
@@ -155,7 +155,7 @@ const SettingsPage = () => {
 
         <div className="space-y-8">
 
-          {/* 브랜드 기본 정보 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -202,7 +202,7 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* 계정 정보 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -241,7 +241,7 @@ const SettingsPage = () => {
                   </Button>
                 </div>
                 
-                {/* 계정 추가 정보 */}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground border-t pt-4">
                   <div>
                     <span className="font-medium">가입일:</span>
@@ -266,7 +266,7 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* 알림 설정 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -330,7 +330,7 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* 개인정보 및 보안 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -398,7 +398,7 @@ const SettingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* 저장 버튼 */}
+          
           <div className="flex justify-center">
             <Button 
               size="lg" 
@@ -421,7 +421,7 @@ const SettingsPage = () => {
           </div>
         </div>
 
-        {/* 비밀번호 변경 다이얼로그 */}
+        
         <ChangePasswordDialog 
           open={showChangePassword} 
           onOpenChange={setShowChangePassword}

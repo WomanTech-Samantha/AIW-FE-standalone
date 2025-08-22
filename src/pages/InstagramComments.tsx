@@ -355,7 +355,7 @@ const InstagramCommentsPage = () => {
   return (
     <div className="page-container">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
+        
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -368,7 +368,7 @@ const InstagramCommentsPage = () => {
               </p>
             </div>
             <div className="flex items-center gap-4">
-              {/* 업종 선택 */}
+              
               
               
               <Button
@@ -381,11 +381,11 @@ const InstagramCommentsPage = () => {
             </div>
           </div>
 
-          {/* 업종 정보 */}
+          
           
         </div>
 
-        {/* 간소화된 통계 카드 */}
+        
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-4">
@@ -436,7 +436,7 @@ const InstagramCommentsPage = () => {
           </Card>
         </div>
 
-        {/* 필터 및 검색 */}
+        
         <Card className="mb-6">
           <CardContent className="p-4">
             <div className="flex flex-col md:flex-row gap-4">
@@ -475,7 +475,7 @@ const InstagramCommentsPage = () => {
           </CardContent>
         </Card>
 
-        {/* 간소화된 메인 콘텐츠 */}
+        
         <div className="space-y-4">
             {filteredComments.length === 0 ? (
               <Card>
@@ -494,7 +494,7 @@ const InstagramCommentsPage = () => {
                 return (
                   <Card key={comment.id} className={comment.priority === 'high' ? 'border-red-200' : ''}>
                     <CardContent className="p-6">
-                      {/* 댓글 헤더 */}
+                      
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-bold">
@@ -529,7 +529,7 @@ const InstagramCommentsPage = () => {
                         </div>
                       </div>
 
-                      {/* 댓글 내용 */}
+                      
                       <div className="mb-4">
                         <p className="text-sm mb-3">{comment.text}</p>
                         <div className="text-xs text-muted-foreground bg-gray-50 p-2 rounded flex items-center gap-2">
@@ -539,7 +539,7 @@ const InstagramCommentsPage = () => {
                       </div>
 
 
-                      {/* 답글 영역 */}
+                      
                       {!comment.replied && (
                         <div className="border-t pt-4 space-y-3">
                           <div className="space-y-2">

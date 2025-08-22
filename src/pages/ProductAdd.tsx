@@ -61,32 +61,32 @@ const ProductAddPage = () => {
           name: "시어버터 알로카시아 모달 이불",
           price: "229000",
           keywords: ["모달", "시어버터", "피부 보호", "알로카시아 패턴"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755712735/asset-studio/jbzjhq7dxqpazgrcludw.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755712736/asset-studio/yso7rjacug9e3cwribyh.png"
         },
         {
           id: 2,
           name: "푹자요 극세사 이불",
           price: "139000",
           keywords: ["극세사", "숙면", "정전기 방지", "포근함"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755743611/asset-studio/wmrlylncwaimvvqqovzx.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755743612/asset-studio/wotkmxtbltjpw2qvdkxc.png"
         },
         {
           id: 3,
           name: "구름마시멜로 소프트 스프레드",
           price: "119000",
           keywords: ["스프레드", "마이크로파이버", "가벼움", "포근함"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755744269/asset-studio/rgdtobcxq57gqyjqnprq.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755751672/mfwalbpepsstl2dhdsja_sr37nz.jpg"
         },
         {
           id: 4,
           name: "숨쉬는 에어폼 경추 베개",
           price: "99000",
-          keywords: ["메모리폼", "경추", "자세 교정", "통기성"],
-          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755358464/products/original/1755358464564_%ED%95%98%ED%8A%B8_%ED%8C%A8%EC%B9%98%EC%9B%8C%ED%81%AC_original.jpg",
-          enhancedImageUrl: ""
+          keywords: ["메모리폼", "경추 건강", "자세 교정", "통기성"],
+          imageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755747861/asset-studio/ubidw0o4j1wwwuqyhjhi.png",
+          enhancedImageUrl: "https://res.cloudinary.com/dojsq7mnw/image/upload/v1755747862/asset-studio/rwvruqs9guh7dzipjvb6.png"
         }
       ];
     } else {
@@ -236,30 +236,22 @@ const ProductAddPage = () => {
 
   // 데모 상품 로드
   const loadDemoProduct = async (demo: typeof demoProducts[0]) => {
+    // 즉시 UI 업데이트 (이미지 미리보기 포함)
+    setSelectedDemo(demo.id);
+    setProductName(demo.name);
+    setProductPrice(demo.price);
+    setKeywords(demo.keywords);
+    setImagePreview(demo.imageUrl); // 이미지를 즉시 표시
+
+    // 백그라운드에서 File 객체 생성 (비동기)
     try {
-      // 선택된 데모 설정
-      setSelectedDemo(demo.id);
-
-      // 상품 정보 설정
-      setProductName(demo.name);
-      setProductPrice(demo.price);
-      setKeywords(demo.keywords);
-
-      // 이미지 다운로드 및 File 객체로 변환
       const response = await fetch(demo.imageUrl);
       const blob = await response.blob();
       const file = new File([blob], `${demo.name}.jpg`, { type: blob.type });
-
       setProductImage(file);
-      setImagePreview(demo.imageUrl);
-
     } catch (error) {
-      console.error('데모 상품 로드 실패:', error);
-      // 에러 시에도 텍스트 정보는 설정
-      setSelectedDemo(demo.id);
-      setProductName(demo.name);
-      setProductPrice(demo.price);
-      setKeywords(demo.keywords);
+      console.error('데모 상품 이미지 로드 실패:', error);
+      // File 객체 생성 실패 시에도 계속 진행
     }
   };
 
@@ -315,25 +307,24 @@ const ProductAddPage = () => {
         keywords: keywords
       });
 
-      // Mock 이미지 생성 시뮬레이션 (10-15초 사이 랜덤)
-      const delay = Math.floor(Math.random() * 5000) + 10000; // 10-15초
-      await new Promise(resolve => setTimeout(resolve, delay));
-
-      // Mock 생성된 이미지 URL - 각 데모 상품별 개별 이미지 사용
+      // Mock 생성된 이미지 URL을 미리 준비 - 각 데모 상품별 개별 이미지 사용
       const selectedDemoProduct = demoProducts.find(d => d.id === selectedDemo);
-      if (selectedDemoProduct?.enhancedImageUrl) {
-        setEnhancedImage(selectedDemoProduct.enhancedImageUrl);
-      } else {
-        setEnhancedImage("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%234F46E5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='sans-serif'%3EEnhanced Product%3C/text%3E%3C/svg%3E");
-      }
+      const enhancedImageUrl = selectedDemoProduct?.enhancedImageUrl || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%234F46E5'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='24' font-family='sans-serif'%3EEnhanced Product%3C/text%3E%3C/svg%3E";
 
-      // Mock 상품 특징 생성 (키워드 기반)
+      // Mock 상품 특징도 미리 생성 (키워드 기반)
       const mockFeatures = generateMockFeatures(keywords);
+
+      // 모든 상태를 한 번에 업데이트하여 화면 전환과 동시에 결과 표시
+      setCurrentStep("preview");
+      setEnhancedImage(enhancedImageUrl);
       setGeneratedFeatures(mockFeatures);
       setSelectedFeatures(mockFeatures);
 
+      // 이미지와 특징이 모두 설정된 후 지연 시뮬레이션 (10-15초 사이 랜덤)
+      const delay = Math.floor(Math.random() * 5000) + 10000; // 10-15초
+      await new Promise(resolve => setTimeout(resolve, delay));
+
       setHasProcessed(true);
-      setCurrentStep("preview");
 
       console.log('Mock AI 처리 완료');
 
@@ -690,7 +681,7 @@ const ProductAddPage = () => {
 
   return (
     <div className="page-container">
-      {/* Header */}
+      
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Button
@@ -715,10 +706,10 @@ const ProductAddPage = () => {
       </div>
 
       <div className="max-w-4xl mx-auto">
-        {/* 입력 단계 */}
+        
         {currentStep === "input" && (
           <div className="space-y-6">
-            {/* 데모 상품 선택 섹션 */}
+            
             <Card className="card-soft border-emerald-200 bg-emerald-50/50">
               <CardHeader>
                 <CardTitle className="text-xl text-emerald-800">🚀 빠른 데모 시연을 위한 상품 예시</CardTitle>
@@ -745,12 +736,12 @@ const ProductAddPage = () => {
                     </Button>
                   ))}
                 </div>
-                {/* 사전 바닥 라인 */}
+                
                 <div className="h-1 bg-emerald-100 rounded-full mt-[-1px] relative z-0"></div>
               </CardContent>
             </Card>
 
-            {/* 기존 상품 정보 입력 카드 */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle>상품 정보 입력</CardTitle>
@@ -759,7 +750,7 @@ const ProductAddPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* 상품 이름 */}
+                
                 <div className="space-y-2">
                   <Label htmlFor="product-name" className="text-base font-semibold">
                     상품 이름
@@ -775,7 +766,7 @@ const ProductAddPage = () => {
                   />
                 </div>
 
-                {/* 가격 */}
+                
                 <div className="space-y-2">
                   <Label htmlFor="product-price" className="text-base font-semibold">
                     가격
@@ -798,7 +789,7 @@ const ProductAddPage = () => {
                   </div>
                 </div>
 
-                {/* 제품 강조 키워드 */}
+                
                 <div className="space-y-2">
                   <Label htmlFor="keywords" className="text-base font-semibold">
                     제품 강조 키워드 (최대 4개)
@@ -824,7 +815,7 @@ const ProductAddPage = () => {
                     </Button>
                   </div>
 
-                  {/* 추가된 키워드 표시 */}
+                  
                   {keywords.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
                       {keywords.map((keyword, index) => (
@@ -851,7 +842,7 @@ const ProductAddPage = () => {
                 </div>
 
 
-                {/* 상품 이미지 업로드 */}
+                
                 <div className="space-y-2">
                   <Label className="text-base font-semibold">
                     상품 이미지
@@ -905,7 +896,7 @@ const ProductAddPage = () => {
 
         {currentStep === "preview" && (
           <div className="space-y-6">
-            {/* 이미지 비교 */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -934,7 +925,7 @@ const ProductAddPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* 원본 이미지 */}
+                  
                   <div>
                     <Label className="text-base font-semibold mb-3 block">원본 이미지</Label>
                     <div className="border rounded-lg p-4 bg-gray-50 min-h-[280px] flex items-center justify-center">
@@ -952,7 +943,7 @@ const ProductAddPage = () => {
                     </div>
                   </div>
 
-                  {/* 보정된 이미지 */}
+                  
                   <div>
                     <Label className="text-base font-semibold mb-3 block">AI 보정 이미지</Label>
                     <div className="border rounded-lg p-4 bg-gradient-to-br from-blue-50 to-purple-50 relative min-h-[280px] flex items-center justify-center">
@@ -984,7 +975,7 @@ const ProductAddPage = () => {
               </CardContent>
             </Card>
 
-            {/* 상품 특징 선택 */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -1070,7 +1061,7 @@ const ProductAddPage = () => {
           </div>
         )}
 
-        {/* 버튼 영역 */}
+        
         <div className="flex justify-end gap-3 mt-6">
           <Button
             variant="outline"

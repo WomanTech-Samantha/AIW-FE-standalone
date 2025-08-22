@@ -140,7 +140,7 @@ const BeautyShop = () => {
   const businessContent = getBusinessContent();
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 - 자연스럽고 부드러운 디자인 */}
+      
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -186,8 +186,8 @@ const BeautyShop = () => {
         </div>
       </header>
 
-      {/* 뷰티 템플릿 특징: 유기적이고 자연스러운 레이아웃 */}
-      {/* 히어로 섹션 - 유동적인 모양과 그라데이션 */}
+      
+      
       <section className="relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20" style={{ backgroundColor: 'var(--color-secondary)' }}></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-20" style={{ backgroundColor: 'var(--color-accent)' }}></div>
@@ -219,13 +219,13 @@ const BeautyShop = () => {
               </div>
             </div>
             <div className="relative">
-              {/* 이 공간은 이미지 원과 겹치는 영역 */}
+              
             </div>
           </div>
         </div>
       </section>
 
-      {/* 특별 혜택 - 웨이브 배경 */}
+      
       <section className="relative py-16" style={{ backgroundColor: 'var(--color-background)' }}>
         <svg className="absolute top-0 left-0 w-full h-24" viewBox="0 0 1200 120" preserveAspectRatio="none">
           <path d="M0,0V60C150,90 350,30 600,60C850,90 1050,30 1200,60V0H0Z" fill="white"></path>
@@ -252,7 +252,7 @@ const BeautyShop = () => {
         </div>
       </section>
 
-      {/* 베스트 상품 - 오가닉 카드 디자인 */}
+      
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -314,7 +314,7 @@ const BeautyShop = () => {
         </div>
       </section>
 
-      {/* 성분 스토리 - 아이콘 기반 레이아웃 */}
+      
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '작품 제작에 대한 우리의 철학' : '천연 제작 소재에 대한 우리 브랜드의 자세'}</h3>
@@ -340,7 +340,7 @@ const BeautyShop = () => {
       </section>
 
 
-      {/* 고객 후기 - 말풍선 스타일 */}
+      
       <section className="py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-medium text-center mb-16 text-gray-800">{business.includes('수공예') ? '고객님들의 특별한 이야기' : '고객님들의 성원에 보답하는 마음으로 만듭니다'}</h3>
@@ -368,7 +368,7 @@ const BeautyShop = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="py-responsive text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="responsive-grid responsive-grid-4 gap-8 mb-8">

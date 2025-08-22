@@ -43,7 +43,6 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [selectedPeriod, setSelectedPeriod] = useState('30days');
 
-  // Mock dashboard data based on requirements
   const metrics: MetricCard[] = [
     {
       title: "총 노출 수",
@@ -154,7 +153,7 @@ const DashboardPage = () => {
 
   return (
     <div className="page-container">
-        {/* Header */}
+        
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold mb-2">마케팅 대시보드</h1>
@@ -182,7 +181,7 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Period Selector */}
+        
         <div className="flex justify-center mb-8">
           <div className="inline-flex rounded-lg border border-border bg-card p-1">
             {periodOptions.map((option) => (
@@ -201,7 +200,7 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Metrics Grid */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {metrics.map((metric, index) => (
             <Card key={index} className="card-soft hover:shadow-md transition-shadow">
@@ -231,9 +230,9 @@ const DashboardPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Chart Area */}
+          
           <div className="lg:col-span-2 space-y-6">
-            {/* Performance Chart */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
@@ -245,7 +244,7 @@ const DashboardPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Mock Chart - In real app, use recharts */}
+                
                 <div className="h-64 bg-muted/20 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <LineChart className="mx-auto h-16 w-16 text-primary mb-4" />
@@ -258,7 +257,7 @@ const DashboardPage = () => {
               </CardContent>
             </Card>
 
-            {/* Top Performing Posts */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
@@ -301,9 +300,9 @@ const DashboardPage = () => {
             </Card>
           </div>
 
-          {/* Sidebar */}
+          
           <div className="space-y-6">
-            {/* Achievements */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
@@ -334,7 +333,7 @@ const DashboardPage = () => {
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
@@ -370,7 +369,7 @@ const DashboardPage = () => {
               </CardContent>
             </Card>
 
-            {/* Monthly Goal */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl">이번 달 목표</CardTitle>

@@ -198,7 +198,6 @@ const ComparisonPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-8 py-16">
-        {/* Back Button */}
         <div className="mb-6">
           <Button
             variant="outline"
@@ -211,7 +210,6 @@ const ComparisonPage = () => {
           </Button>
         </div>
 
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-bold mb-4">기존 방식 vs 올인움 자동화</h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -220,7 +218,7 @@ const ComparisonPage = () => {
           </p>
         </div>
 
-        {/* Quick Stats */}
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="card-soft text-center">
             <CardContent className="p-6">
@@ -245,7 +243,7 @@ const ComparisonPage = () => {
           </Card>
         </div>
 
-        {/* Feature Comparison Table */}
+        
         <Card className="card-soft mb-12">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center">
@@ -309,7 +307,7 @@ const ComparisonPage = () => {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Cost Comparison */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
@@ -347,7 +345,7 @@ const ComparisonPage = () => {
             </CardContent>
           </Card>
 
-          {/* Time Comparison */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="text-xl flex items-center">
@@ -388,7 +386,7 @@ const ComparisonPage = () => {
           </Card>
         </div>
 
-        {/* Benefits Summary */}
+        
         <Card className="card-soft mb-8">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center">
@@ -438,7 +436,7 @@ const ComparisonPage = () => {
           </CardContent>
         </Card>
 
-        {/* CTA */}
+        
         <div className="text-center">
           <Card className="card-soft max-w-2xl mx-auto">
             <CardContent className="p-8">

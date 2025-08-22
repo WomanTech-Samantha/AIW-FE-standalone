@@ -169,7 +169,7 @@ const BeautyProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -217,7 +217,7 @@ const BeautyProduct = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-beauty-muted py-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -230,11 +230,11 @@ const BeautyProduct = () => {
         </div>
       </div>
 
-      {/* 상품 상세 */}
+      
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            {/* 상품 이미지 */}
+            
             <div className="space-y-6">
               <div className="aspect-square overflow-hidden rounded-lg bg-beauty-card shadow-beauty">
                 <img 
@@ -256,7 +256,7 @@ const BeautyProduct = () => {
               </div>
             </div>
 
-            {/* 상품 정보 */}
+            
             <div className="space-y-8">
               <div>
                 <div className="flex items-center mb-4">
@@ -322,7 +322,7 @@ const BeautyProduct = () => {
                   {productData?.description || businessContent.description}
                 </p>
 
-                {/* 용량 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">{storeData?.business?.includes('수공예') ? 'Type' : 'Size'}</h3>
                   <div className="flex space-x-3">
@@ -345,7 +345,7 @@ const BeautyProduct = () => {
                   </p>
                 </div>
 
-                {/* 수량 선택 */}
+                
                 <div>
                   <h3 className="text-xl font-semibold mb-4">{storeData?.business?.includes('수공예') ? 'Quantity' : '수량'}</h3>
                   <div className="flex items-center space-x-4">
@@ -369,7 +369,7 @@ const BeautyProduct = () => {
                   </div>
                 </div>
 
-                {/* 구매 버튼 */}
+                
                 <div className="space-y-4 pt-8">
                   <Button className="w-full py-4 text-lg font-semibold transition-smooth" style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}>
                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -417,7 +417,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 상품 상세 정보 */}
+      
       <section className="py-16 bg-beauty-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-b border-beauty-border mb-12">
@@ -561,7 +561,7 @@ const BeautyProduct = () => {
         </div>
       </section>
 
-      {/* 사용법 */}
+      
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold mb-12 text-center" style={{ color: 'var(--color-primary)' }}>

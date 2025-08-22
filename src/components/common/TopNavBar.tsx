@@ -108,7 +108,7 @@ export default function TopNavBar() {
             <div className="flex items-center gap-2">
               {user ? (
                 <>
-                  {/* 인스타그램 관리 메뉴 */}
+                  
                   <div className="flex items-center gap-2">
                     <Button
                       variant="ghost"

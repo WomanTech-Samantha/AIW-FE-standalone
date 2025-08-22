@@ -152,7 +152,7 @@ const CozyHome = () => {
   const categoryDisplay = getCategoryDisplay();
   return (
     <div className="bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -194,8 +194,8 @@ const CozyHome = () => {
         </div>
       </header>
 
-      {/* 코지 템플릿 특징: 부드러운 곡선과 따뜻한 레이아웃 */}
-      {/* 히어로 섹션 - 둥근 모서리와 오버레이 */}
+      
+      
       <section className="relative overflow-hidden py-responsive" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -231,7 +231,7 @@ const CozyHome = () => {
         </div>
       </section>
 
-      {/* 특별 프로모션 - 물결 모양 섹션 */}
+      
       <section className="relative py-responsive">
         <div className="absolute inset-0 opacity-10" style={{ backgroundColor: 'var(--color-primary)' }}></div>
         <div className="container relative">
@@ -247,7 +247,7 @@ const CozyHome = () => {
             <div className="bg-white rounded-3xl shadow-xl px-responsive py-responsive text-center relative overflow-hidden">
               
               
-              {/* 세일 딱지 */}
+              
               <div className="absolute -top-2 -right-2 w-20 h-20 transform rotate-12">
                 <div className="w-full h-full rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-pulse" style={{ backgroundColor: 'var(--color-primary)' }}>
                   SALE
@@ -298,7 +298,7 @@ const CozyHome = () => {
         </div>
       </section>
 
-      {/* 인기 상품 - 카드형 레이아웃 */}
+      
       <section className="py-responsive">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -367,7 +367,7 @@ const CozyHome = () => {
         </div>
       </section>
 
-      {/* 카테고리 - 원형 아이콘 레이아웃 */}
+      
       <section className="py-responsive" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="heading-responsive font-bold text-center text-gray-800 mb-12">관심있는 카테고리부터 보세요</h3>
@@ -395,7 +395,7 @@ const CozyHome = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="py-responsive text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="responsive-grid responsive-grid-4 gap-8 mb-8">

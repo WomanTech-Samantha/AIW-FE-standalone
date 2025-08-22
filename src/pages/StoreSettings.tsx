@@ -288,7 +288,7 @@ export default function StoreSettingsPage() {
   return (
     <div className="page-container">
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Header */}
+        
         <div className="mb-8">
           <div className="mb-4">
             <Button
@@ -310,7 +310,7 @@ export default function StoreSettingsPage() {
         </div>
 
         <div className="space-y-6">
-          {/* 기본 정보 설정 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -399,7 +399,7 @@ export default function StoreSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 브랜드 이미지 설정 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -460,7 +460,7 @@ export default function StoreSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 테마 설정 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -517,7 +517,7 @@ export default function StoreSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 템플릿 선택 */}
+          
           <Card className="card-soft">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -558,7 +558,7 @@ export default function StoreSettingsPage() {
             </CardContent>
           </Card>
 
-          {/* 미리보기 */}
+          
           {selectedTemplate && (
             <Card className="card-soft">
               <CardHeader>
@@ -600,7 +600,7 @@ export default function StoreSettingsPage() {
             </Card>
           )}
 
-          {/* 저장 버튼 */}
+          
           <div className="flex justify-center pt-4 pb-6">
             <Button
               size="lg"

@@ -101,9 +101,9 @@ export const Step1ImageUpload = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Left Panel - Upload & Settings */}
+      
       <div className="space-y-6">
-        {/* Image Upload */}
+        
         <Card className="card-soft">
           <CardHeader>
             <CardTitle className="text-xl flex items-center">
@@ -149,7 +149,7 @@ export const Step1ImageUpload = ({
           </CardContent>
         </Card>
 
-        {/* Background Enhancement */}
+        
         {selectedImage && (
           <Card className="card-soft">
             <CardHeader>
@@ -188,11 +188,11 @@ export const Step1ImageUpload = ({
 
       </div>
 
-      {/* Right Panel - Results */}
+      
       <div className="space-y-6">
         {showResults ? (
           <>
-            {/* Before/After Comparison */}
+            
             <Card className="card-soft">
               <CardHeader>
                 <CardTitle className="text-xl flex items-center">
@@ -219,7 +219,7 @@ export const Step1ImageUpload = ({
               </CardContent>
             </Card>
 
-            {/* Story Text Input */}
+            
             {contentType === "story" && (
               <Card className="card-soft">
                 <CardHeader>
@@ -240,7 +240,7 @@ export const Step1ImageUpload = ({
               </Card>
             )}
 
-            {/* Step 1 Navigation */}
+            
             <div className="mt-6 text-center">
               <Button
                 onClick={onNextStep}

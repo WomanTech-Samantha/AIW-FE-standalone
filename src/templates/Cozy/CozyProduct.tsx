@@ -233,7 +233,7 @@ const CozyProduct = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 */}
+      
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -259,7 +259,7 @@ const CozyProduct = () => {
         </div>
       </header>
 
-      {/* 브레드크럼 */}
+      
       <div className="bg-cozy-muted py-4">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-base text-gray-600">
@@ -272,11 +272,11 @@ const CozyProduct = () => {
         </div>
       </div>
 
-      {/* 상품 상세 */}
+      
       <section className="py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* 상품 이미지 */}
+            
             <div className="space-y-4">
               <div className="aspect-square overflow-hidden rounded-lg bg-cozy-card">
                 <img 
@@ -298,7 +298,7 @@ const CozyProduct = () => {
               </div>
             </div>
 
-            {/* 상품 정보 */}
+            
             <div className="space-y-6">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">{businessContent.title}</h1>
@@ -324,7 +324,7 @@ const CozyProduct = () => {
                   {businessContent.description}
                 </p>
 
-                {/* 색상 선택 */}
+                
                 <div>
                   <h3 className="text-lg font-semibold mb-3">색상</h3>
                   <div className="flex space-x-3">
@@ -348,7 +348,7 @@ const CozyProduct = () => {
                   </div>
                 </div>
 
-                {/* 사이즈 선택 */}
+                
                 <div>
                   <h3 className="text-lg font-semibold mb-3">사이즈</h3>
                   <div className="flex space-x-3">
@@ -372,7 +372,7 @@ const CozyProduct = () => {
                   </div>
                 </div>
 
-                {/* 수량 선택 */}
+                
                 <div>
                   <h3 className="text-lg font-semibold mb-3">수량</h3>
                   <div className="flex items-center space-x-3">
@@ -396,7 +396,7 @@ const CozyProduct = () => {
                   </div>
                 </div>
 
-                {/* 구매 버튼 */}
+                
                 <div className="space-y-3 pt-6">
                   <Button className="w-full text-white hover:opacity-90 py-4 text-lg font-semibold transition-smooth" style={{ backgroundColor: 'var(--color-primary)' }}>
                     <ShoppingCart className="h-5 w-5 mr-2" />
@@ -411,7 +411,7 @@ const CozyProduct = () => {
                   </Button>
                 </div>
 
-                {/* 배송/보장 정보 */}
+                
                 <div className="bg-cozy-muted p-6 rounded-lg space-y-4">
                   <div className="flex items-center space-x-3">
                     <Truck className="h-5 w-5 font-medium" />
@@ -432,7 +432,7 @@ const CozyProduct = () => {
         </div>
       </section>
 
-      {/* 상품 상세 정보 */}
+      
       <section className="py-12 bg-cozy-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-b border-cozy-border mb-8">
@@ -454,7 +454,7 @@ const CozyProduct = () => {
         </div>
       </section>
 
-      {/* 관련 상품 */}
+      
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-2xl font-bold mb-8">함께 보면 좋은 상품</h3>
@@ -486,7 +486,7 @@ const CozyProduct = () => {
         </div>
       </section>
 
-      {/* 푸터 */}
+      
       <footer className="text-white font-medium-foreground py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

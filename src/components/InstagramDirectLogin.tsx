@@ -206,7 +206,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
 
   return (
     <div className="space-y-6">
-      {/* 메인 로그인 카드 */}
+      
       <Card className="border-2">
         <CardHeader className="space-y-2">
           <div className="flex items-center justify-center mb-4">
@@ -217,7 +217,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
         <CardContent className="space-y-4">
           {!accessToken ? (
             <>
-              {/* 연동 버튼 */}
+              
               <Button 
                 onClick={handleDirectTokenTest}
                 disabled={isLoading}
@@ -284,7 +284,7 @@ const InstagramDirectLogin = ({ onSuccess, onError }: InstagramDirectLoginProps)
             </div>
           )}
 
-          {/* 에러 메시지 */}
+          
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />

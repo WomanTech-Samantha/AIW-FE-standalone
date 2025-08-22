@@ -35,7 +35,7 @@ export const ReelsContentSettings = ({
   return (
     <div className="max-w-6xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Left Panel - Content Settings */}
+        
         <div className="space-y-6">
           <Card className="card-soft">
             <CardHeader>
@@ -95,7 +95,7 @@ export const ReelsContentSettings = ({
           </Card>
         </div>
 
-        {/* Right Panel - Generated Content */}
+        
         <div className="space-y-6">
           {showCopyGeneration && (
             <Card className="card-soft">
@@ -169,7 +169,7 @@ export const ReelsContentSettings = ({
           )}
         </div>
 
-        {/* Navigation Buttons */}
+        
         <div className="col-span-1 lg:col-span-2 flex justify-between pt-4">
           <Button
             variant="outline"
